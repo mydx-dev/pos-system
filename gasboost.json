@@ -1,0 +1,12 @@
+{
+    "projectName": "gasboost-template",
+    "enviroments": [
+        {
+            "name": "dev"
+        },
+        {
+            "name": "prd"
+        }
+    ],
+    "variables": ["VITE_DB_ID"]
+}

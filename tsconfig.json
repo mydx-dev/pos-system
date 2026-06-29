@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "target": "ES2021",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "ignoreDeprecations": "6.0",
+        "baseUrl": ".",
+        "rootDir": "..",
+        "outDir": "../dist",
+        "strict": true,
+        "esModuleInterop": true,
+        "allowJs": true,
+        "sourceMap": false,
+        "skipLibCheck": true,
+        "lib": ["ES2021", "DOM"],
+        "jsx": "react-jsx",
+        "types": [
+            "google-apps-script",
+            "node",
+            "vite/client",
+            "@types/node",
+            "vitest/globals",
+            "@testing-library/jest-dom"
+        ],
+        "paths": {
+            "@/*": ["./src/frontend/*"]
+        }
+    },
+    "include": ["./**/*.ts", "./**/*.tsx", "../types/**/*.d.ts"]
+}

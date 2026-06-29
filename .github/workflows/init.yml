@@ -1,0 +1,55 @@
+name: Init Project
+
+on:
+    workflow_dispatch:
+        inputs:
+            project_name:
+                description: 'Project name (leave empty to use repository name)'
+                required: false
+                default: ''
+            project_type:
+                description: 'Project type'
+                required: false
+                type: choice
+                options:
+                    - standalone
+                    - docs
+                    - sheets
+                    - slides
+                    - forms
+                    - webapp
+                    - api
+                default: 'standalone'
+            create_dev_project:
+                description: 'Create dev GAS project'
+                required: false
+                type: boolean
+                default: false
+            create_prd_project:
+                description: 'Create prd GAS project'
+                required: false
+                type: boolean
+                default: false
+            use_frontend:
+                description: 'Use frontend setup'
+                required: false
+                type: boolean
+                default: false
+            skip_git:
+                description: 'Skip git init'
+                required: false
+                type: boolean
+                default: true
+
+jobs:
+    init:
+        uses: mydx-dev/common-workflow/.github/workflows/init.yml@v1
+        with:
+            project_name: >-
+                ${{ inputs.project_name || github.event.repository.name }}
+            project_type: ${{ inputs.project_type || 'standalone' }}
+            create_dev_project: ${{ inputs.create_dev_project || false }}
+            create_prd_project: ${{ inputs.create_prd_project || false }}
+            use_frontend: ${{ inputs.use_frontend || false }}
+            skip_git: ${{ inputs.skip_git || true }}
+        secrets: inherit

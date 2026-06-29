@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  ci:
+    if: github.event.pull_request.head.repo.fork == false
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - run: corepack enable
+
+      - run: corepack prepare pnpm@9.12.3 --activate
+
+      - run: pnpm --version
+
+      - name: Configure npm auth
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > .npmrc
+          echo "@mydx-dev:registry=https://npm.pkg.github.com" >> .npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - run: pnpm install
+
+      - name: Format Check
+        run: pnpm run format:check
+
+      - name: Type Check
+        run: pnpm run typecheck
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Test
+        run: pnpm run test:back
+
+      - name: Build
+        run: pnpm gas-boost build dev

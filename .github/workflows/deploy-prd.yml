@@ -1,0 +1,105 @@
+name: Deploy Prd
+
+on:
+  release:
+    types:
+      - published
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+  actions: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: prd
+
+    env:
+      ENVIRONMENT: prd
+      DEPLOY_ID: ${{ vars.DEPLOY_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+            ref: ${{ github.event.release.tag_name}}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - run: corepack enable
+
+      - run: corepack prepare pnpm@9.12.3 --activate
+
+      - run: pnpm --version
+
+      - name: Configure npm auth
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > .npmrc
+          echo "@mydx-dev:registry=https://npm.pkg.github.com" >> .npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - run: pnpm install
+
+      - name: Debug deploy ID
+        run: echo "DEPLOY_ID=${{ vars.DEPLOY_ID }}"
+
+      - name: Write clasp credentials
+        run: |
+          printf '%s' "$CLASP_CREDENTIALS" > ~/.clasprc.json
+          chmod 600 ~/.clasprc.json
+        env:
+          CLASP_CREDENTIALS: ${{ secrets.CLASP_CREDENTIALS }}
+
+      - name: Write clasp config
+        run: |
+          mkdir -p config
+          printf '%s' "$CLASP_JSON" > config/.clasp.prd.json
+        env:
+          CLASP_JSON: ${{ secrets.CLASP_JSON_PRD }}
+
+      - name: Build project
+        run: |
+          pnpm gas-boost build prd
+
+      - name: Push to GAS
+        run: |
+          pnpm gas-boost push prd
+
+      - name: Deploy to GAS
+        id: deploy
+        run: |
+          pnpm gas-boost deploy prd | tee deploy.log
+
+          URL=$(grep -Eo 'WEB_APP_URL=\S+' deploy.log | tail -n1 | cut -d= -f2-)
+          DEPLOY_ID=$(grep -Eo 'DEPLOY_ID=\S+' deploy.log | tail -n1 | cut -d= -f2-)
+
+          if [ -z "$DEPLOY_ID" ]; then
+            DEPLOY_ID=$(grep -Eo 'New deploymentId: \S+' deploy.log | tail -n1 | awk '{print $3}')
+          fi
+
+          echo "web_app_url=$URL" >> $GITHUB_OUTPUT
+          echo "deploy_id=$DEPLOY_ID" >> $GITHUB_OUTPUT
+
+      - name: Persist deploy ID
+        if: ${{ steps.deploy.outputs.deploy_id != '' && vars.DEPLOY_ID == '' }}
+        run: |
+          gh variable set DEPLOY_ID \
+            --env prd \
+            --body "${DEPLOY_ID}" \
+            --repo "${GITHUB_REPOSITORY}"
+        env:
+          DEPLOY_ID: ${{ steps.deploy.outputs.deploy_id }}
+          GH_TOKEN: ${{ secrets.GAS_BOOST_PAT }}
+
+      - name: Print deploy URL
+        run: |
+                if [ -n "${{ steps.deploy.outputs.web_app_url }}" ]; then
+                echo "prd deploy: ${{ steps.deploy.outputs.web_app_url }}"
+                else
+                echo "prd deploy completed (URL not found)"
+                fi

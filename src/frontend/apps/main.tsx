@@ -1,7 +1,9 @@
 import { AuthProvider } from '@/context/AuthContext';
 import { InitializeProvider } from '@/context/InitializeContext';
+import { AdminGuard } from '@/guards/AdminGuard';
 import { AuthGuard } from '@/guards/AuthGuard';
 import { InitializeGuard } from '@/guards/InitializeGuard';
+import { CreateEmployeePage } from '@/pages/CreateEmployeePage';
 import { CreateUserPage } from '@/pages/CreateUserPage';
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage';
 import { LoginPage } from '@/pages/LoginPage';
@@ -95,6 +97,18 @@ createRoot(document.getElementById('root')!).render(
                                                     path={routes.user.edit.path}
                                                     element={<UserEditPage />}
                                                 />
+
+                                                <Route element={<AdminGuard />}>
+                                                    <Route
+                                                        path={
+                                                            routes.employee
+                                                                .create
+                                                        }
+                                                        element={
+                                                            <CreateEmployeePage />
+                                                        }
+                                                    />
+                                                </Route>
                                             </Route>
                                         </Route>
                                     </Route>

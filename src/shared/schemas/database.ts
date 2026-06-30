@@ -21,3 +21,7 @@ export const passwordResetSchema = z.object({
     トークン: z.string().uuidv4().meta({ unique: true }),
     有効期限: z.number(),
 });
+
+export const employeeSchema = z.object({
+    ユーザーID: userId.meta({ unique: true }),
+});

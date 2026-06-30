@@ -1,4 +1,5 @@
 import type { AppsScriptServerResponse } from '@mydx-dev/gas-boost-runtime/core';
+import { CreateEmployeeInput, CreateEmployeeOutput } from './employee';
 import type { PullDatabaseInput, PullDatabaseOutput } from './system';
 import type {
     ApproveUserInput,
@@ -67,4 +68,7 @@ export type API = {
     resetPassword: (
         input: ResetPasswordInput
     ) => AppsScriptServerResponse<ResetPasswordOutput>;
+    createEmployee: (
+        input: CreateEmployeeInput
+    ) => AppsScriptServerResponse<CreateEmployeeOutput>;
 };

@@ -68,6 +68,18 @@ export default {
                 xl: '0.5rem',
                 full: '0.75rem',
             },
+            spacing: {
+                gutter: '24px',
+                'margin-mobile': '16px',
+                xl: '48px',
+                md: '16px',
+                'margin-desktop': '32px',
+                xs: '4px',
+                unit: '4px',
+                'container-max': '1440px',
+                sm: '8px',
+                lg: '24px',
+            },
             fontSize: {
                 'h1-display-jp': [
                     '32px',
@@ -124,6 +136,43 @@ export default {
                         letterSpacing: '-0.01em',
                         fontWeight: '700',
                     },
+                ],
+
+                'body-lg': ['18px', { lineHeight: '28px', fontWeight: '400' }],
+                'label-lg': [
+                    '14px',
+                    {
+                        lineHeight: '20px',
+                        letterSpacing: '0.05em',
+                        fontWeight: '600',
+                    },
+                ],
+                'body-sm': ['14px', { lineHeight: '20px', fontWeight: '400' }],
+                'body-md': ['16px', { lineHeight: '24px', fontWeight: '400' }],
+                'display-lg': [
+                    '36px',
+                    {
+                        lineHeight: '44px',
+                        letterSpacing: '-0.02em',
+                        fontWeight: '700',
+                    },
+                ],
+                'label-md': ['12px', { lineHeight: '16px', fontWeight: '500' }],
+                'headline-md': [
+                    '22px',
+                    { lineHeight: '30px', fontWeight: '600' },
+                ],
+                'headline-lg': [
+                    '28px',
+                    {
+                        lineHeight: '36px',
+                        letterSpacing: '-0.01em',
+                        fontWeight: '600',
+                    },
+                ],
+                'headline-lg-mobile': [
+                    '24px',
+                    { lineHeight: '32px', fontWeight: '600' },
                 ],
                 'h1-mobile': ['24px', { lineHeight: '1.3', fontWeight: '700' }],
             },

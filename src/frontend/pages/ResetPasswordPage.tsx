@@ -112,7 +112,7 @@ export const ResetPasswordPage = () => {
     return (
         <>
             {/* Form Card (The Digital Curator Style) */}
-            <section className="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_-4px_rgba(0,32,69,0.08)] relative overflow-hidden">
+            <section className="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_-4px_rgba(0,32,69,0.08)] relative mx-auto w-[min(100vw-3rem,42rem)] overflow-hidden">
                 <div className="mb-8">
                     <h2 className="font-headline font-bold text-2xl text-primary leading-tight">
                         新しいパスワードの設定

@@ -50,4 +50,7 @@ export const routes = {
             build: (id: string) => `/projects/${id}/requirement-definition`,
         },
     },
+    employee: {
+        create: '/employees/new',
+    },
 };

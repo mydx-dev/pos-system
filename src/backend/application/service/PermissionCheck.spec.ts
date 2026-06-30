@@ -161,3 +161,44 @@ describe('承認済み開発者またはシステム管理者判定', () => {
         expect(result).toBe(false);
     });
 });
+
+describe('承認済みユーザーのロール判定', () => {
+    it('承認済みユーザーが指定されたロールを持っている場合は、trueを返す', () => {
+        const ctx = createTestContext();
+        const permissionCheck = ctx.permissionCheck;
+        const dataStore = ctx.dataStore;
+
+        const userTableHeader = Object.keys(UserTable.schema.def.shape);
+        const permissionTableHeader = Object.keys(RoleTable.schema.def.shape);
+
+        dataStore.set(':ユーザー', [
+            userTableHeader,
+            ['id1', 'user1', 'user1@example.com', 'password', true, 1],
+        ]);
+
+        dataStore.set(':ロール', [
+            permissionTableHeader,
+            ['id1', 'システム管理者'],
+        ]);
+        const result = permissionCheck.hasRole('id1', 'システム管理者');
+        expect(result.hasRole).toBe(true);
+    });
+
+    it('承認済みユーザーが指定されたロールを持っていない場合は、falseを返す', () => {
+        const ctx = createTestContext();
+        const permissionCheck = ctx.permissionCheck;
+        const dataStore = ctx.dataStore;
+
+        const userTableHeader = Object.keys(UserTable.schema.def.shape);
+        const permissionTableHeader = Object.keys(RoleTable.schema.def.shape);
+
+        dataStore.set(':ユーザー', [
+            userTableHeader,
+            ['id1', 'user1', 'user1@example.com', 'password', true, 1],
+        ]);
+
+        dataStore.set(':ロール', [permissionTableHeader, ['id1', '開発者']]);
+        const result = permissionCheck.hasRole('id1', 'システム管理者');
+        expect(result.hasRole).toBe(false);
+    });
+});

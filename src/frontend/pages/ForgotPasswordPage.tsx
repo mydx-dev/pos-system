@@ -4,7 +4,7 @@ export const ForgotPasswordPage = () => {
     return (
         <>
             {/* Reset Password Card */}
-            <section className="w-full bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_-4px_rgba(0,32,69,0.08)] p-8 relative overflow-hidden">
+            <section className="bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_-4px_rgba(0,32,69,0.08)] p-8 relative mx-auto w-[min(100vw-3rem,42rem)] overflow-hidden">
                 {/* Subtle accent top line */}
                 <header className="mb-8">
                     <h2 className="font-headline font-bold text-xl text-primary mb-3">

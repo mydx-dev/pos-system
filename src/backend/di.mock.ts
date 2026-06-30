@@ -31,6 +31,7 @@ import { PermissionCheck } from './application/service/PermissionCheck';
 import { SystemAdmins } from './application/service/SystemAdmins';
 import { AcceptTermsUseCase } from './application/usecase/AcceptTermsUseCase';
 import { ApproveUserUseCase } from './application/usecase/ApproveUserUseCase';
+import { CreateEmployeeUseCase } from './application/usecase/CreateEmployeeUseCase';
 import { CreateUserUseCase } from './application/usecase/CreateUserUseCase';
 import { DeleteUserUseCase } from './application/usecase/DeleteUserUseCase';
 import { DoGetUseCase } from './application/usecase/DoGetUseCase';
@@ -46,6 +47,7 @@ import { UnapproveUserUseCase } from './application/usecase/UnapproveUserUseCase
 import { UpdateUserUseCase } from './application/usecase/UpdateUserUseCase';
 import { AcceptTermsController } from './controller/AcceptTermsController';
 import { ApproveUserController } from './controller/ApproveUserController';
+import { CreateEmployeeController } from './controller/CreateEmployeeController';
 import { CreateUserController } from './controller/CreateUserController';
 import { DeleteUserController } from './controller/DeleteUserController';
 import { DoGetController } from './controller/DoGetController';
@@ -97,7 +99,9 @@ testContainer.register({
     dataStore: asFunction(() => {
         const dataStore = new InMemoryDataStore();
         testContainer.resolve('tables').forEach((table) => {
-            dataStore.set(table.name, [Object.keys(table.schema.def.shape)]);
+            dataStore.set(`${table.dbId}:${table.name}`, [
+                Object.keys(table.schema.def.shape),
+            ]);
         });
         return dataStore;
     }).scoped(),
@@ -126,14 +130,12 @@ testContainer.register({
     logger: asValue({ log: vi.fn() }),
     gmailApp: asValue({ sendEmail: vi.fn() }),
     scriptApp: asValue({
-        getService: vi.fn().mockReturnValue({
-            getUrl: vi
-                .fn()
-                .mockReturnValue(
-                    'https://script.google.com/macros/s/AKfycbx/exec'
-                ),
-        }),
-        getScriptId: vi.fn(),
+        getService: () => {
+            return {
+                getUrl: () => 'https://script.google.com/macros/s/AKfycbx/exec',
+            };
+        },
+        getScriptId: () => 'test-script-id',
     }),
     htmlService: asValue({
         createTemplateFromFile: vi.fn().mockReturnValue({
@@ -187,6 +189,7 @@ testContainer.register({
     resetPasswordUseCase: asClass(ResetPasswordUseCase).scoped(),
     unapproveUserUseCase: asClass(UnapproveUserUseCase).scoped(),
     updateUserUseCase: asClass(UpdateUserUseCase).scoped(),
+    createEmployeeUseCase: asClass(CreateEmployeeUseCase).scoped(),
 });
 
 testContainer.register({
@@ -205,4 +208,5 @@ testContainer.register({
     resetPasswordController: asClass(ResetPasswordController).scoped(),
     unapproveUserController: asClass(UnapproveUserController).scoped(),
     updateUserController: asClass(UpdateUserController).scoped(),
+    createEmployeeController: asClass(CreateEmployeeController).scoped(),
 });

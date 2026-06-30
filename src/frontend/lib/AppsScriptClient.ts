@@ -22,6 +22,7 @@ export const labels = {
     isSetupCompleted: '初期設定完了確認',
     isTermsAccepted: '利用規約同意確認',
     acceptTerms: '利用規約同意',
+    createEmployee: 'スタッフ作成',
 };
 
 export const { server, replica, replicaQL, job } = createAppsScriptClient<

@@ -152,10 +152,14 @@ export class TableSpec<TSchema extends TableSchema> {
                 } else if (this.metaData.自動採番 === 'autoIncrement') {
                     test(`自動採番をする`, () => {
                         expect(actualTable.autoIncrement).toBe(true);
+                        expect(actualTable.autoNumberingMode).toBe(
+                            'autoIncrement'
+                        );
                     });
                 } else if (this.metaData.自動採番 === 'uuid') {
                     test(`自動採番はUUIDv4形式`, () => {
-                        expect(actualTable.autoIncrement).toBe('uuid');
+                        expect(actualTable.autoIncrement).toBe(true);
+                        expect(actualTable.autoNumberingMode).toBe('uuid');
                     });
                 }
 

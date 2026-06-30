@@ -19,7 +19,7 @@ export const GuestLayout = () => {
                 </h1>
             </header>
             {/* Main Login Card */}
-            <main className="w-full max-w-xl">
+            <main className="w-full">
                 <Outlet />
             </main>
             {/* Footer Branding/Policy */}

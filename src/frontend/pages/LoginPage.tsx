@@ -44,11 +44,11 @@ export const LoginPage = () => {
 
     return (
         <>
-            <section className="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_-4px_rgba(0,32,69,0.08)] relative overflow-hidden">
+            <section className="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_-4px_rgba(0,32,69,0.08)] relative mx-auto w-[min(100vw-3rem,42rem)] overflow-hidden">
                 {/* Decorative Subtle Accent */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-tertiary-fixed/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
 
-                <div className="relative z-10">
+                <div className="relative z-10 ">
                     <form
                         className="space-y-6"
                         onSubmit={handleSubmit(() => mutate())}
@@ -143,7 +143,7 @@ export const LoginPage = () => {
                 </div>
             </section>
             {/* Secondary CTA */}
-            <section className="mt-8 text-center px-4">
+            <section className="mt-8 text-center px-4 relative mx-auto w-[min(100vw-3rem,42rem)]">
                 <p className="text-on-surface-variant text-sm mb-4">
                     アカウントをお持ちでないですか？
                 </p>

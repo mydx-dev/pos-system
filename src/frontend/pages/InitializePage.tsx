@@ -48,7 +48,7 @@ export function InitializePage() {
                 completed: <CheckIcon className="size-3.5" />,
                 loading: <LoaderCircleIcon className="size-3.5 animate-spin" />,
             }}
-            className="w-full max-w-xl space-y-8"
+            className="w-full md:max-w-[65%] space-y-8 mx-auto"
         >
             <StepperNav className="gap-3">
                 {steps.map((step, index) => (

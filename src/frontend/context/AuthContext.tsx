@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setSessionToken(token);
         localStorage.setItem('sessionToken', token);
         mutate(token);
-        navigate(routes.user.list);
+        navigate(routes.employee.list);
     };
     const logout = () => {
         setUserId(null);

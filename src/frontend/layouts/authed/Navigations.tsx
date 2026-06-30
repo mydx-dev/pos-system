@@ -21,8 +21,8 @@ export interface PrimaryAction {
 export const navigations: NavigationItem[] = [
     {
         icon: Users,
-        label: 'ユーザー',
-        to: routes.user.list,
+        label: 'スタッフ',
+        to: routes.employee.list,
     },
 ];
 

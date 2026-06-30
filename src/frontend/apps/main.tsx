@@ -5,6 +5,7 @@ import { AuthGuard } from '@/guards/AuthGuard';
 import { InitializeGuard } from '@/guards/InitializeGuard';
 import { CreateEmployeePage } from '@/pages/CreateEmployeePage';
 import { CreateUserPage } from '@/pages/CreateUserPage';
+import { EmployeeDetailPage } from '@/pages/EmployeeDetailPage';
 import { EmployeeListPage } from '@/pages/EmployeeListPage';
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage';
 import { LoginPage } from '@/pages/LoginPage';
@@ -115,6 +116,15 @@ createRoot(document.getElementById('root')!).render(
                                                         }
                                                         element={
                                                             <EmployeeListPage />
+                                                        }
+                                                    />
+                                                    <Route
+                                                        path={
+                                                            routes.employee
+                                                                .detail.path
+                                                        }
+                                                        element={
+                                                            <EmployeeDetailPage />
                                                         }
                                                     />
                                                 </Route>

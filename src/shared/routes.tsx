@@ -52,5 +52,10 @@ export const routes = {
     },
     employee: {
         create: '/employees/new',
+        list: '/employees',
+        detail: {
+            path: '/employees/:id',
+            build: (id: string) => `/employees/${id}`,
+        },
     },
 };

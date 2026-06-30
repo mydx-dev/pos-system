@@ -1,5 +1,5 @@
 import { SheetEntity } from '@mydx-dev/gas-boost-runtime/core';
-import { Role } from './Role';
+import { Role, RoleName } from './Role';
 
 export class User extends SheetEntity {
     constructor(
@@ -46,7 +46,7 @@ export class User extends SheetEntity {
         return this._version;
     }
 
-    public hasRole(roleName: string): boolean {
+    public hasRole(roleName: RoleName): boolean {
         return this.role.includes(roleName);
     }
 

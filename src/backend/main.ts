@@ -32,6 +32,8 @@ export const ServerFunctions: API & Record<string, unknown> = {
         container.resolve('resetPasswordController').execute(input),
     pullDatabase: (input) =>
         container.resolve('pullDataBaseController').execute(input),
+    createEmployee: (input) =>
+        container.resolve('createEmployeeController').execute(input),
 };
 
 Object.entries(ServerFunctions).forEach(([name, fn]) => {

@@ -11,6 +11,7 @@ import { PermissionCheck } from './application/service/PermissionCheck';
 import { SystemAdmins } from './application/service/SystemAdmins';
 import { AcceptTermsUseCase } from './application/usecase/AcceptTermsUseCase';
 import { ApproveUserUseCase } from './application/usecase/ApproveUserUseCase';
+import { CreateEmployeeUseCase } from './application/usecase/CreateEmployeeUseCase';
 import { CreateUserUseCase } from './application/usecase/CreateUserUseCase';
 import { DeleteUserUseCase } from './application/usecase/DeleteUserUseCase';
 import { DoGetUseCase } from './application/usecase/DoGetUseCase';
@@ -26,6 +27,7 @@ import { UnapproveUserUseCase } from './application/usecase/UnapproveUserUseCase
 import { UpdateUserUseCase } from './application/usecase/UpdateUserUseCase';
 import { AcceptTermsController } from './controller/AcceptTermsController';
 import { ApproveUserController } from './controller/ApproveUserController';
+import { CreateEmployeeController } from './controller/CreateEmployeeController';
 import { CreateUserController } from './controller/CreateUserController';
 import { DeleteUserController } from './controller/DeleteUserController';
 import { DoGetController } from './controller/DoGetController';
@@ -108,6 +110,8 @@ export type AppContainer = {
     openController: OpenController;
     onOpenController: OnOpenController;
     migrationController: MigrationController;
+    createEmployeeUseCase: CreateEmployeeUseCase;
+    createEmployeeController: CreateEmployeeController;
 };
 
 export const container = createContainer<AppContainer>({
@@ -308,6 +312,11 @@ container.register({
     updateUserUseCase: asFunction(({ db }: AppContainer) => {
         return new UpdateUserUseCase(db);
     }).singleton(),
+    createEmployeeUseCase: asFunction(
+        ({ permissionCheck, db }: AppContainer) => {
+            return new CreateEmployeeUseCase(permissionCheck, db);
+        }
+    ).singleton(),
 });
 
 container.register({
@@ -406,4 +415,17 @@ container.register({
     migrationController: asFunction(({ db }: AppContainer) => {
         return new MigrationController(db);
     }).singleton(),
+    createEmployeeController: asFunction(
+        ({
+            authentication,
+            createEmployeeUseCase,
+            forgotPasswordUseCase,
+        }: AppContainer) => {
+            return new CreateEmployeeController(
+                authentication,
+                createEmployeeUseCase,
+                forgotPasswordUseCase
+            );
+        }
+    ).singleton(),
 });

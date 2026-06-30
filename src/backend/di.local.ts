@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { passwordPepperKey } from '../shared/config';
 import { testContainer } from './di.mock';
 import {
+    EmployeeTable,
     PasswordResetTable,
     RoleTable,
     UserTable,
@@ -48,6 +49,9 @@ dataStore.set(':ロール', [
 ]);
 dataStore.set(':パスワードリセット', [
     Object.keys(PasswordResetTable.schema.def.shape),
+]);
+dataStore.set(`${EmployeeTable.dbId}:${EmployeeTable.name}`, [
+    Object.keys(EmployeeTable.schema.def.shape),
 ]);
 
 export { testContainer as container };

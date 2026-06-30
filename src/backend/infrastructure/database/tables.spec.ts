@@ -1,9 +1,15 @@
 import { vi } from 'vitest';
 import { TableSpec } from '../../../../tests/helpers/TableSpec';
+import { Employee } from '../../../shared/domain/entity/Employee';
 import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
 import { Role } from '../../../shared/domain/entity/Role';
 import { User } from '../../../shared/domain/entity/User';
-import { PasswordResetTable, RoleTable, UserTable } from './tables';
+import {
+    EmployeeTable,
+    PasswordResetTable,
+    RoleTable,
+    UserTable,
+} from './tables';
 
 const uuidv4 = '123e4567-e89b-42d3-a456-426614174000';
 vi.setSystemTime(new Date('2024-01-01T00:00:00Z'));
@@ -12,7 +18,7 @@ const userTableSpec = new TableSpec({
     メタデータ: {
         テーブル名: 'ユーザー',
         主キー: 'ID',
-        自動採番: false,
+        自動採番: 'uuid',
         楽観的更新: 'バージョン',
     },
     スキーマ: {
@@ -207,3 +213,43 @@ const passwordResetTableSpec = new TableSpec({
 });
 
 passwordResetTableSpec.toEqual(PasswordResetTable);
+
+const employeeTableSpec = new TableSpec({
+    メタデータ: {
+        テーブル名: 'スタッフ',
+        主キー: 'ユーザーID',
+        自動採番: false,
+    },
+    スキーマ: {
+        ユーザーID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: true,
+            バリデーション: {
+                UUODv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+    },
+    マッピング: {
+        エンティティ: new Employee(uuidv4),
+        レコード: {
+            ユーザーID: uuidv4,
+        },
+    },
+    リレーション: {
+        ユーザーID: {
+            参照先テーブル: UserTable,
+            参照先カラム: 'ID',
+            削除: 'cascade',
+        },
+    },
+});
+
+employeeTableSpec.toEqual(EmployeeTable);

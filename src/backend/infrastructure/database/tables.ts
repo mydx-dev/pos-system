@@ -1,8 +1,10 @@
 import { SheetTable } from '@mydx-dev/gas-boost-runtime/core';
+import { Employee } from '../../../shared/domain/entity/Employee';
 import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
 import { Role } from '../../../shared/domain/entity/Role';
 import { User } from '../../../shared/domain/entity/User';
 import {
+    employeeSchema,
     passwordResetSchema,
     permissionSchema,
     userSchema,
@@ -13,7 +15,7 @@ export const UserTable = new SheetTable(
     'ユーザー',
     userSchema,
     'ID',
-    false,
+    true,
     (record) =>
         new User(
             record.ID,
@@ -33,6 +35,7 @@ export const UserTable = new SheetTable(
     }),
     {
         versionColumn: 'バージョン',
+        autoNumberingMode: 'uuid',
     }
 );
 
@@ -66,6 +69,25 @@ export const PasswordResetTable = new SheetTable(
     })
 );
 
-export const ALL_TABLES = [UserTable, RoleTable, PasswordResetTable] as const;
+export const EmployeeTable = new SheetTable(
+    '',
+    'スタッフ',
+    employeeSchema,
+    'ユーザーID',
+    false,
+    (record) => new Employee(record.ユーザーID),
+    (entity) => ({
+        ユーザーID: entity.userId,
+    })
+);
+
+EmployeeTable.reference('ユーザーID', UserTable, 'ID', 'cascade');
+
+export const ALL_TABLES = [
+    UserTable,
+    RoleTable,
+    PasswordResetTable,
+    EmployeeTable,
+] as const;
 
 export type AllTableName = (typeof ALL_TABLES)[number]['name'];

@@ -95,8 +95,7 @@ export const UserDetail = ({
 
     const handleDelete = () => {
         deleteUser.mutate({
-            sessionToken: sessionToken!,
-            user,
+            userId: user.id,
         });
     };
 

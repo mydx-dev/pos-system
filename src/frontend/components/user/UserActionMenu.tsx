@@ -66,9 +66,7 @@ export const UserActionMenu = ({ user }: { user: User }) => {
                 )}
                 <DropdownMenuItem
                     className="text-red-500 focus:text-red-500"
-                    onClick={() =>
-                        deleteUser.mutate({ sessionToken: sessionToken!, user })
-                    }
+                    onClick={() => deleteUser.mutate({ userId: user.id })}
                 >
                     <Trash2 className="w-4 h-4 mr-2" />
                     削除する

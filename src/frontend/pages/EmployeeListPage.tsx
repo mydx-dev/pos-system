@@ -1,6 +1,8 @@
 import { RoleName } from '@/../shared/domain/entity/Role';
+import { EmployeeDeleteDialog } from '@/components/employee/EmployeeDeleteDialog';
 import { RoleBadge } from '@/components/employee/RoleBadge';
 import { User } from 'lucide-react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../../shared/routes';
 import { useFindEmployee } from '../hooks/useFindEmployee';
@@ -12,6 +14,10 @@ export const EmployeeListPage = () => {
         .query('スタッフ')
         .join('ユーザーID', 'ユーザー', 'ID');
     const employees = useFindEmployee(query);
+    const [selectedEmployee, setSelectedEmployee] = useState<{
+        name: string;
+        id: string;
+    } | null>(null);
 
     if (!employees) {
         return (
@@ -150,6 +156,12 @@ export const EmployeeListPage = () => {
                                                 className="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors cursor-pointer"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
+                                                    setSelectedEmployee({
+                                                        name:
+                                                            employee.user
+                                                                ?.name || '',
+                                                        id: employee.userId,
+                                                    });
                                                 }}
                                             >
                                                 delete
@@ -161,6 +173,14 @@ export const EmployeeListPage = () => {
                         })}
                     </tbody>
                 </table>
+                {selectedEmployee && (
+                    <EmployeeDeleteDialog
+                        isOpen={!!selectedEmployee}
+                        onClose={() => setSelectedEmployee(null)}
+                        name={selectedEmployee.name}
+                        id={selectedEmployee.id}
+                    />
+                )}
             </div>
         </div>
     );

@@ -1,10 +1,12 @@
 import { SheetTable } from '@mydx-dev/gas-boost-runtime/core';
 import { Employee } from '../../../shared/domain/entity/Employee';
+import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
 import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
 import { Role } from '../../../shared/domain/entity/Role';
 import { User } from '../../../shared/domain/entity/User';
 import {
     employeeSchema,
+    menuCategorySchema,
     passwordResetSchema,
     permissionSchema,
     userSchema,
@@ -83,11 +85,37 @@ export const EmployeeTable = new SheetTable(
 
 EmployeeTable.reference('ユーザーID', UserTable, 'ID', 'cascade');
 
+export const MenuCategoryTable = new SheetTable(
+    '',
+    'メニューカテゴリー',
+    menuCategorySchema,
+    'ID',
+    true,
+    (record) =>
+        new MenuCategory(
+            record.ID,
+            record.名称,
+            record.種別,
+            record.バージョン
+        ),
+    (entity) => ({
+        ID: entity.id,
+        名称: entity.name,
+        種別: entity.menuType,
+        バージョン: entity.version,
+    }),
+    {
+        versionColumn: 'バージョン',
+        autoNumberingMode: 'uuid',
+    }
+);
+
 export const ALL_TABLES = [
     UserTable,
     RoleTable,
     PasswordResetTable,
     EmployeeTable,
+    MenuCategoryTable,
 ] as const;
 
 export type AllTableName = (typeof ALL_TABLES)[number]['name'];

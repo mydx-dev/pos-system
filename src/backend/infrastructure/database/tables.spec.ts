@@ -1,11 +1,13 @@
 import { vi } from 'vitest';
 import { TableSpec } from '../../../../tests/helpers/TableSpec';
 import { Employee } from '../../../shared/domain/entity/Employee';
+import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
 import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
 import { Role } from '../../../shared/domain/entity/Role';
 import { User } from '../../../shared/domain/entity/User';
 import {
     EmployeeTable,
+    MenuCategoryTable,
     PasswordResetTable,
     RoleTable,
     UserTable,
@@ -253,3 +255,75 @@ const employeeTableSpec = new TableSpec({
 });
 
 employeeTableSpec.toEqual(EmployeeTable);
+
+const menuCategoryTableSpec = new TableSpec({
+    メタデータ: {
+        テーブル名: 'メニューカテゴリー',
+        主キー: 'ID',
+        自動採番: 'uuid',
+        楽観的更新: 'バージョン',
+    },
+
+    スキーマ: {
+        ID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: true,
+            バリデーション: {
+                UUIDv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+
+        名称: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: true,
+        },
+
+        種別: {
+            データ型: 'enum',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                技術: {
+                    評価: true,
+                    値: '技術',
+                },
+                商品: {
+                    評価: true,
+                    値: '商品',
+                },
+                不正値: {
+                    評価: false,
+                    値: '不正値',
+                },
+            },
+        },
+
+        バージョン: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+        },
+    },
+
+    マッピング: {
+        エンティティ: new MenuCategory(uuidv4, 'カット', '技術', 1),
+
+        レコード: {
+            ID: uuidv4,
+            名称: 'カット',
+            種別: '技術',
+            バージョン: 1,
+        },
+    },
+});
+
+menuCategoryTableSpec.toEqual(MenuCategoryTable);

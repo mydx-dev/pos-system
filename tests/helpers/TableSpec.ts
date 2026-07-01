@@ -74,67 +74,71 @@ export class TableSpec<TSchema extends TableSchema> {
                     const column = columns[columnName];
                     const columnSchema = this.schema[columnName];
 
-                    test(`カラム名は'${columnName}'`, () => {
-                        expect(columns).toHaveProperty(columnName);
-                    });
-
-                    let current = column;
-
-                    while (
-                        current.def.type === 'optional' ||
-                        current.def.type === 'nullable' ||
-                        current.def.type === 'default'
-                    ) {
-                        current = current.def.innerType;
-                    }
-
-                    test(`型は${columnSchema.データ型}`, () => {
-                        expect(current.def.type).toBe(columnSchema.データ型);
-                    });
-
-                    if (columnSchema.必須) {
-                        test('必須カラム', () => {
-                            expect(() => column.parse(null)).toThrow();
+                    describe(`${columnName}`, () => {
+                        test(`カラム名は'${columnName}'`, () => {
+                            expect(columns).toHaveProperty(columnName);
                         });
-                    } else {
-                        test('必須でないカラム', () => {
-                            expect(() => column.parse(null)).not.toThrow();
-                        });
-                    }
 
-                    const validations = columnSchema.バリデーション;
+                        let current = column;
 
-                    if (validations) {
-                        describe('バリデーション', () => {
-                            Object.keys(validations).forEach(
-                                (validationName) => {
-                                    const validation =
-                                        validations[validationName];
-                                    test(`${validationName}のバリデーション`, () => {
-                                        if (validation.評価) {
-                                            expect(() =>
-                                                column.parse(validation.値)
-                                            ).not.toThrow();
-                                        } else {
-                                            expect(() =>
-                                                column.parse(validation.値)
-                                            ).toThrow();
-                                        }
-                                    });
-                                }
+                        while (
+                            current.def.type === 'optional' ||
+                            current.def.type === 'nullable' ||
+                            current.def.type === 'default'
+                        ) {
+                            current = current.def.innerType;
+                        }
+
+                        test(`型は${columnSchema.データ型}`, () => {
+                            expect(current.def.type).toBe(
+                                columnSchema.データ型
                             );
                         });
-                    }
 
-                    if (columnSchema.ユニーク) {
-                        test('ユニークなカラム', () => {
-                            expect(uniqueColumns).toContain(columnName);
-                        });
-                    } else {
-                        test('ユニークなカラムでない', () => {
-                            expect(uniqueColumns).not.toContain(columnName);
-                        });
-                    }
+                        if (columnSchema.必須) {
+                            test('必須カラム', () => {
+                                expect(() => column.parse(null)).toThrow();
+                            });
+                        } else {
+                            test('必須でないカラム', () => {
+                                expect(() => column.parse(null)).not.toThrow();
+                            });
+                        }
+
+                        const validations = columnSchema.バリデーション;
+
+                        if (validations) {
+                            describe('バリデーション', () => {
+                                Object.keys(validations).forEach(
+                                    (validationName) => {
+                                        const validation =
+                                            validations[validationName];
+                                        test(`${validationName}のバリデーション`, () => {
+                                            if (validation.評価) {
+                                                expect(() =>
+                                                    column.parse(validation.値)
+                                                ).not.toThrow();
+                                            } else {
+                                                expect(() =>
+                                                    column.parse(validation.値)
+                                                ).toThrow();
+                                            }
+                                        });
+                                    }
+                                );
+                            });
+                        }
+
+                        if (columnSchema.ユニーク) {
+                            test('ユニークなカラム', () => {
+                                expect(uniqueColumns).toContain(columnName);
+                            });
+                        } else {
+                            test('ユニークなカラムでない', () => {
+                                expect(uniqueColumns).not.toContain(columnName);
+                            });
+                        }
+                    });
                 });
             });
 

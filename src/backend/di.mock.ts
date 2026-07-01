@@ -42,6 +42,7 @@ import { LoginUserUseCase } from './application/usecase/LoginUserUseCase';
 import { LogoutUserUseCase } from './application/usecase/LogoutUserUseCase';
 import { PullDataBaseUseCase } from './application/usecase/PullDataBaseUseCase';
 import { ResetPasswordUseCase } from './application/usecase/ResetPasswordUseCase';
+import { SaveMenuCategoryUseCase } from './application/usecase/SaveMenuCategoryUseCase';
 import { SetupSystemUseCase } from './application/usecase/SetupSystemUseCase';
 import { UnapproveUserUseCase } from './application/usecase/UnapproveUserUseCase';
 import { UpdateUserUseCase } from './application/usecase/UpdateUserUseCase';
@@ -58,6 +59,7 @@ import { LoginUserController } from './controller/LoginUserController';
 import { LogoutUserController } from './controller/LogoutUserController';
 import { PullDataBaseController } from './controller/PullDataBaseController';
 import { ResetPasswordController } from './controller/ResetPasswordController';
+import { SaveMenuCategoryController } from './controller/SaveMenuCategoryController';
 import { SetupSystemController } from './controller/SetupSystemController';
 import { UnapproveUserController } from './controller/UnapproveUserController';
 import { UpdateUserController } from './controller/UpdateUserController';
@@ -190,6 +192,7 @@ testContainer.register({
     unapproveUserUseCase: asClass(UnapproveUserUseCase).scoped(),
     updateUserUseCase: asClass(UpdateUserUseCase).scoped(),
     createEmployeeUseCase: asClass(CreateEmployeeUseCase).scoped(),
+    saveMenuCategoryUseCase: asClass(SaveMenuCategoryUseCase).scoped(),
 });
 
 testContainer.register({
@@ -209,4 +212,5 @@ testContainer.register({
     unapproveUserController: asClass(UnapproveUserController).scoped(),
     updateUserController: asClass(UpdateUserController).scoped(),
     createEmployeeController: asClass(CreateEmployeeController).scoped(),
+    saveMenuCategoryController: asClass(SaveMenuCategoryController).scoped(),
 });

@@ -1,5 +1,9 @@
 import type { AppsScriptServerResponse } from '@mydx-dev/gas-boost-runtime/core';
 import { CreateEmployeeInput, CreateEmployeeOutput } from './employee';
+import type {
+    SaveMenuCategoryRequest,
+    SaveMenuCategoryResponse,
+} from './menuCategory';
 import type { PullDatabaseInput, PullDatabaseOutput } from './system';
 import type {
     ApproveUserInput,
@@ -71,4 +75,7 @@ export type API = {
     createEmployee: (
         input: CreateEmployeeInput
     ) => AppsScriptServerResponse<CreateEmployeeOutput>;
+    saveMenuCategory: (
+        input: SaveMenuCategoryRequest
+    ) => AppsScriptServerResponse<SaveMenuCategoryResponse>;
 };

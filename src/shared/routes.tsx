@@ -58,4 +58,7 @@ export const routes = {
             build: (id: string) => `/employees/${id}`,
         },
     },
+    menu: {
+        categories: '/menus/categories',
+    },
 };

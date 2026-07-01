@@ -22,6 +22,7 @@ import { LoginUserUseCase } from './application/usecase/LoginUserUseCase';
 import { LogoutUserUseCase } from './application/usecase/LogoutUserUseCase';
 import { PullDataBaseUseCase } from './application/usecase/PullDataBaseUseCase';
 import { ResetPasswordUseCase } from './application/usecase/ResetPasswordUseCase';
+import { SaveMenuCategoryUseCase } from './application/usecase/SaveMenuCategoryUseCase';
 import { SetupSystemUseCase } from './application/usecase/SetupSystemUseCase';
 import { UnapproveUserUseCase } from './application/usecase/UnapproveUserUseCase';
 import { UpdateUserUseCase } from './application/usecase/UpdateUserUseCase';
@@ -43,6 +44,7 @@ import {
 } from './controller/OnOpenController';
 import { PullDataBaseController } from './controller/PullDataBaseController';
 import { ResetPasswordController } from './controller/ResetPasswordController';
+import { SaveMenuCategoryController } from './controller/SaveMenuCategoryController';
 import { SetupSystemController } from './controller/SetupSystemController';
 import { UnapproveUserController } from './controller/UnapproveUserController';
 import { UpdateUserController } from './controller/UpdateUserController';
@@ -112,6 +114,8 @@ export type AppContainer = {
     migrationController: MigrationController;
     createEmployeeUseCase: CreateEmployeeUseCase;
     createEmployeeController: CreateEmployeeController;
+    saveMenuCategoryUseCase: SaveMenuCategoryUseCase;
+    saveMenuCategoryController: SaveMenuCategoryController;
 };
 
 export const container = createContainer<AppContainer>({
@@ -317,6 +321,12 @@ container.register({
             return new CreateEmployeeUseCase(permissionCheck, db);
         }
     ).singleton(),
+
+    saveMenuCategoryUseCase: asFunction(
+        ({ permissionCheck, db }: AppContainer) => {
+            return new SaveMenuCategoryUseCase(permissionCheck, db);
+        }
+    ).singleton(),
 });
 
 container.register({
@@ -425,6 +435,14 @@ container.register({
                 authentication,
                 createEmployeeUseCase,
                 forgotPasswordUseCase
+            );
+        }
+    ).singleton(),
+    saveMenuCategoryController: asFunction(
+        ({ authentication, saveMenuCategoryUseCase }: AppContainer) => {
+            return new SaveMenuCategoryController(
+                authentication,
+                saveMenuCategoryUseCase
             );
         }
     ).singleton(),

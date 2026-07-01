@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { menuType } from '../domain/entity/MenuCategory';
 import { roleName } from '../domain/entity/Role';
 
 export const userId = z.string().uuidv4();
@@ -24,4 +25,11 @@ export const passwordResetSchema = z.object({
 
 export const employeeSchema = z.object({
     ユーザーID: userId.meta({ unique: true }),
+});
+
+export const menuCategorySchema = z.object({
+    ID: z.string().uuidv4().meta({ unique: true }),
+    名称: z.string().meta({ unique: true }),
+    種別: z.enum(menuType),
+    バージョン: z.number(),
 });

@@ -34,6 +34,8 @@ export const ServerFunctions: API & Record<string, unknown> = {
         container.resolve('pullDataBaseController').execute(input),
     createEmployee: (input) =>
         container.resolve('createEmployeeController').execute(input),
+    createCustomer: (input) =>
+        container.resolve('createCustomerController').execute(input),
     saveMenuCategory: (input) =>
         container.resolve('saveMenuCategoryController').execute(input),
     saveMenu: (input) => container.resolve('saveMenuController').execute(input),

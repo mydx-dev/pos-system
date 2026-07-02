@@ -28,6 +28,20 @@ export const employeeSchema = z.object({
     ユーザーID: userId.meta({ unique: true }),
 });
 
+export const customerSchema = z.object({
+    ID: z.string().uuidv4().meta({ unique: true }),
+    氏名: z.string(),
+    主担当スタッフID: userId.nullish(),
+    担当固定: z.boolean(),
+    メールアドレス: z.string().email().nullish(),
+    電話番号: z.string().nullish(),
+    生年月日: z.string().nullish(),
+    郵便番号: z.string().nullish(),
+    住所: z.string().nullish(),
+    備考: z.string().nullish(),
+    バージョン: z.number(),
+});
+
 export const menuCategorySchema = z.object({
     ID: z.string().uuidv4().meta({ unique: true }),
     名称: z.string().meta({ unique: true }),

@@ -31,6 +31,7 @@ import { PermissionCheck } from './application/service/PermissionCheck';
 import { SystemAdmins } from './application/service/SystemAdmins';
 import { AcceptTermsUseCase } from './application/usecase/AcceptTermsUseCase';
 import { ApproveUserUseCase } from './application/usecase/ApproveUserUseCase';
+import { CreateCustomerUseCase } from './application/usecase/CreateCustomerUseCase';
 import { CreateEmployeeUseCase } from './application/usecase/CreateEmployeeUseCase';
 import { CreateUserUseCase } from './application/usecase/CreateUserUseCase';
 import { DeleteUserUseCase } from './application/usecase/DeleteUserUseCase';
@@ -49,6 +50,7 @@ import { UnapproveUserUseCase } from './application/usecase/UnapproveUserUseCase
 import { UpdateUserUseCase } from './application/usecase/UpdateUserUseCase';
 import { AcceptTermsController } from './controller/AcceptTermsController';
 import { ApproveUserController } from './controller/ApproveUserController';
+import { CreateCustomerController } from './controller/CreateCustomerController';
 import { CreateEmployeeController } from './controller/CreateEmployeeController';
 import { CreateUserController } from './controller/CreateUserController';
 import { DeleteUserController } from './controller/DeleteUserController';
@@ -194,6 +196,7 @@ testContainer.register({
     unapproveUserUseCase: asClass(UnapproveUserUseCase).scoped(),
     updateUserUseCase: asClass(UpdateUserUseCase).scoped(),
     createEmployeeUseCase: asClass(CreateEmployeeUseCase).scoped(),
+    createCustomerUseCase: asClass(CreateCustomerUseCase).scoped(),
     saveMenuCategoryUseCase: asClass(SaveMenuCategoryUseCase).scoped(),
     saveMenuUseCase: asClass(SaveMenuUseCase).scoped(),
 });
@@ -215,6 +218,7 @@ testContainer.register({
     unapproveUserController: asClass(UnapproveUserController).scoped(),
     updateUserController: asClass(UpdateUserController).scoped(),
     createEmployeeController: asClass(CreateEmployeeController).scoped(),
+    createCustomerController: asClass(CreateCustomerController).scoped(),
     saveMenuCategoryController: asClass(SaveMenuCategoryController).scoped(),
     saveMenuController: asClass(SaveMenuController).scoped(),
 });

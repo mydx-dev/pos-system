@@ -34,6 +34,10 @@ export function createTestContext() {
                 'isApprovedDeveloperOrSystemAdmin'
             ),
             hasRoleSpy: vi.spyOn(permissionCheck, 'hasRole'),
+            isApprovedSystemAdminOrEmployeeSpy: vi.spyOn(
+                permissionCheck,
+                'isApprovedSystemAdminOrEmployee'
+            ),
         },
         getUuidSpy: vi.spyOn(scope.resolve('utilities'), 'getUuid'),
         properties: scope.resolve('properties'),

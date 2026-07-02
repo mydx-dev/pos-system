@@ -61,4 +61,29 @@ export class PermissionCheck {
             user: user,
         };
     }
+
+    isApprovedSystemAdminOrEmployee(userId: string): boolean {
+        const userQuery = this.db
+            .query('ユーザー')
+            .and('承認', '=', [true])
+            .and('ID', '=', [userId]);
+
+        const user = this.db
+            .table('ユーザー')
+            .find(userQuery.join('ID', 'ロール', 'ユーザーID'))[0];
+
+        if (!user) {
+            return false;
+        }
+
+        if (user.isAdmin()) {
+            return true;
+        }
+
+        const employees = this.db
+            .table('スタッフ')
+            .find(this.db.query('スタッフ').and('ユーザーID', '=', [userId]));
+
+        return employees.length > 0;
+    }
 }

@@ -1,4 +1,5 @@
 import { SheetTable } from '@mydx-dev/gas-boost-runtime/core';
+import { Customer } from '../../../shared/domain/entity/Customer';
 import { Employee } from '../../../shared/domain/entity/Employee';
 import { Menu } from '../../../shared/domain/entity/Menu';
 import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
@@ -6,6 +7,7 @@ import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
 import { Role } from '../../../shared/domain/entity/Role';
 import { User } from '../../../shared/domain/entity/User';
 import {
+    customerSchema,
     employeeSchema,
     menuSchema,
     menuCategorySchema,
@@ -87,6 +89,52 @@ export const EmployeeTable = new SheetTable(
 
 EmployeeTable.reference('ユーザーID', UserTable, 'ID', 'cascade');
 
+export const CustomerTable = new SheetTable(
+    '',
+    '顧客',
+    customerSchema,
+    'ID',
+    true,
+    (record) =>
+        new Customer(
+            record.ID,
+            record.氏名,
+            record.主担当スタッフID,
+            record.担当固定,
+            record.メールアドレス,
+            record.電話番号,
+            record.生年月日,
+            record.郵便番号,
+            record.住所,
+            record.備考,
+            record.バージョン
+        ),
+    (entity) => ({
+        ID: entity.id,
+        氏名: entity.name,
+        主担当スタッフID: entity.primaryStaffId,
+        担当固定: entity.isStaffFixed,
+        メールアドレス: entity.email,
+        電話番号: entity.phoneNumber,
+        生年月日: entity.birthDate,
+        郵便番号: entity.postalCode,
+        住所: entity.address,
+        備考: entity.note,
+        バージョン: entity.version,
+    }),
+    {
+        versionColumn: 'バージョン',
+        autoNumberingMode: 'uuid',
+    }
+);
+
+CustomerTable.reference(
+    '主担当スタッフID',
+    EmployeeTable,
+    'ユーザーID',
+    'set null'
+);
+
 export const MenuCategoryTable = new SheetTable(
     '',
     'メニューカテゴリー',
@@ -154,6 +202,7 @@ export const ALL_TABLES = [
     RoleTable,
     PasswordResetTable,
     EmployeeTable,
+    CustomerTable,
     MenuCategoryTable,
     MenuTable,
 ] as const;

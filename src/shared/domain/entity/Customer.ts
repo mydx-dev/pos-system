@@ -1,5 +1,6 @@
 import { SheetEntity } from '@mydx-dev/gas-boost-runtime/core';
 import { Employee } from './Employee';
+import { Treatment } from './Treatment';
 
 export class Customer extends SheetEntity {
     constructor(
@@ -68,5 +69,17 @@ export class Customer extends SheetEntity {
 
     get primaryStaff(): Employee | null {
         return this.getRelation(Employee)[0] ?? null;
+    }
+
+    get lastVisitDate(): string | null {
+        const doneTreatments = this.getRelation(Treatment)
+            .filter((treatment) => treatment.isDone)
+            .sort(
+                (a, b) =>
+                    new Date(a.startAt).getTime() -
+                    new Date(b.startAt).getTime()
+            );
+
+        return doneTreatments[doneTreatments.length - 1]?.startAt ?? null;
     }
 }

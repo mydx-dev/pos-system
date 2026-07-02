@@ -22,7 +22,12 @@ export const routes = {
         },
     },
     customer: {
+        list: '/customers',
         create: '/customers/new',
+        detail: {
+            path: '/customers/:id',
+            build: (id: string) => `/customers/${id}`,
+        },
     },
     deal: {
         create: '/deals/new',

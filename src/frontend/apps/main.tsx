@@ -6,6 +6,7 @@ import { InitializeGuard } from '@/guards/InitializeGuard';
 import { CreateCustomerPage } from '@/pages/CreateCustomerPage';
 import { CreateEmployeePage } from '@/pages/CreateEmployeePage';
 import { CreateUserPage } from '@/pages/CreateUserPage';
+import { CustomerListPage } from '@/pages/CustomerListPage';
 import { EmployeeDetailPage } from '@/pages/EmployeeDetailPage';
 import { EmployeeListPage } from '@/pages/EmployeeListPage';
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage';
@@ -102,6 +103,12 @@ createRoot(document.getElementById('root')!).render(
                                                 <Route
                                                     path={routes.user.edit.path}
                                                     element={<UserEditPage />}
+                                                />
+                                                <Route
+                                                    path={routes.customer.list}
+                                                    element={
+                                                        <CustomerListPage />
+                                                    }
                                                 />
                                                 <Route
                                                     path={

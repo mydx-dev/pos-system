@@ -34,6 +34,7 @@ import { AcceptTermsUseCase } from './application/usecase/AcceptTermsUseCase';
 import { ApproveUserUseCase } from './application/usecase/ApproveUserUseCase';
 import { CreateCustomerUseCase } from './application/usecase/CreateCustomerUseCase';
 import { CreateEmployeeUseCase } from './application/usecase/CreateEmployeeUseCase';
+import { CreatePaymentRecordUseCase } from './application/usecase/CreatePaymentRecordUseCase';
 import { CreateTreatmentUseCase } from './application/usecase/CreateTreatmentUseCase';
 import { CreateUserUseCase } from './application/usecase/CreateUserUseCase';
 import { DeleteUserUseCase } from './application/usecase/DeleteUserUseCase';
@@ -54,6 +55,7 @@ import { AcceptTermsController } from './controller/AcceptTermsController';
 import { ApproveUserController } from './controller/ApproveUserController';
 import { CreateCustomerController } from './controller/CreateCustomerController';
 import { CreateEmployeeController } from './controller/CreateEmployeeController';
+import { CreatePaymentRecordController } from './controller/CreatePaymentRecordController';
 import { CreateTreatmentController } from './controller/CreateTreatmentController';
 import { CreateUserController } from './controller/CreateUserController';
 import { DeleteUserController } from './controller/DeleteUserController';
@@ -202,6 +204,7 @@ testContainer.register({
     createEmployeeUseCase: asClass(CreateEmployeeUseCase).scoped(),
     createCustomerUseCase: asClass(CreateCustomerUseCase).scoped(),
     createTreatmentUseCase: asClass(CreateTreatmentUseCase).scoped(),
+    createPaymentRecordUseCase: asClass(CreatePaymentRecordUseCase).scoped(),
     saveMenuCategoryUseCase: asClass(SaveMenuCategoryUseCase).scoped(),
     saveMenuUseCase: asClass(SaveMenuUseCase).scoped(),
 });
@@ -225,6 +228,9 @@ testContainer.register({
     createEmployeeController: asClass(CreateEmployeeController).scoped(),
     createCustomerController: asClass(CreateCustomerController).scoped(),
     createTreatmentController: asClass(CreateTreatmentController).scoped(),
+    createPaymentRecordController: asClass(
+        CreatePaymentRecordController
+    ).scoped(),
     saveMenuCategoryController: asClass(SaveMenuCategoryController).scoped(),
     saveMenuController: asClass(SaveMenuController).scoped(),
 });

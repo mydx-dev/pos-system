@@ -4,16 +4,22 @@ import { Customer } from '../../../shared/domain/entity/Customer';
 import { Employee } from '../../../shared/domain/entity/Employee';
 import { Menu } from '../../../shared/domain/entity/Menu';
 import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
+import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
 import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
 import { Role } from '../../../shared/domain/entity/Role';
+import { Treatment } from '../../../shared/domain/entity/Treatment';
+import { TreatmentMenu } from '../../../shared/domain/entity/TreatmentMenu';
 import { User } from '../../../shared/domain/entity/User';
 import {
     EmployeeTable,
     CustomerTable,
     MenuCategoryTable,
     MenuTable,
+    PaymentRecordTable,
     PasswordResetTable,
     RoleTable,
+    TreatmentMenuTable,
+    TreatmentTable,
     UserTable,
 } from './tables';
 
@@ -651,3 +657,438 @@ const menuTableSpec = new TableSpec({
 });
 
 menuTableSpec.toEqual(MenuTable);
+
+const treatmentTableSpec = new TableSpec({
+    メタデータ: {
+        テーブル名: '施術',
+        主キー: 'ID',
+        自動採番: 'uuid',
+        楽観的更新: 'バージョン',
+    },
+    スキーマ: {
+        ID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: true,
+            バリデーション: {
+                UUIDv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+        顧客ID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                UUIDv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+        担当スタッフID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                UUIDv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+        状態: {
+            データ型: 'enum',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                予約済み: {
+                    評価: true,
+                    値: '予約済み',
+                },
+                来店済み: {
+                    評価: true,
+                    値: '来店済み',
+                },
+                精算済み: {
+                    評価: true,
+                    値: '精算済み',
+                },
+                不正値: {
+                    評価: false,
+                    値: '不正値',
+                },
+            },
+        },
+        開始日時: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+        },
+        所要時間: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                整数: {
+                    評価: true,
+                    値: 60,
+                },
+                小数: {
+                    評価: false,
+                    値: 60.5,
+                },
+            },
+        },
+        備考: {
+            データ型: 'string',
+            必須: false,
+            ユニーク: false,
+        },
+        バージョン: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+        },
+    },
+    マッピング: {
+        エンティティ: new Treatment(
+            uuidv4,
+            uuidv4,
+            uuidv4,
+            '来店済み',
+            '2026-07-02T10:00:00.000Z',
+            60,
+            '備考',
+            1
+        ),
+        レコード: {
+            ID: uuidv4,
+            顧客ID: uuidv4,
+            担当スタッフID: uuidv4,
+            状態: '来店済み',
+            開始日時: '2026-07-02T10:00:00.000Z',
+            所要時間: 60,
+            備考: '備考',
+            バージョン: 1,
+        },
+    },
+    リレーション: {
+        顧客ID: {
+            参照先テーブル: CustomerTable,
+            参照先カラム: 'ID',
+            削除: 'restrict',
+        },
+        担当スタッフID: {
+            参照先テーブル: EmployeeTable,
+            参照先カラム: 'ユーザーID',
+            削除: 'restrict',
+        },
+    },
+});
+
+treatmentTableSpec.toEqual(TreatmentTable);
+
+const treatmentMenuTableSpec = new TableSpec({
+    メタデータ: {
+        テーブル名: '施術メニュー',
+        主キー: 'ID',
+        自動採番: 'uuid',
+        楽観的更新: 'バージョン',
+    },
+    スキーマ: {
+        ID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: true,
+            バリデーション: {
+                UUIDv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+        施術ID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                UUIDv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+        メニューID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                UUIDv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+        メニュー名: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+        },
+        通常価格: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+        },
+        数量: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+        },
+        値引き額: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+        },
+        表示順: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+        },
+        バージョン: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+        },
+    },
+    マッピング: {
+        エンティティ: new TreatmentMenu(
+            uuidv4,
+            uuidv4,
+            uuidv4,
+            'カット',
+            5000,
+            1,
+            500,
+            1,
+            1
+        ),
+        レコード: {
+            ID: uuidv4,
+            施術ID: uuidv4,
+            メニューID: uuidv4,
+            メニュー名: 'カット',
+            通常価格: 5000,
+            数量: 1,
+            値引き額: 500,
+            表示順: 1,
+            バージョン: 1,
+        },
+    },
+    リレーション: {
+        施術ID: {
+            参照先テーブル: TreatmentTable,
+            参照先カラム: 'ID',
+            削除: 'cascade',
+        },
+        メニューID: {
+            参照先テーブル: MenuTable,
+            参照先カラム: 'ID',
+            削除: 'restrict',
+        },
+    },
+});
+
+treatmentMenuTableSpec.toEqual(TreatmentMenuTable);
+
+const paymentRecordTableSpec = new TableSpec({
+    メタデータ: {
+        テーブル名: '精算履歴',
+        主キー: 'ID',
+        自動採番: 'uuid',
+        楽観的更新: 'バージョン',
+    },
+    スキーマ: {
+        ID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: true,
+            バリデーション: {
+                UUIDv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+        施術ID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                UUIDv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+        種別: {
+            データ型: 'enum',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                精算: {
+                    評価: true,
+                    値: '精算',
+                },
+                取消: {
+                    評価: true,
+                    値: '取消',
+                },
+                返金: {
+                    評価: true,
+                    値: '返金',
+                },
+                不正値: {
+                    評価: false,
+                    値: '不正値',
+                },
+            },
+        },
+        金額: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                正の整数: {
+                    評価: true,
+                    値: 8000,
+                },
+                ゼロ: {
+                    評価: false,
+                    値: 0,
+                },
+                小数: {
+                    評価: false,
+                    値: 8000.5,
+                },
+            },
+        },
+        支払方法: {
+            データ型: 'enum',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                現金: {
+                    評価: true,
+                    値: '現金',
+                },
+                不正値: {
+                    評価: false,
+                    値: '不正値',
+                },
+            },
+        },
+        発生日時: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+        },
+        備考: {
+            データ型: 'string',
+            必須: false,
+            ユニーク: false,
+        },
+        対象精算ID: {
+            データ型: 'string',
+            必須: false,
+            ユニーク: false,
+            バリデーション: {
+                UUIDv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+        バージョン: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+        },
+    },
+    マッピング: {
+        エンティティ: new PaymentRecord(
+            uuidv4,
+            uuidv4,
+            '精算',
+            8000,
+            '現金',
+            '2026-07-02T10:00:00.000Z',
+            '備考',
+            null,
+            1
+        ),
+        レコード: {
+            ID: uuidv4,
+            施術ID: uuidv4,
+            種別: '精算',
+            金額: 8000,
+            支払方法: '現金',
+            発生日時: '2026-07-02T10:00:00.000Z',
+            備考: '備考',
+            対象精算ID: null,
+            バージョン: 1,
+        },
+    },
+    リレーション: {
+        施術ID: {
+            参照先テーブル: TreatmentTable,
+            参照先カラム: 'ID',
+            削除: 'cascade',
+        },
+        対象精算ID: {
+            参照先テーブル: PaymentRecordTable,
+            参照先カラム: 'ID',
+            削除: 'restrict',
+        },
+    },
+});
+
+paymentRecordTableSpec.toEqual(PaymentRecordTable);

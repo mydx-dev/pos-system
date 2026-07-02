@@ -25,6 +25,15 @@ export class ExistsCheck {
         );
     }
 
+    hasTreatment(treatmentId: string): boolean {
+        return (
+            this.db
+                .table('施術')
+                .find(this.db.query('施術').and('ID', '=', [treatmentId]))
+                .length > 0
+        );
+    }
+
     cacheMenuIds(menuIds: string[]): void {
         this.menuIdCache = new Set(menuIds);
     }

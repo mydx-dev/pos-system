@@ -6,6 +6,10 @@ import type {
     SaveMenuCategoryRequest,
     SaveMenuCategoryResponse,
 } from './menuCategory';
+import type {
+    CreatePaymentRecordRequest,
+    CreatePaymentRecordResponse,
+} from './paymentRecord';
 import type { PullDatabaseInput, PullDatabaseOutput } from './system';
 import type {
     CreateTreatmentRequest,
@@ -93,4 +97,7 @@ export type API = {
     createTreatment: (
         input: CreateTreatmentRequest
     ) => AppsScriptServerResponse<CreateTreatmentResponse>;
+    createPaymentRecord: (
+        input: CreatePaymentRecordRequest
+    ) => AppsScriptServerResponse<CreatePaymentRecordResponse>;
 };

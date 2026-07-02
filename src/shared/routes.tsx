@@ -62,4 +62,7 @@ export const routes = {
         list: '/menus',
         categories: '/menus/categories',
     },
+    treatment: {
+        create: '/treatments',
+    },
 };

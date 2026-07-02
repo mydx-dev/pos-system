@@ -8,6 +8,10 @@ import type {
 } from './menuCategory';
 import type { PullDatabaseInput, PullDatabaseOutput } from './system';
 import type {
+    CreateTreatmentRequest,
+    CreateTreatmentResponse,
+} from './treatment';
+import type {
     ApproveUserInput,
     ApproveUserOutput,
     CreateUserInput,
@@ -86,4 +90,7 @@ export type API = {
     saveMenu: (
         input: SaveMenuRequest
     ) => AppsScriptServerResponse<SaveMenuResponse>;
+    createTreatment: (
+        input: CreateTreatmentRequest
+    ) => AppsScriptServerResponse<CreateTreatmentResponse>;
 };

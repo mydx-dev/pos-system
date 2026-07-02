@@ -2,6 +2,7 @@ import {
     CircleQuestionMark,
     ClipboardList,
     Settings,
+    UserRoundPlus,
     Users,
     type LucideIcon,
 } from 'lucide-react';
@@ -24,6 +25,11 @@ export const navigations: NavigationItem[] = [
         icon: Users,
         label: 'スタッフ',
         to: routes.employee.list,
+    },
+    {
+        icon: UserRoundPlus,
+        label: '顧客登録',
+        to: routes.customer.create,
     },
     {
         icon: ClipboardList,

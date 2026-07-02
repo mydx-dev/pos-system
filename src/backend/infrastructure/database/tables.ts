@@ -5,14 +5,18 @@ import { Menu } from '../../../shared/domain/entity/Menu';
 import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
 import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
 import { Role } from '../../../shared/domain/entity/Role';
+import { Treatment } from '../../../shared/domain/entity/Treatment';
+import { TreatmentMenu } from '../../../shared/domain/entity/TreatmentMenu';
 import { User } from '../../../shared/domain/entity/User';
 import {
     customerSchema,
     employeeSchema,
-    menuSchema,
     menuCategorySchema,
+    menuSchema,
     passwordResetSchema,
     permissionSchema,
+    treatmentMenuSchema,
+    treatmentSchema,
     userSchema,
 } from '../../../shared/schemas/database';
 
@@ -197,6 +201,85 @@ export const MenuTable = new SheetTable(
     }
 );
 
+export const TreatmentTable = new SheetTable(
+    '',
+    '施術',
+    treatmentSchema,
+    'ID',
+    true,
+    (record) =>
+        new Treatment(
+            record.ID,
+            record.顧客ID,
+            record.担当スタッフID,
+            record.状態,
+            record.開始日時,
+            record.所要時間,
+            record.備考,
+            record.バージョン
+        ),
+    (entity) => ({
+        ID: entity.id,
+        顧客ID: entity.customerId,
+        担当スタッフID: entity.staffId,
+        状態: entity.status,
+        開始日時: entity.startAt,
+        所要時間: entity.duration,
+        備考: entity.note,
+        バージョン: entity.version,
+    }),
+    {
+        versionColumn: 'バージョン',
+        autoNumberingMode: 'uuid',
+    }
+);
+
+TreatmentTable.reference('顧客ID', CustomerTable, 'ID', 'restrict');
+TreatmentTable.reference(
+    '担当スタッフID',
+    EmployeeTable,
+    'ユーザーID',
+    'restrict'
+);
+
+export const TreatmentMenuTable = new SheetTable(
+    '',
+    '施術メニュー',
+    treatmentMenuSchema,
+    'ID',
+    true,
+    (record) =>
+        new TreatmentMenu(
+            record.ID,
+            record.施術ID,
+            record.メニューID,
+            record.メニュー名,
+            record.通常価格,
+            record.数量,
+            record.値引き額,
+            record.表示順,
+            record.バージョン
+        ),
+    (entity) => ({
+        ID: entity.id,
+        施術ID: entity.treatmentId,
+        メニューID: entity.menuId,
+        メニュー名: entity.menuName,
+        通常価格: entity.regularPrice,
+        数量: entity.quantity,
+        値引き額: entity.discountAmount,
+        表示順: entity.displayOrder,
+        バージョン: entity.version,
+    }),
+    {
+        versionColumn: 'バージョン',
+        autoNumberingMode: 'uuid',
+    }
+);
+
+TreatmentMenuTable.reference('施術ID', TreatmentTable, 'ID', 'cascade');
+TreatmentMenuTable.reference('メニューID', MenuTable, 'ID', 'restrict');
+
 export const ALL_TABLES = [
     UserTable,
     RoleTable,
@@ -205,6 +288,8 @@ export const ALL_TABLES = [
     CustomerTable,
     MenuCategoryTable,
     MenuTable,
+    TreatmentTable,
+    TreatmentMenuTable,
 ] as const;
 
 export type AllTableName = (typeof ALL_TABLES)[number]['name'];

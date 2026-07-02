@@ -6,6 +6,7 @@ import {
     passwordPepperKey,
 } from '../shared/config';
 import { Authentication } from './application/service/Authentication';
+import { ExistsCheck } from './application/service/ExistsCheck';
 import { PasswordProtection } from './application/service/PasswordProtection';
 import { PermissionCheck } from './application/service/PermissionCheck';
 import { SystemAdmins } from './application/service/SystemAdmins';
@@ -13,6 +14,7 @@ import { AcceptTermsUseCase } from './application/usecase/AcceptTermsUseCase';
 import { ApproveUserUseCase } from './application/usecase/ApproveUserUseCase';
 import { CreateCustomerUseCase } from './application/usecase/CreateCustomerUseCase';
 import { CreateEmployeeUseCase } from './application/usecase/CreateEmployeeUseCase';
+import { CreateTreatmentUseCase } from './application/usecase/CreateTreatmentUseCase';
 import { CreateUserUseCase } from './application/usecase/CreateUserUseCase';
 import { DeleteUserUseCase } from './application/usecase/DeleteUserUseCase';
 import { DoGetUseCase } from './application/usecase/DoGetUseCase';
@@ -32,6 +34,7 @@ import { AcceptTermsController } from './controller/AcceptTermsController';
 import { ApproveUserController } from './controller/ApproveUserController';
 import { CreateCustomerController } from './controller/CreateCustomerController';
 import { CreateEmployeeController } from './controller/CreateEmployeeController';
+import { CreateTreatmentController } from './controller/CreateTreatmentController';
 import { CreateUserController } from './controller/CreateUserController';
 import { DeleteUserController } from './controller/DeleteUserController';
 import { DoGetController } from './controller/DoGetController';
@@ -82,6 +85,7 @@ export type AppContainer = {
     passwordProtection: PasswordProtection;
     systemAdmins: SystemAdmins;
     authentication: Authentication;
+    existsCheck: ExistsCheck;
     updateUserUseCase: UpdateUserUseCase;
     updateUserController: UpdateUserController;
     createUserUseCase: CreateUserUseCase;
@@ -120,6 +124,8 @@ export type AppContainer = {
     createEmployeeController: CreateEmployeeController;
     createCustomerUseCase: CreateCustomerUseCase;
     createCustomerController: CreateCustomerController;
+    createTreatmentUseCase: CreateTreatmentUseCase;
+    createTreatmentController: CreateTreatmentController;
     saveMenuCategoryUseCase: SaveMenuCategoryUseCase;
     saveMenuCategoryController: SaveMenuCategoryController;
     saveMenuUseCase: SaveMenuUseCase;
@@ -179,6 +185,9 @@ container.register({
     ).singleton(),
     permissionCheck: asFunction(
         ({ db }: AppContainer) => new PermissionCheck(db)
+    ).singleton(),
+    existsCheck: asFunction(
+        ({ db }: AppContainer) => new ExistsCheck(db)
     ).singleton(),
     createUserUseCase: asFunction(
         ({
@@ -334,6 +343,11 @@ container.register({
             return new CreateCustomerUseCase(permissionCheck, db);
         }
     ).singleton(),
+    createTreatmentUseCase: asFunction(
+        ({ permissionCheck, db, existsCheck }: AppContainer) => {
+            return new CreateTreatmentUseCase(permissionCheck, db, existsCheck);
+        }
+    ).singleton(),
 
     saveMenuCategoryUseCase: asFunction(
         ({ permissionCheck, db }: AppContainer) => {
@@ -459,6 +473,14 @@ container.register({
             return new CreateCustomerController(
                 authentication,
                 createCustomerUseCase
+            );
+        }
+    ).singleton(),
+    createTreatmentController: asFunction(
+        ({ authentication, createTreatmentUseCase }: AppContainer) => {
+            return new CreateTreatmentController(
+                authentication,
+                createTreatmentUseCase
             );
         }
     ).singleton(),

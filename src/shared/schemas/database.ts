@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { productType, taxType } from '../domain/entity/Menu';
 import { menuType } from '../domain/entity/MenuCategory';
 import { roleName } from '../domain/entity/Role';
+import { treatmentStatus } from '../domain/entity/Treatment';
 
 export const userId = z.string().uuidv4();
 export const userSchema = z.object({
@@ -59,5 +60,28 @@ export const menuSchema = z.object({
     商品区分: z.enum(productType),
     種別: z.enum(menuType),
     カテゴリーID: z.string().uuidv4(),
+    バージョン: z.number(),
+});
+
+export const treatmentSchema = z.object({
+    ID: z.string().uuidv4().meta({ unique: true }),
+    顧客ID: z.string().uuidv4(),
+    担当スタッフID: userId,
+    状態: z.enum(treatmentStatus),
+    開始日時: z.string(),
+    所要時間: z.number().int().min(0),
+    備考: z.string().nullish(),
+    バージョン: z.number(),
+});
+
+export const treatmentMenuSchema = z.object({
+    ID: z.string().uuidv4().meta({ unique: true }),
+    施術ID: z.string().uuidv4(),
+    メニューID: z.string().uuidv4(),
+    メニュー名: z.string(),
+    通常価格: z.number().int(),
+    数量: z.number().int().min(1),
+    値引き額: z.number().int().min(0),
+    表示順: z.number().int(),
     バージョン: z.number(),
 });

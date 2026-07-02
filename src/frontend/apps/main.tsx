@@ -14,6 +14,7 @@ import { MenuCategoryListModal } from '@/pages/MenuCategoryListModal';
 import { MenuListPage } from '@/pages/MenuListPage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage';
+import { CreateTreatmentPage } from '@/pages/CreateTreatmentPage';
 import { UserDetailPage } from '@/pages/UserDetailPage';
 import { UserEditPage } from '@/pages/UserEditPage';
 import { UserListPage } from '@/pages/UserListPage';
@@ -108,6 +109,14 @@ createRoot(document.getElementById('root')!).render(
                                                     }
                                                     element={
                                                         <CreateCustomerPage />
+                                                    }
+                                                />
+                                                <Route
+                                                    path={
+                                                        routes.treatment.create
+                                                    }
+                                                    element={
+                                                        <CreateTreatmentPage />
                                                     }
                                                 />
 

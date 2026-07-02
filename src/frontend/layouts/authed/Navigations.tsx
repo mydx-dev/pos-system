@@ -1,5 +1,6 @@
 import {
     CircleQuestionMark,
+    CalendarClock,
     ClipboardList,
     Settings,
     UserRoundPlus,
@@ -30,6 +31,11 @@ export const navigations: NavigationItem[] = [
         icon: UserRoundPlus,
         label: '顧客登録',
         to: routes.customer.create,
+    },
+    {
+        icon: CalendarClock,
+        label: '予約',
+        to: routes.treatment.create,
     },
     {
         icon: ClipboardList,

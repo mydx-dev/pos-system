@@ -26,6 +26,7 @@ import {
     passwordPepperKey,
 } from '../shared/config';
 import { Authentication } from './application/service/Authentication';
+import { ExistsCheck } from './application/service/ExistsCheck';
 import { PasswordProtection } from './application/service/PasswordProtection';
 import { PermissionCheck } from './application/service/PermissionCheck';
 import { SystemAdmins } from './application/service/SystemAdmins';
@@ -33,6 +34,7 @@ import { AcceptTermsUseCase } from './application/usecase/AcceptTermsUseCase';
 import { ApproveUserUseCase } from './application/usecase/ApproveUserUseCase';
 import { CreateCustomerUseCase } from './application/usecase/CreateCustomerUseCase';
 import { CreateEmployeeUseCase } from './application/usecase/CreateEmployeeUseCase';
+import { CreateTreatmentUseCase } from './application/usecase/CreateTreatmentUseCase';
 import { CreateUserUseCase } from './application/usecase/CreateUserUseCase';
 import { DeleteUserUseCase } from './application/usecase/DeleteUserUseCase';
 import { DoGetUseCase } from './application/usecase/DoGetUseCase';
@@ -52,6 +54,7 @@ import { AcceptTermsController } from './controller/AcceptTermsController';
 import { ApproveUserController } from './controller/ApproveUserController';
 import { CreateCustomerController } from './controller/CreateCustomerController';
 import { CreateEmployeeController } from './controller/CreateEmployeeController';
+import { CreateTreatmentController } from './controller/CreateTreatmentController';
 import { CreateUserController } from './controller/CreateUserController';
 import { DeleteUserController } from './controller/DeleteUserController';
 import { DoGetController } from './controller/DoGetController';
@@ -174,6 +177,7 @@ testContainer.register({
 
 testContainer.register({
     permissionCheck: asClass(PermissionCheck).scoped(),
+    existsCheck: asClass(ExistsCheck).scoped(),
     authentication: asClass(Authentication).scoped(),
     passwordProtection: asClass(PasswordProtection).scoped(),
     systemAdmins: asClass(SystemAdmins).scoped(),
@@ -197,6 +201,7 @@ testContainer.register({
     updateUserUseCase: asClass(UpdateUserUseCase).scoped(),
     createEmployeeUseCase: asClass(CreateEmployeeUseCase).scoped(),
     createCustomerUseCase: asClass(CreateCustomerUseCase).scoped(),
+    createTreatmentUseCase: asClass(CreateTreatmentUseCase).scoped(),
     saveMenuCategoryUseCase: asClass(SaveMenuCategoryUseCase).scoped(),
     saveMenuUseCase: asClass(SaveMenuUseCase).scoped(),
 });
@@ -219,6 +224,7 @@ testContainer.register({
     updateUserController: asClass(UpdateUserController).scoped(),
     createEmployeeController: asClass(CreateEmployeeController).scoped(),
     createCustomerController: asClass(CreateCustomerController).scoped(),
+    createTreatmentController: asClass(CreateTreatmentController).scoped(),
     saveMenuCategoryController: asClass(SaveMenuCategoryController).scoped(),
     saveMenuController: asClass(SaveMenuController).scoped(),
 });

@@ -1,11 +1,13 @@
 import { SheetTable } from '@mydx-dev/gas-boost-runtime/core';
 import { Employee } from '../../../shared/domain/entity/Employee';
+import { Menu } from '../../../shared/domain/entity/Menu';
 import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
 import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
 import { Role } from '../../../shared/domain/entity/Role';
 import { User } from '../../../shared/domain/entity/User';
 import {
     employeeSchema,
+    menuSchema,
     menuCategorySchema,
     passwordResetSchema,
     permissionSchema,
@@ -110,12 +112,50 @@ export const MenuCategoryTable = new SheetTable(
     }
 );
 
+export const MenuTable = new SheetTable(
+    '',
+    'メニュー',
+    menuSchema,
+    'ID',
+    true,
+    (record) =>
+        new Menu(
+            record.ID,
+            record.名称,
+            record.メニュー番号,
+            record.価格,
+            record.仕入れ単価,
+            record.税区分,
+            record.商品区分,
+            record.種別,
+            record.カテゴリーID,
+            record.バージョン
+        ),
+    (entity) => ({
+        ID: entity.id,
+        名称: entity.name,
+        メニュー番号: entity.menuNumber,
+        価格: entity.price,
+        仕入れ単価: entity.costPrice,
+        税区分: entity.taxType,
+        商品区分: entity.productType,
+        種別: entity.menuType,
+        カテゴリーID: entity.categoryId,
+        バージョン: entity.version,
+    }),
+    {
+        versionColumn: 'バージョン',
+        autoNumberingMode: 'uuid',
+    }
+);
+
 export const ALL_TABLES = [
     UserTable,
     RoleTable,
     PasswordResetTable,
     EmployeeTable,
     MenuCategoryTable,
+    MenuTable,
 ] as const;
 
 export type AllTableName = (typeof ALL_TABLES)[number]['name'];

@@ -23,6 +23,7 @@ import { LogoutUserUseCase } from './application/usecase/LogoutUserUseCase';
 import { PullDataBaseUseCase } from './application/usecase/PullDataBaseUseCase';
 import { ResetPasswordUseCase } from './application/usecase/ResetPasswordUseCase';
 import { SaveMenuCategoryUseCase } from './application/usecase/SaveMenuCategoryUseCase';
+import { SaveMenuUseCase } from './application/usecase/SaveMenuUseCase';
 import { SetupSystemUseCase } from './application/usecase/SetupSystemUseCase';
 import { UnapproveUserUseCase } from './application/usecase/UnapproveUserUseCase';
 import { UpdateUserUseCase } from './application/usecase/UpdateUserUseCase';
@@ -45,6 +46,7 @@ import {
 import { PullDataBaseController } from './controller/PullDataBaseController';
 import { ResetPasswordController } from './controller/ResetPasswordController';
 import { SaveMenuCategoryController } from './controller/SaveMenuCategoryController';
+import { SaveMenuController } from './controller/SaveMenuController';
 import { SetupSystemController } from './controller/SetupSystemController';
 import { UnapproveUserController } from './controller/UnapproveUserController';
 import { UpdateUserController } from './controller/UpdateUserController';
@@ -116,6 +118,8 @@ export type AppContainer = {
     createEmployeeController: CreateEmployeeController;
     saveMenuCategoryUseCase: SaveMenuCategoryUseCase;
     saveMenuCategoryController: SaveMenuCategoryController;
+    saveMenuUseCase: SaveMenuUseCase;
+    saveMenuController: SaveMenuController;
 };
 
 export const container = createContainer<AppContainer>({
@@ -327,6 +331,9 @@ container.register({
             return new SaveMenuCategoryUseCase(permissionCheck, db);
         }
     ).singleton(),
+    saveMenuUseCase: asFunction(({ permissionCheck, db }: AppContainer) => {
+        return new SaveMenuUseCase(permissionCheck, db);
+    }).singleton(),
 });
 
 container.register({
@@ -444,6 +451,11 @@ container.register({
                 authentication,
                 saveMenuCategoryUseCase
             );
+        }
+    ).singleton(),
+    saveMenuController: asFunction(
+        ({ authentication, saveMenuUseCase }: AppContainer) => {
+            return new SaveMenuController(authentication, saveMenuUseCase);
         }
     ).singleton(),
 });

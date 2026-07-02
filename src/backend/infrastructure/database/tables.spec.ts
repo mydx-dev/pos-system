@@ -1,6 +1,7 @@
 import { vi } from 'vitest';
 import { TableSpec } from '../../../../tests/helpers/TableSpec';
 import { Employee } from '../../../shared/domain/entity/Employee';
+import { Menu } from '../../../shared/domain/entity/Menu';
 import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
 import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
 import { Role } from '../../../shared/domain/entity/Role';
@@ -8,6 +9,7 @@ import { User } from '../../../shared/domain/entity/User';
 import {
     EmployeeTable,
     MenuCategoryTable,
+    MenuTable,
     PasswordResetTable,
     RoleTable,
     UserTable,
@@ -327,3 +329,190 @@ const menuCategoryTableSpec = new TableSpec({
 });
 
 menuCategoryTableSpec.toEqual(MenuCategoryTable);
+
+const menuTableSpec = new TableSpec({
+    メタデータ: {
+        テーブル名: 'メニュー',
+        主キー: 'ID',
+        自動採番: 'uuid',
+        楽観的更新: 'バージョン',
+    },
+
+    スキーマ: {
+        ID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: true,
+            バリデーション: {
+                UUIDv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+
+        名称: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: true,
+        },
+
+        メニュー番号: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+        },
+
+        価格: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                整数: {
+                    評価: true,
+                    値: 5000,
+                },
+                小数: {
+                    評価: false,
+                    値: 5000.5,
+                },
+            },
+        },
+
+        仕入れ単価: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                整数: {
+                    評価: true,
+                    値: 1000,
+                },
+                小数: {
+                    評価: false,
+                    値: 1000.5,
+                },
+            },
+        },
+
+        税区分: {
+            データ型: 'enum',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                内税: {
+                    評価: true,
+                    値: '内税',
+                },
+                外税: {
+                    評価: true,
+                    値: '外税',
+                },
+                不正値: {
+                    評価: false,
+                    値: '不正値',
+                },
+            },
+        },
+
+        商品区分: {
+            データ型: 'enum',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                店販用: {
+                    評価: true,
+                    値: '店販用',
+                },
+                業務用: {
+                    評価: true,
+                    値: '業務用',
+                },
+                両用: {
+                    評価: true,
+                    値: '両用',
+                },
+                不正値: {
+                    評価: false,
+                    値: '不正値',
+                },
+            },
+        },
+
+        種別: {
+            データ型: 'enum',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                技術: {
+                    評価: true,
+                    値: '技術',
+                },
+                商品: {
+                    評価: true,
+                    値: '商品',
+                },
+                不正値: {
+                    評価: false,
+                    値: '不正値',
+                },
+            },
+        },
+
+        カテゴリーID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+            バリデーション: {
+                UUIDv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+
+        バージョン: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+        },
+    },
+
+    マッピング: {
+        エンティティ: new Menu(
+            uuidv4,
+            'カット',
+            'T-001',
+            5000,
+            1000,
+            '内税',
+            '業務用',
+            '技術',
+            uuidv4,
+            1
+        ),
+
+        レコード: {
+            ID: uuidv4,
+            名称: 'カット',
+            メニュー番号: 'T-001',
+            価格: 5000,
+            仕入れ単価: 1000,
+            税区分: '内税',
+            商品区分: '業務用',
+            種別: '技術',
+            カテゴリーID: uuidv4,
+            バージョン: 1,
+        },
+    },
+});
+
+menuTableSpec.toEqual(MenuTable);

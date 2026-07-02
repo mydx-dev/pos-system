@@ -3,7 +3,7 @@ import {
     CalendarClock,
     ClipboardList,
     Settings,
-    UserRoundPlus,
+    UsersRound,
     Users,
     type LucideIcon,
 } from 'lucide-react';
@@ -28,9 +28,9 @@ export const navigations: NavigationItem[] = [
         to: routes.employee.list,
     },
     {
-        icon: UserRoundPlus,
-        label: '顧客登録',
-        to: routes.customer.create,
+        icon: UsersRound,
+        label: '顧客',
+        to: routes.customer.list,
     },
     {
         icon: CalendarClock,

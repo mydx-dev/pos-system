@@ -37,6 +37,10 @@ export class Treatment extends SheetEntity {
         return this._status;
     }
 
+    get isDone(): boolean {
+        return this._status === '精算済み';
+    }
+
     get startAt(): string {
         return this._startAt;
     }

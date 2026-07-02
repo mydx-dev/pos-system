@@ -10,6 +10,7 @@ import { EmployeeListPage } from '@/pages/EmployeeListPage';
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { MenuCategoryListModal } from '@/pages/MenuCategoryListModal';
+import { MenuListPage } from '@/pages/MenuListPage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage';
 import { UserDetailPage } from '@/pages/UserDetailPage';
@@ -126,6 +127,12 @@ createRoot(document.getElementById('root')!).render(
                                                         }
                                                         element={
                                                             <EmployeeDetailPage />
+                                                        }
+                                                    />
+                                                    <Route
+                                                        path={routes.menu.list}
+                                                        element={
+                                                            <MenuListPage />
                                                         }
                                                     />
                                                     <Route

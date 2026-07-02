@@ -1,5 +1,6 @@
 import {
     CircleQuestionMark,
+    ClipboardList,
     Settings,
     Users,
     type LucideIcon,
@@ -23,6 +24,11 @@ export const navigations: NavigationItem[] = [
         icon: Users,
         label: 'スタッフ',
         to: routes.employee.list,
+    },
+    {
+        icon: ClipboardList,
+        label: 'メニュー',
+        to: routes.menu.list,
     },
 ];
 

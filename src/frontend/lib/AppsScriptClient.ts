@@ -24,6 +24,7 @@ export const labels = {
     acceptTerms: '利用規約同意',
     createEmployee: 'スタッフ作成',
     saveMenuCategory: 'カテゴリー保存',
+    saveMenu: 'メニュー保存',
 };
 
 export const { server, replica, replicaQL, job } = createAppsScriptClient<

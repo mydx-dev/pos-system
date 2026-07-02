@@ -59,6 +59,7 @@ export const routes = {
         },
     },
     menu: {
+        list: '/menus',
         categories: '/menus/categories',
     },
 };

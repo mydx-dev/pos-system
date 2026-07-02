@@ -1,5 +1,6 @@
 import { vi } from 'vitest';
 import { TableSpec } from '../../../../tests/helpers/TableSpec';
+import { Customer } from '../../../shared/domain/entity/Customer';
 import { Employee } from '../../../shared/domain/entity/Employee';
 import { Menu } from '../../../shared/domain/entity/Menu';
 import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
@@ -8,6 +9,7 @@ import { Role } from '../../../shared/domain/entity/Role';
 import { User } from '../../../shared/domain/entity/User';
 import {
     EmployeeTable,
+    CustomerTable,
     MenuCategoryTable,
     MenuTable,
     PasswordResetTable,
@@ -257,6 +259,139 @@ const employeeTableSpec = new TableSpec({
 });
 
 employeeTableSpec.toEqual(EmployeeTable);
+
+const customerTableSpec = new TableSpec({
+    メタデータ: {
+        テーブル名: '顧客',
+        主キー: 'ID',
+        自動採番: 'uuid',
+        楽観的更新: 'バージョン',
+    },
+    スキーマ: {
+        ID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: true,
+            バリデーション: {
+                UUODv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+        氏名: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+        },
+        主担当スタッフID: {
+            データ型: 'string',
+            必須: false,
+            ユニーク: false,
+            バリデーション: {
+                UUODv4形式: {
+                    評価: true,
+                    値: uuidv4,
+                },
+                非UUIDv4形式: {
+                    評価: false,
+                    値: 'invalid-uuid',
+                },
+            },
+        },
+        担当固定: {
+            データ型: 'boolean',
+            必須: true,
+            ユニーク: false,
+        },
+        メールアドレス: {
+            データ型: 'string',
+            必須: false,
+            ユニーク: false,
+            バリデーション: {
+                メールアドレス形式: {
+                    評価: true,
+                    値: 'test@example.com',
+                },
+                非メールアドレス形式: {
+                    評価: false,
+                    値: 'invalid-email',
+                },
+            },
+        },
+        電話番号: {
+            データ型: 'string',
+            必須: false,
+            ユニーク: false,
+        },
+        生年月日: {
+            データ型: 'string',
+            必須: false,
+            ユニーク: false,
+        },
+        郵便番号: {
+            データ型: 'string',
+            必須: false,
+            ユニーク: false,
+        },
+        住所: {
+            データ型: 'string',
+            必須: false,
+            ユニーク: false,
+        },
+        備考: {
+            データ型: 'string',
+            必須: false,
+            ユニーク: false,
+        },
+        バージョン: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+        },
+    },
+    マッピング: {
+        エンティティ: new Customer(
+            uuidv4,
+            'Test Customer',
+            uuidv4,
+            false,
+            'test@example.com',
+            '09012345678',
+            '1990-01-01',
+            '1000001',
+            '東京都千代田区',
+            '備考',
+            1
+        ),
+        レコード: {
+            ID: uuidv4,
+            氏名: 'Test Customer',
+            主担当スタッフID: uuidv4,
+            担当固定: false,
+            メールアドレス: 'test@example.com',
+            電話番号: '09012345678',
+            生年月日: '1990-01-01',
+            郵便番号: '1000001',
+            住所: '東京都千代田区',
+            備考: '備考',
+            バージョン: 1,
+        },
+    },
+    リレーション: {
+        主担当スタッフID: {
+            参照先テーブル: EmployeeTable,
+            参照先カラム: 'ユーザーID',
+            削除: 'set null',
+        },
+    },
+});
+
+customerTableSpec.toEqual(CustomerTable);
 
 const menuCategoryTableSpec = new TableSpec({
     メタデータ: {

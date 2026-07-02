@@ -21,8 +21,8 @@ export const routes = {
             build: (id: string) => `/users/${id}/edit`,
         },
     },
-    client: {
-        create: '/clients/new',
+    customer: {
+        create: '/customers/new',
     },
     deal: {
         create: '/deals/new',

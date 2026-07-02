@@ -11,6 +11,7 @@ import { PermissionCheck } from './application/service/PermissionCheck';
 import { SystemAdmins } from './application/service/SystemAdmins';
 import { AcceptTermsUseCase } from './application/usecase/AcceptTermsUseCase';
 import { ApproveUserUseCase } from './application/usecase/ApproveUserUseCase';
+import { CreateCustomerUseCase } from './application/usecase/CreateCustomerUseCase';
 import { CreateEmployeeUseCase } from './application/usecase/CreateEmployeeUseCase';
 import { CreateUserUseCase } from './application/usecase/CreateUserUseCase';
 import { DeleteUserUseCase } from './application/usecase/DeleteUserUseCase';
@@ -29,6 +30,7 @@ import { UnapproveUserUseCase } from './application/usecase/UnapproveUserUseCase
 import { UpdateUserUseCase } from './application/usecase/UpdateUserUseCase';
 import { AcceptTermsController } from './controller/AcceptTermsController';
 import { ApproveUserController } from './controller/ApproveUserController';
+import { CreateCustomerController } from './controller/CreateCustomerController';
 import { CreateEmployeeController } from './controller/CreateEmployeeController';
 import { CreateUserController } from './controller/CreateUserController';
 import { DeleteUserController } from './controller/DeleteUserController';
@@ -116,6 +118,8 @@ export type AppContainer = {
     migrationController: MigrationController;
     createEmployeeUseCase: CreateEmployeeUseCase;
     createEmployeeController: CreateEmployeeController;
+    createCustomerUseCase: CreateCustomerUseCase;
+    createCustomerController: CreateCustomerController;
     saveMenuCategoryUseCase: SaveMenuCategoryUseCase;
     saveMenuCategoryController: SaveMenuCategoryController;
     saveMenuUseCase: SaveMenuUseCase;
@@ -325,6 +329,11 @@ container.register({
             return new CreateEmployeeUseCase(permissionCheck, db);
         }
     ).singleton(),
+    createCustomerUseCase: asFunction(
+        ({ permissionCheck, db }: AppContainer) => {
+            return new CreateCustomerUseCase(permissionCheck, db);
+        }
+    ).singleton(),
 
     saveMenuCategoryUseCase: asFunction(
         ({ permissionCheck, db }: AppContainer) => {
@@ -442,6 +451,14 @@ container.register({
                 authentication,
                 createEmployeeUseCase,
                 forgotPasswordUseCase
+            );
+        }
+    ).singleton(),
+    createCustomerController: asFunction(
+        ({ authentication, createCustomerUseCase }: AppContainer) => {
+            return new CreateCustomerController(
+                authentication,
+                createCustomerUseCase
             );
         }
     ).singleton(),

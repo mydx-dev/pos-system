@@ -6,7 +6,10 @@ import { customerSchema } from '../../shared/schemas/database';
 import { replicaQL } from '../lib/AppsScriptClient';
 
 export const useFindCustomer = (
-    query: SheetQuery<typeof ALL_TABLES, typeof customerSchema> = new SheetQuery()
+    query: SheetQuery<
+        typeof ALL_TABLES,
+        typeof customerSchema
+    > = new SheetQuery()
 ) => {
     return useLiveQuery(async () => {
         const result = await replicaQL.table('顧客').find(query);

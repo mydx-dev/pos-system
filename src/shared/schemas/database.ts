@@ -1,6 +1,10 @@
 import { z } from 'zod';
 import { productType, taxType } from '../domain/entity/Menu';
 import { menuType } from '../domain/entity/MenuCategory';
+import {
+    paymentMethod,
+    paymentRecordType,
+} from '../domain/entity/PaymentRecord';
 import { roleName } from '../domain/entity/Role';
 import { treatmentStatus } from '../domain/entity/Treatment';
 
@@ -83,5 +87,17 @@ export const treatmentMenuSchema = z.object({
     数量: z.number().int().min(1),
     値引き額: z.number().int().min(0),
     表示順: z.number().int(),
+    バージョン: z.number(),
+});
+
+export const paymentRecordSchema = z.object({
+    ID: z.string().uuidv4().meta({ unique: true }),
+    施術ID: z.string().uuidv4(),
+    種別: z.enum(paymentRecordType),
+    金額: z.number().int().positive(),
+    支払方法: z.enum(paymentMethod),
+    発生日時: z.string(),
+    備考: z.string().nullish(),
+    対象精算ID: z.string().uuidv4().nullish(),
     バージョン: z.number(),
 });

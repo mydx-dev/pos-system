@@ -3,6 +3,7 @@ import { Customer } from '../../../shared/domain/entity/Customer';
 import { Employee } from '../../../shared/domain/entity/Employee';
 import { Menu } from '../../../shared/domain/entity/Menu';
 import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
+import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
 import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
 import { Role } from '../../../shared/domain/entity/Role';
 import { Treatment } from '../../../shared/domain/entity/Treatment';
@@ -13,6 +14,7 @@ import {
     employeeSchema,
     menuCategorySchema,
     menuSchema,
+    paymentRecordSchema,
     passwordResetSchema,
     permissionSchema,
     treatmentMenuSchema,
@@ -280,6 +282,49 @@ export const TreatmentMenuTable = new SheetTable(
 TreatmentMenuTable.reference('施術ID', TreatmentTable, 'ID', 'cascade');
 TreatmentMenuTable.reference('メニューID', MenuTable, 'ID', 'restrict');
 
+export const PaymentRecordTable = new SheetTable(
+    '',
+    '精算履歴',
+    paymentRecordSchema,
+    'ID',
+    true,
+    (record) =>
+        new PaymentRecord(
+            record.ID,
+            record.施術ID,
+            record.種別,
+            record.金額,
+            record.支払方法,
+            record.発生日時,
+            record.備考,
+            record.対象精算ID,
+            record.バージョン
+        ),
+    (entity) => ({
+        ID: entity.id,
+        施術ID: entity.treatmentId,
+        種別: entity.type,
+        金額: entity.amount,
+        支払方法: entity.paymentMethod,
+        発生日時: entity.occurredAt,
+        備考: entity.note,
+        対象精算ID: entity.targetPaymentRecordId,
+        バージョン: entity.version,
+    }),
+    {
+        versionColumn: 'バージョン',
+        autoNumberingMode: 'uuid',
+    }
+);
+
+PaymentRecordTable.reference('施術ID', TreatmentTable, 'ID', 'cascade');
+PaymentRecordTable.reference(
+    '対象精算ID',
+    PaymentRecordTable,
+    'ID',
+    'restrict'
+);
+
 export const ALL_TABLES = [
     UserTable,
     RoleTable,
@@ -290,6 +335,7 @@ export const ALL_TABLES = [
     MenuTable,
     TreatmentTable,
     TreatmentMenuTable,
+    PaymentRecordTable,
 ] as const;
 
 export type AllTableName = (typeof ALL_TABLES)[number]['name'];

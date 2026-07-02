@@ -1,4 +1,5 @@
 import { SheetEntity } from '@mydx-dev/gas-boost-runtime/core';
+import { PaymentRecord, PaymentRecordType } from './PaymentRecord';
 
 export const treatmentStatus = ['予約済み', '来店済み', '精算済み'] as const;
 export type TreatmentStatus = (typeof treatmentStatus)[number];
@@ -55,5 +56,87 @@ export class Treatment extends SheetEntity {
 
     get version(): number {
         return this._version;
+    }
+
+    get paymentRecords(): PaymentRecord[] {
+        return this.getRelation(PaymentRecord);
+    }
+
+    get paidTotal(): number {
+        return this.paymentRecords
+            .filter((record) => record.isPaid)
+            .reduce((total, record) => total + record.amount, 0);
+    }
+
+    get cancelTotal(): number {
+        return this.paymentRecords
+            .filter((record) => record.isCancel)
+            .reduce((total, record) => total + record.amount, 0);
+    }
+
+    get repaymentTotal(): number {
+        return this.paymentRecords
+            .filter((record) => record.isRepayment)
+            .reduce((total, record) => total + record.amount, 0);
+    }
+
+    get currentSales(): number {
+        return this.paidTotal - this.cancelTotal - this.repaymentTotal;
+    }
+
+    get hasPaidPaymentRecord(): boolean {
+        return this.paymentRecords.some((record) => record.isPaid);
+    }
+
+    get canCancelPayment(): boolean {
+        return this.hasPaidPaymentRecord;
+    }
+
+    get cancelAmount(): number {
+        return this.currentSales;
+    }
+
+    canRepay(amount: number): boolean {
+        return amount > 0 && this.hasPaidPaymentRecord;
+    }
+
+    canPay(amount: number): boolean {
+        return amount > 0;
+    }
+
+    canUseTargetPaymentRecord(
+        targetPaymentRecordId: string | null | undefined
+    ): boolean {
+        if (!targetPaymentRecordId) {
+            return true;
+        }
+
+        return this.paymentRecords.some(
+            (record) => record.id === targetPaymentRecordId && record.isPaid
+        );
+    }
+
+    canCreatePaymentRecord(
+        type: PaymentRecordType,
+        amount: number,
+        targetPaymentRecordId?: string | null
+    ): boolean {
+        if (type === '精算') {
+            return this.canPay(amount);
+        }
+
+        if (!this.canUseTargetPaymentRecord(targetPaymentRecordId)) {
+            return false;
+        }
+
+        if (type === '取消') {
+            return amount > 0 && this.canCancelPayment;
+        }
+
+        if (type === '返金') {
+            return this.canRepay(amount);
+        }
+
+        return false;
     }
 }

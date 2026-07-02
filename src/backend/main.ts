@@ -41,6 +41,8 @@ export const ServerFunctions: API & Record<string, unknown> = {
     saveMenu: (input) => container.resolve('saveMenuController').execute(input),
     createTreatment: (input) =>
         container.resolve('createTreatmentController').execute(input),
+    createPaymentRecord: (input) =>
+        container.resolve('createPaymentRecordController').execute(input),
 };
 
 Object.entries(ServerFunctions).forEach(([name, fn]) => {

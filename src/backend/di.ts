@@ -14,6 +14,7 @@ import { AcceptTermsUseCase } from './application/usecase/AcceptTermsUseCase';
 import { ApproveUserUseCase } from './application/usecase/ApproveUserUseCase';
 import { CreateCustomerUseCase } from './application/usecase/CreateCustomerUseCase';
 import { CreateEmployeeUseCase } from './application/usecase/CreateEmployeeUseCase';
+import { CreatePaymentRecordUseCase } from './application/usecase/CreatePaymentRecordUseCase';
 import { CreateTreatmentUseCase } from './application/usecase/CreateTreatmentUseCase';
 import { CreateUserUseCase } from './application/usecase/CreateUserUseCase';
 import { DeleteUserUseCase } from './application/usecase/DeleteUserUseCase';
@@ -34,6 +35,7 @@ import { AcceptTermsController } from './controller/AcceptTermsController';
 import { ApproveUserController } from './controller/ApproveUserController';
 import { CreateCustomerController } from './controller/CreateCustomerController';
 import { CreateEmployeeController } from './controller/CreateEmployeeController';
+import { CreatePaymentRecordController } from './controller/CreatePaymentRecordController';
 import { CreateTreatmentController } from './controller/CreateTreatmentController';
 import { CreateUserController } from './controller/CreateUserController';
 import { DeleteUserController } from './controller/DeleteUserController';
@@ -126,6 +128,8 @@ export type AppContainer = {
     createCustomerController: CreateCustomerController;
     createTreatmentUseCase: CreateTreatmentUseCase;
     createTreatmentController: CreateTreatmentController;
+    createPaymentRecordUseCase: CreatePaymentRecordUseCase;
+    createPaymentRecordController: CreatePaymentRecordController;
     saveMenuCategoryUseCase: SaveMenuCategoryUseCase;
     saveMenuCategoryController: SaveMenuCategoryController;
     saveMenuUseCase: SaveMenuUseCase;
@@ -348,6 +352,15 @@ container.register({
             return new CreateTreatmentUseCase(permissionCheck, db, existsCheck);
         }
     ).singleton(),
+    createPaymentRecordUseCase: asFunction(
+        ({ permissionCheck, db, existsCheck }: AppContainer) => {
+            return new CreatePaymentRecordUseCase(
+                permissionCheck,
+                db,
+                existsCheck
+            );
+        }
+    ).singleton(),
 
     saveMenuCategoryUseCase: asFunction(
         ({ permissionCheck, db }: AppContainer) => {
@@ -481,6 +494,14 @@ container.register({
             return new CreateTreatmentController(
                 authentication,
                 createTreatmentUseCase
+            );
+        }
+    ).singleton(),
+    createPaymentRecordController: asFunction(
+        ({ authentication, createPaymentRecordUseCase }: AppContainer) => {
+            return new CreatePaymentRecordController(
+                authentication,
+                createPaymentRecordUseCase
             );
         }
     ).singleton(),

@@ -7,6 +7,7 @@ import {
     CreatePaymentRecordRequest,
     CreatePaymentRecordResponse,
 } from '../../../shared/api/paymentRecord';
+import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
 import { Treatment } from '../../../shared/domain/entity/Treatment';
 import {
     ALL_TABLES,
@@ -96,24 +97,22 @@ export class CreatePaymentRecordUseCase {
             }
         );
 
-        const updatedTreatment = this.db
-            .table('施術')
-            .find(
-                this.db
-                    .query('施術')
-                    .and('ID', '=', [paymentRecord.施術ID])
-                    .join('ID', '精算履歴', '施術ID')
-            )[0];
+        // ここで再度DB呼ぶのはAPI呼び出しすぎで実行時間が長くなるのでやめる。ここで取得されるのはsavedTreatmentか初期に取得したtreatmentのいずれかになるので、それを使う
+        const updatedTreatment = savedTreatment ?? treatment;
+        if (savedTreatment) {
+            treatment.paymentRecords.forEach((record) => {
+                updatedTreatment.addRelation(PaymentRecord, record);
+            });
+        }
+        updatedTreatment.addRelation(PaymentRecord, savedPaymentRecord);
 
         return {
             paymentRecord: PaymentRecordTable.serialize(savedPaymentRecord),
-            treatment: savedTreatment
-                ? {
-                      ID: savedTreatment.id,
-                      状態: savedTreatment.status,
-                      バージョン: savedTreatment.version,
-                  }
-                : null,
+            treatment: {
+                ID: updatedTreatment.id,
+                状態: updatedTreatment.status,
+                バージョン: updatedTreatment.version,
+            },
             summary: {
                 精算合計: updatedTreatment.paidTotal,
                 取消合計: updatedTreatment.cancelTotal,

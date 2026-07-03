@@ -28,6 +28,7 @@ import { PullDataBaseUseCase } from './application/usecase/PullDataBaseUseCase';
 import { ResetPasswordUseCase } from './application/usecase/ResetPasswordUseCase';
 import { SaveMenuCategoryUseCase } from './application/usecase/SaveMenuCategoryUseCase';
 import { SaveMenuUseCase } from './application/usecase/SaveMenuUseCase';
+import { SaveTreatmentMenusUseCase } from './application/usecase/SaveTreatmentMenusUseCase';
 import { SetupSystemUseCase } from './application/usecase/SetupSystemUseCase';
 import { UnapproveUserUseCase } from './application/usecase/UnapproveUserUseCase';
 import { UpdateUserUseCase } from './application/usecase/UpdateUserUseCase';
@@ -54,6 +55,7 @@ import { PullDataBaseController } from './controller/PullDataBaseController';
 import { ResetPasswordController } from './controller/ResetPasswordController';
 import { SaveMenuCategoryController } from './controller/SaveMenuCategoryController';
 import { SaveMenuController } from './controller/SaveMenuController';
+import { SaveTreatmentMenusController } from './controller/SaveTreatmentMenusController';
 import { SetupSystemController } from './controller/SetupSystemController';
 import { UnapproveUserController } from './controller/UnapproveUserController';
 import { UpdateUserController } from './controller/UpdateUserController';
@@ -134,6 +136,8 @@ export type AppContainer = {
     saveMenuCategoryController: SaveMenuCategoryController;
     saveMenuUseCase: SaveMenuUseCase;
     saveMenuController: SaveMenuController;
+    saveTreatmentMenusUseCase: SaveTreatmentMenusUseCase;
+    saveTreatmentMenusController: SaveTreatmentMenusController;
 };
 
 export const container = createContainer<AppContainer>({
@@ -370,6 +374,15 @@ container.register({
     saveMenuUseCase: asFunction(({ permissionCheck, db }: AppContainer) => {
         return new SaveMenuUseCase(permissionCheck, db);
     }).singleton(),
+    saveTreatmentMenusUseCase: asFunction(
+        ({ permissionCheck, db, existsCheck }: AppContainer) => {
+            return new SaveTreatmentMenusUseCase(
+                permissionCheck,
+                db,
+                existsCheck
+            );
+        }
+    ).singleton(),
 });
 
 container.register({
@@ -516,6 +529,14 @@ container.register({
     saveMenuController: asFunction(
         ({ authentication, saveMenuUseCase }: AppContainer) => {
             return new SaveMenuController(authentication, saveMenuUseCase);
+        }
+    ).singleton(),
+    saveTreatmentMenusController: asFunction(
+        ({ authentication, saveTreatmentMenusUseCase }: AppContainer) => {
+            return new SaveTreatmentMenusController(
+                authentication,
+                saveTreatmentMenusUseCase
+            );
         }
     ).singleton(),
 });

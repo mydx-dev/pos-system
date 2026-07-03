@@ -42,3 +42,38 @@ export const createTreatmentResponse = z.object({
     treatmentMenus: z.array(treatmentMenuSchema),
 });
 export type CreateTreatmentResponse = z.infer<typeof createTreatmentResponse>;
+
+export const saveTreatmentMenusRequest = z.object({
+    sessionToken: z.string().uuidv4(),
+    treatmentId: treatmentSchema.shape.ID,
+    treatmentMenus: z.array(
+        treatmentMenuSchema
+            .pick({
+                ID: true,
+                メニューID: true,
+                数量: true,
+                値引き額: true,
+                表示順: true,
+                バージョン: true,
+            })
+            .extend({
+                ID: z.union([z.string().uuidv4(), z.literal('')]),
+                数量: z.number().int().min(1),
+                値引き額: z.number().int().min(0),
+                表示順: z.number().int(),
+                バージョン: z.number().optional(),
+            })
+    ),
+    deletedTreatmentMenuIds: z.array(treatmentMenuSchema.shape.ID),
+});
+export type SaveTreatmentMenusRequest = z.infer<
+    typeof saveTreatmentMenusRequest
+>;
+
+export const saveTreatmentMenusResponse = z.object({
+    treatmentMenus: z.array(treatmentMenuSchema),
+    deletedTreatmentMenuIds: z.array(treatmentMenuSchema.shape.ID),
+});
+export type SaveTreatmentMenusResponse = z.infer<
+    typeof saveTreatmentMenusResponse
+>;

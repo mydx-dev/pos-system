@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { PaymentRecord } from './PaymentRecord';
 import { Treatment } from './Treatment';
+import { TreatmentMenu } from './TreatmentMenu';
 
 describe('Treatment', () => {
     it('施術情報を取得できる', () => {
@@ -141,5 +142,40 @@ describe('Treatment', () => {
                 '723e4567-e89b-42d3-a456-426614174000'
             )
         ).toBe(false);
+    });
+
+    it('施術メニューを持っているか判定できる', () => {
+        const treatment = new Treatment(
+            '123e4567-e89b-42d3-a456-426614174000',
+            '223e4567-e89b-42d3-a456-426614174000',
+            '323e4567-e89b-42d3-a456-426614174000',
+            '来店済み',
+            '2024-01-01T10:00:00.000Z',
+            60,
+            null,
+            1
+        );
+        treatment.addRelation(
+            TreatmentMenu,
+            new TreatmentMenu(
+                '423e4567-e89b-42d3-a456-426614174000',
+                treatment.id,
+                '523e4567-e89b-42d3-a456-426614174000',
+                'カット',
+                5000,
+                1,
+                0,
+                1,
+                1
+            )
+        );
+
+        expect(treatment.treatmentMenus).toHaveLength(1);
+        expect(treatment.hasMenu('423e4567-e89b-42d3-a456-426614174000')).toBe(
+            true
+        );
+        expect(treatment.hasMenu('623e4567-e89b-42d3-a456-426614174000')).toBe(
+            false
+        );
     });
 });

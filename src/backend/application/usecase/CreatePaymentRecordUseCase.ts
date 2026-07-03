@@ -7,6 +7,7 @@ import {
     CreatePaymentRecordRequest,
     CreatePaymentRecordResponse,
 } from '../../../shared/api/paymentRecord';
+import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
 import { Treatment } from '../../../shared/domain/entity/Treatment';
 import {
     ALL_TABLES,
@@ -96,8 +97,14 @@ export class CreatePaymentRecordUseCase {
             }
         );
 
-        // ここで再度DB呼ぶのはAPI呼び出しすぎてやめる。ここで取得されるのはsavedTreatmentか初期に取得したtreatmentのいずれかになるので、それを使う
+        // ここで再度DB呼ぶのはAPI呼び出しすぎで実行時間が長くなるのでやめる。ここで取得されるのはsavedTreatmentか初期に取得したtreatmentのいずれかになるので、それを使う
         const updatedTreatment = savedTreatment ?? treatment;
+        if (savedTreatment) {
+            treatment.paymentRecords.forEach((record) => {
+                updatedTreatment.addRelation(PaymentRecord, record);
+            });
+        }
+        updatedTreatment.addRelation(PaymentRecord, savedPaymentRecord);
 
         return {
             paymentRecord: PaymentRecordTable.serialize(savedPaymentRecord),

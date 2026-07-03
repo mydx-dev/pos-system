@@ -38,6 +38,10 @@ export function createTestContext() {
                 permissionCheck,
                 'isApprovedSystemAdminOrEmployee'
             ),
+            isApprovedSystemAdminOrEmployeeOrRegisterTerminalSpy: vi.spyOn(
+                permissionCheck,
+                'isApprovedSystemAdminOrEmployeeOrRegisterTerminal'
+            ),
         },
         getUuidSpy: vi.spyOn(scope.resolve('utilities'), 'getUuid'),
         properties: scope.resolve('properties'),

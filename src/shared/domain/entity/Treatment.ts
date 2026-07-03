@@ -1,5 +1,6 @@
 import { SheetEntity } from '@mydx-dev/gas-boost-runtime/core';
 import { PaymentRecord, PaymentRecordType } from './PaymentRecord';
+import { TreatmentMenu } from './TreatmentMenu';
 
 export const treatmentStatus = ['予約済み', '来店済み', '精算済み'] as const;
 export type TreatmentStatus = (typeof treatmentStatus)[number];
@@ -60,6 +61,16 @@ export class Treatment extends SheetEntity {
 
     get paymentRecords(): PaymentRecord[] {
         return this.getRelation(PaymentRecord);
+    }
+
+    get treatmentMenus(): TreatmentMenu[] {
+        return this.getRelation(TreatmentMenu);
+    }
+
+    hasMenu(treatmentMenuId: string): boolean {
+        return this.treatmentMenus.some(
+            (treatmentMenu) => treatmentMenu.id === treatmentMenuId
+        );
     }
 
     get paidTotal(): number {

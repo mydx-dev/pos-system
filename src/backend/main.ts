@@ -39,6 +39,8 @@ export const ServerFunctions: API & Record<string, unknown> = {
     saveMenuCategory: (input) =>
         container.resolve('saveMenuCategoryController').execute(input),
     saveMenu: (input) => container.resolve('saveMenuController').execute(input),
+    saveTreatmentMenus: (input) =>
+        container.resolve('saveTreatmentMenusController').execute(input),
     createTreatment: (input) =>
         container.resolve('createTreatmentController').execute(input),
     createPaymentRecord: (input) =>

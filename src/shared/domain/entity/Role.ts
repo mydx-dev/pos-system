@@ -1,6 +1,6 @@
 import { SheetEntity } from '@mydx-dev/gas-boost-runtime/core';
 
-export const roleName = ['システム管理者', 'ユーザー'] as const;
+export const roleName = ['システム管理者', 'ユーザー', 'レジ端末'] as const;
 export type RoleName = (typeof roleName)[number];
 
 export class Role extends SheetEntity {

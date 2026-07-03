@@ -287,3 +287,99 @@ describe('承認済みユーザーのロール判定', () => {
         expect(result.hasRole).toBe(false);
     });
 });
+
+describe('承認済みシステム管理者・スタッフ・レジ端末判定', () => {
+    let dataStore: InMemoryDataStore;
+    let permissionCheck: PermissionCheck;
+    const userTableHeader = Object.keys(UserTable.schema.def.shape);
+    const permissionTableHeader = Object.keys(RoleTable.schema.def.shape);
+    const employeeTableHeader = Object.keys(EmployeeTable.schema.def.shape);
+
+    beforeEach(() => {
+        const ctx = createTestContext();
+        dataStore = ctx.dataStore;
+        permissionCheck = ctx.permissionCheck;
+    });
+
+    it('承認済みのレジ端末として登録されている場合は、trueを返す', () => {
+        dataStore.set(':ユーザー', [
+            userTableHeader,
+            [
+                'id1',
+                'approved register terminal',
+                'register@example.com',
+                'password',
+                true,
+                1,
+            ],
+        ]);
+        dataStore.set(':ロール', [permissionTableHeader, ['id1', 'レジ端末']]);
+
+        const result =
+            permissionCheck.isApprovedSystemAdminOrEmployeeOrRegisterTerminal(
+                'id1'
+            );
+
+        expect(result).toBe(true);
+    });
+
+    it('未承認のレジ端末として登録されている場合は、falseを返す', () => {
+        dataStore.set(':ユーザー', [
+            userTableHeader,
+            [
+                'id2',
+                'unapproved register terminal',
+                'register2@example.com',
+                'password',
+                false,
+                1,
+            ],
+        ]);
+        dataStore.set(':ロール', [permissionTableHeader, ['id2', 'レジ端末']]);
+
+        const result =
+            permissionCheck.isApprovedSystemAdminOrEmployeeOrRegisterTerminal(
+                'id2'
+            );
+
+        expect(result).toBe(false);
+    });
+
+    it('承認済みのスタッフとして登録されている場合は、trueを返す', () => {
+        dataStore.set(':ユーザー', [
+            userTableHeader,
+            [
+                'id3',
+                'approved staff',
+                'staff2@example.com',
+                'password',
+                true,
+                1,
+            ],
+        ]);
+        dataStore.set(':ロール', [permissionTableHeader, ['id3', 'ユーザー']]);
+        dataStore.set(':スタッフ', [employeeTableHeader, ['id3']]);
+
+        const result =
+            permissionCheck.isApprovedSystemAdminOrEmployeeOrRegisterTerminal(
+                'id3'
+            );
+
+        expect(result).toBe(true);
+    });
+
+    it('承認済みでもシステム管理者・スタッフ・レジ端末でない場合は、falseを返す', () => {
+        dataStore.set(':ユーザー', [
+            userTableHeader,
+            ['id4', 'approved user', 'user2@example.com', 'password', true, 1],
+        ]);
+        dataStore.set(':ロール', [permissionTableHeader, ['id4', 'ユーザー']]);
+
+        const result =
+            permissionCheck.isApprovedSystemAdminOrEmployeeOrRegisterTerminal(
+                'id4'
+            );
+
+        expect(result).toBe(false);
+    });
+});

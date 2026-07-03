@@ -14,6 +14,8 @@ import type { PullDatabaseInput, PullDatabaseOutput } from './system';
 import type {
     CreateTreatmentRequest,
     CreateTreatmentResponse,
+    SaveTreatmentMenusRequest,
+    SaveTreatmentMenusResponse,
 } from './treatment';
 import type {
     ApproveUserInput,
@@ -97,6 +99,9 @@ export type API = {
     createTreatment: (
         input: CreateTreatmentRequest
     ) => AppsScriptServerResponse<CreateTreatmentResponse>;
+    saveTreatmentMenus: (
+        input: SaveTreatmentMenusRequest
+    ) => AppsScriptServerResponse<SaveTreatmentMenusResponse>;
     createPaymentRecord: (
         input: CreatePaymentRecordRequest
     ) => AppsScriptServerResponse<CreatePaymentRecordResponse>;

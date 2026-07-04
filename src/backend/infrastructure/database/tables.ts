@@ -3,8 +3,9 @@ import { Customer } from '../../../shared/domain/entity/Customer';
 import { Employee } from '../../../shared/domain/entity/Employee';
 import { Menu } from '../../../shared/domain/entity/Menu';
 import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
-import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
 import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
+import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
+import { RegisterTerminal } from '../../../shared/domain/entity/RegisterTerminal';
 import { Role } from '../../../shared/domain/entity/Role';
 import { Treatment } from '../../../shared/domain/entity/Treatment';
 import { TreatmentMenu } from '../../../shared/domain/entity/TreatmentMenu';
@@ -14,9 +15,10 @@ import {
     employeeSchema,
     menuCategorySchema,
     menuSchema,
-    paymentRecordSchema,
     passwordResetSchema,
+    paymentRecordSchema,
     permissionSchema,
+    registerTerminalSchema,
     treatmentMenuSchema,
     treatmentSchema,
     userSchema,
@@ -80,6 +82,43 @@ export const PasswordResetTable = new SheetTable(
         有効期限: entity.expiresAt,
     })
 );
+
+export const RegisterTerminalTable = new SheetTable(
+    '',
+    'レジ端末',
+    registerTerminalSchema,
+    'ID',
+    false,
+    (record) =>
+        new RegisterTerminal(
+            record.ID,
+            record.端末名,
+            record.トークンハッシュ,
+            record.有効,
+            record.発行日時,
+            record.最終利用日時,
+            record.登録者ID,
+            record.更新者ID,
+            record.バージョン
+        ),
+    (entity) => ({
+        ID: entity.id,
+        端末名: entity.name,
+        トークンハッシュ: entity.tokenHash,
+        有効: entity.enabled,
+        発行日時: entity.issuedAt,
+        最終利用日時: entity.lastUsedAt,
+        登録者ID: entity.createdBy,
+        更新者ID: entity.updatedBy,
+        バージョン: entity.version,
+    }),
+    {
+        versionColumn: 'バージョン',
+    }
+);
+
+RegisterTerminalTable.reference('登録者ID', UserTable, 'ID', 'restrict');
+RegisterTerminalTable.reference('更新者ID', UserTable, 'ID', 'set null');
 
 export const EmployeeTable = new SheetTable(
     '',
@@ -329,6 +368,7 @@ export const ALL_TABLES = [
     UserTable,
     RoleTable,
     PasswordResetTable,
+    RegisterTerminalTable,
     EmployeeTable,
     CustomerTable,
     MenuCategoryTable,

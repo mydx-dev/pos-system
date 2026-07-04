@@ -27,6 +27,9 @@ export const labels = {
     createTreatment: '施術登録',
     saveTreatmentMenus: '施術メニュー保存',
     createPaymentRecord: '精算履歴作成',
+    createRegisterTerminal: 'レジ端末登録',
+    refreshRegisterTerminalToken: 'レジ端末トークン再発行',
+    loginRegisterTerminal: 'レジ端末ログイン',
     saveMenuCategory: 'カテゴリー保存',
     saveMenu: 'メニュー保存',
 };

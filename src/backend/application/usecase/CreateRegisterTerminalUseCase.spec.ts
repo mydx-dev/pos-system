@@ -1,0 +1,99 @@
+import {
+    ForbiddenError,
+    InvalidArgumentError,
+} from '@mydx-dev/gas-boost-runtime/core';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { context } from '../../../../tests/contexts/registerTerminalTestContext';
+import { User } from '../../../shared/domain/entity/User';
+
+const userId = '123e4567-e89b-42d3-a456-426614174000';
+const terminalId = '123e4567-e89b-42d3-a456-426614174001';
+const pepper = '123e4567-e89b-42d3-a456-426614174099';
+
+function adminUser() {
+    return new User(userId, '管理者', 'admin@example.com', 'password', true, 1);
+}
+
+function input() {
+    return {
+        terminal: {
+            端末名: '受付レジ',
+        },
+    };
+}
+
+afterEach(() => {
+    vi.restoreAllMocks();
+});
+
+describe('バリデーション', () => {
+    it('ユーザーIDが空の場合はエラー', () => {
+        const {
+            createRegisterTerminal: { usecase },
+        } = context();
+
+        expect(() =>
+            usecase.execute(undefined as unknown as string, input())
+        ).toThrow(InvalidArgumentError);
+    });
+});
+
+describe('認可', () => {
+    it('システム管理者権限がない場合はエラー', () => {
+        const {
+            createRegisterTerminal: { usecase },
+            permissionCheckSpy: { hasRoleSpy },
+        } = context();
+        hasRoleSpy.mockReturnValue({ hasRole: false, user: null });
+
+        expect(() => usecase.execute(userId, input())).toThrow(ForbiddenError);
+    });
+});
+
+describe('レジ端末登録', () => {
+    it('平文トークンを一度だけ返し、DBにはハッシュを保存する', () => {
+        const {
+            createRegisterTerminal: { usecase },
+            permissionCheckSpy: { hasRoleSpy },
+            getUuidSpy,
+            properties,
+            passwordProtection,
+            dataStore,
+        } = context();
+        properties.setProperty('PASSWORD_PEPPER', pepper);
+        hasRoleSpy.mockReturnValue({ hasRole: true, user: adminUser() });
+        getUuidSpy.mockReturnValue(terminalId);
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+
+        const result = usecase.execute(userId, input());
+        const expectedHash = passwordProtection.execute(
+            'RGT-AAAA-AAAA-AAAA',
+            terminalId
+        );
+
+        expect(result).toEqual({
+            registerTerminal: {
+                ID: terminalId,
+                端末名: '受付レジ',
+                有効: true,
+                発行日時: expect.any(String),
+                最終利用日時: null,
+                バージョン: 1,
+            },
+            plainToken: 'RGT-AAAA-AAAA-AAAA',
+        });
+        expect(dataStore.get(':レジ端末').rows).toEqual([
+            [
+                terminalId,
+                '受付レジ',
+                expectedHash,
+                true,
+                result.registerTerminal.発行日時,
+                null,
+                userId,
+                null,
+                1,
+            ],
+        ]);
+    });
+});

@@ -288,7 +288,7 @@ describe('承認済みユーザーのロール判定', () => {
     });
 });
 
-describe('承認済みシステム管理者・スタッフ・レジ端末判定', () => {
+describe('承認済みシステム管理者・スタッフ判定', () => {
     let dataStore: InMemoryDataStore;
     let permissionCheck: PermissionCheck;
     const userTableHeader = Object.keys(UserTable.schema.def.shape);
@@ -301,7 +301,7 @@ describe('承認済みシステム管理者・スタッフ・レジ端末判定'
         permissionCheck = ctx.permissionCheck;
     });
 
-    it('承認済みのレジ端末として登録されている場合は、trueを返す', () => {
+    it('承認済みでもレジ端末ロールとして登録されている場合は、falseを返す', () => {
         dataStore.set(':ユーザー', [
             userTableHeader,
             [
@@ -320,7 +320,7 @@ describe('承認済みシステム管理者・スタッフ・レジ端末判定'
                 'id1'
             );
 
-        expect(result).toBe(true);
+        expect(result).toBe(false);
     });
 
     it('未承認のレジ端末として登録されている場合は、falseを返す', () => {
@@ -368,7 +368,7 @@ describe('承認済みシステム管理者・スタッフ・レジ端末判定'
         expect(result).toBe(true);
     });
 
-    it('承認済みでもシステム管理者・スタッフ・レジ端末でない場合は、falseを返す', () => {
+    it('承認済みでもシステム管理者・スタッフでない場合は、falseを返す', () => {
         dataStore.set(':ユーザー', [
             userTableHeader,
             ['id4', 'approved user', 'user2@example.com', 'password', true, 1],

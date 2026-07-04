@@ -2,6 +2,7 @@ import {
     CircleQuestionMark,
     CalendarClock,
     ClipboardList,
+    Monitor,
     Settings,
     UsersRound,
     Users,
@@ -41,6 +42,11 @@ export const navigations: NavigationItem[] = [
         icon: ClipboardList,
         label: 'メニュー',
         to: routes.menu.list,
+    },
+    {
+        icon: Monitor,
+        label: 'レジ端末',
+        to: routes.registerTerminal.list,
     },
 ];
 

@@ -4,19 +4,21 @@ import { Customer } from '../../../shared/domain/entity/Customer';
 import { Employee } from '../../../shared/domain/entity/Employee';
 import { Menu } from '../../../shared/domain/entity/Menu';
 import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
-import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
 import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
+import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
+import { RegisterTerminal } from '../../../shared/domain/entity/RegisterTerminal';
 import { Role } from '../../../shared/domain/entity/Role';
 import { Treatment } from '../../../shared/domain/entity/Treatment';
 import { TreatmentMenu } from '../../../shared/domain/entity/TreatmentMenu';
 import { User } from '../../../shared/domain/entity/User';
 import {
-    EmployeeTable,
     CustomerTable,
+    EmployeeTable,
     MenuCategoryTable,
     MenuTable,
-    PaymentRecordTable,
     PasswordResetTable,
+    PaymentRecordTable,
+    RegisterTerminalTable,
     RoleTable,
     TreatmentMenuTable,
     TreatmentTable,
@@ -1092,3 +1094,84 @@ const paymentRecordTableSpec = new TableSpec({
 });
 
 paymentRecordTableSpec.toEqual(PaymentRecordTable);
+
+const registerTerminalTableSpec = new TableSpec({
+    メタデータ: {
+        テーブル名: 'レジ端末',
+        主キー: 'ID',
+        自動採番: false,
+    },
+    スキーマ: {
+        ID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: true,
+        },
+        端末名: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+        },
+        トークンハッシュ: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+        },
+        有効: {
+            データ型: 'boolean',
+            必須: true,
+            ユニーク: false,
+        },
+        発行日時: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+        },
+        最終利用日時: {
+            データ型: 'string',
+            必須: false,
+            ユニーク: false,
+        },
+        登録者ID: {
+            データ型: 'string',
+            必須: true,
+            ユニーク: false,
+        },
+        更新者ID: {
+            データ型: 'string',
+            必須: false,
+            ユニーク: false,
+        },
+        バージョン: {
+            データ型: 'number',
+            必須: true,
+            ユニーク: false,
+        },
+    },
+    マッピング: {
+        エンティティ: new RegisterTerminal(
+            '12345678-0000-4000-a000-111111111111',
+            'レジ端末1',
+            'hashedToken',
+            true,
+            '2026-07-02T10:00:00.000Z',
+            '2026-07-02T10:00:00.000Z',
+            'user-001',
+            'user-002',
+            1
+        ),
+        レコード: {
+            ID: '12345678-0000-4000-a000-111111111111',
+            端末名: 'レジ端末1',
+            トークンハッシュ: 'hashedToken',
+            有効: true,
+            発行日時: '2026-07-02T10:00:00.000Z',
+            最終利用日時: '2026-07-02T10:00:00.000Z',
+            登録者ID: 'user-001',
+            更新者ID: 'user-002',
+            バージョン: 1,
+        },
+    },
+});
+
+registerTerminalTableSpec.toEqual(RegisterTerminalTable);

@@ -1,4 +1,4 @@
-import { UnauthorizedError, SheetDB } from '@mydx-dev/gas-boost-runtime/core';
+import { SheetDB, UnauthorizedError } from '@mydx-dev/gas-boost-runtime/core';
 import {
     LoginRegisterTerminalRequest,
     LoginRegisterTerminalResponse,
@@ -18,11 +18,12 @@ export class LoginRegisterTerminalUseCase {
         const plainToken = token.trim().toUpperCase();
         const registerTerminal = this.db
             .table('レジ端末')
-            .find(this.db.query('レジ端末').and('有効', '=', [true]))
+            .find(this.db.query('レジ端末'))
             .find(
                 (terminal) =>
+                    terminal.enabled &&
                     terminal.tokenHash ===
-                    this.passwordProtection.execute(plainToken, terminal.id)
+                        this.passwordProtection.execute(plainToken, terminal.id)
             );
 
         if (!registerTerminal) {

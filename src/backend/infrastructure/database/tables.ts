@@ -3,8 +3,8 @@ import { Customer } from '../../../shared/domain/entity/Customer';
 import { Employee } from '../../../shared/domain/entity/Employee';
 import { Menu } from '../../../shared/domain/entity/Menu';
 import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
-import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
 import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
+import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
 import { RegisterTerminal } from '../../../shared/domain/entity/RegisterTerminal';
 import { Role } from '../../../shared/domain/entity/Role';
 import { Treatment } from '../../../shared/domain/entity/Treatment';
@@ -15,8 +15,8 @@ import {
     employeeSchema,
     menuCategorySchema,
     menuSchema,
-    paymentRecordSchema,
     passwordResetSchema,
+    paymentRecordSchema,
     permissionSchema,
     registerTerminalSchema,
     treatmentMenuSchema,
@@ -88,7 +88,7 @@ export const RegisterTerminalTable = new SheetTable(
     'レジ端末',
     registerTerminalSchema,
     'ID',
-    true,
+    false,
     (record) =>
         new RegisterTerminal(
             record.ID,
@@ -114,7 +114,6 @@ export const RegisterTerminalTable = new SheetTable(
     }),
     {
         versionColumn: 'バージョン',
-        autoNumberingMode: 'uuid',
     }
 );
 

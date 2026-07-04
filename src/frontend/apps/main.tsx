@@ -3,8 +3,6 @@ import { InitializeProvider } from '@/context/InitializeContext';
 import { AdminGuard } from '@/guards/AdminGuard';
 import { AuthGuard } from '@/guards/AuthGuard';
 import { InitializeGuard } from '@/guards/InitializeGuard';
-import { RegisterGuard } from '@/guards/RegisterGuard';
-import { RegisterLayout } from '@/layouts/register/RegisterLayout';
 import { CreateCustomerPage } from '@/pages/CreateCustomerPage';
 import { CreateEmployeePage } from '@/pages/CreateEmployeePage';
 import { CreateTreatmentPage } from '@/pages/CreateTreatmentPage';
@@ -18,6 +16,7 @@ import { MenuCategoryListModal } from '@/pages/MenuCategoryListModal';
 import { MenuListPage } from '@/pages/MenuListPage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { RegisterTerminalListPage } from '@/pages/RegisterTerminalListPage';
+import { RegisterTerminalLoginPage } from '@/pages/RegisterTerminalLoginPage';
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage';
 import { UserDetailPage } from '@/pages/UserDetailPage';
 import { UserEditPage } from '@/pages/UserEditPage';
@@ -86,12 +85,12 @@ createRoot(document.getElementById('root')!).render(
                                                 element={<LoginPage />}
                                             />
                                         </Route>
-
-                                        <Route element={<RegisterGuard />}>
-                                            <Route
-                                                element={<RegisterLayout />}
-                                            ></Route>
-                                        </Route>
+                                        <Route
+                                            path={routes.register.login}
+                                            element={
+                                                <RegisterTerminalLoginPage />
+                                            }
+                                        />
                                         <Route element={<AuthGuard />}>
                                             {/* 認証が必要なルート */}
                                             <Route element={<AuthedLayout />}>

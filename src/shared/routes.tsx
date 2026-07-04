@@ -70,4 +70,8 @@ export const routes = {
     treatment: {
         create: '/treatments',
     },
+    register: {
+        login: '/register/login',
+        cashier: '/register',
+    },
 };

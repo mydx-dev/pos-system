@@ -29,6 +29,18 @@ export const passwordResetSchema = z.object({
     有効期限: z.number(),
 });
 
+export const registerTerminalSchema = z.object({
+    ID: z.string().uuidv4().meta({ unique: true }),
+    端末名: z.string(),
+    トークンハッシュ: z.string(),
+    有効: z.boolean(),
+    発行日時: z.string(),
+    最終利用日時: z.string().nullish(),
+    登録者ID: userId,
+    更新者ID: userId.nullish(),
+    バージョン: z.number(),
+});
+
 export const employeeSchema = z.object({
     ユーザーID: userId.meta({ unique: true }),
 });

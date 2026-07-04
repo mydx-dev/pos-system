@@ -45,6 +45,14 @@ export const ServerFunctions: API & Record<string, unknown> = {
         container.resolve('createTreatmentController').execute(input),
     createPaymentRecord: (input) =>
         container.resolve('createPaymentRecordController').execute(input),
+    createRegisterTerminal: (input) =>
+        container.resolve('createRegisterTerminalController').execute(input),
+    refreshRegisterTerminalToken: (input) =>
+        container
+            .resolve('refreshRegisterTerminalTokenController')
+            .execute(input),
+    loginRegisterTerminal: (input) =>
+        container.resolve('loginRegisterTerminalController').execute(input),
 };
 
 Object.entries(ServerFunctions).forEach(([name, fn]) => {

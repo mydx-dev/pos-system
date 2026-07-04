@@ -35,6 +35,7 @@ import { ApproveUserUseCase } from './application/usecase/ApproveUserUseCase';
 import { CreateCustomerUseCase } from './application/usecase/CreateCustomerUseCase';
 import { CreateEmployeeUseCase } from './application/usecase/CreateEmployeeUseCase';
 import { CreatePaymentRecordUseCase } from './application/usecase/CreatePaymentRecordUseCase';
+import { CreateRegisterTerminalUseCase } from './application/usecase/CreateRegisterTerminalUseCase';
 import { CreateTreatmentUseCase } from './application/usecase/CreateTreatmentUseCase';
 import { CreateUserUseCase } from './application/usecase/CreateUserUseCase';
 import { DeleteUserUseCase } from './application/usecase/DeleteUserUseCase';
@@ -42,9 +43,11 @@ import { DoGetUseCase } from './application/usecase/DoGetUseCase';
 import { ForgotPasswordUseCase } from './application/usecase/ForgotPasswordUseCase';
 import { IsSetupCompletedUseCase } from './application/usecase/IsSetupCompletedUseCase';
 import { IsTermsAcceptedUseCase } from './application/usecase/IsTermsAcceptedUseCase';
+import { LoginRegisterTerminalUseCase } from './application/usecase/LoginRegisterTerminalUseCase';
 import { LoginUserUseCase } from './application/usecase/LoginUserUseCase';
 import { LogoutUserUseCase } from './application/usecase/LogoutUserUseCase';
 import { PullDataBaseUseCase } from './application/usecase/PullDataBaseUseCase';
+import { RefreshRegisterTerminalTokenUseCase } from './application/usecase/RefreshRegisterTerminalTokenUseCase';
 import { ResetPasswordUseCase } from './application/usecase/ResetPasswordUseCase';
 import { SaveMenuCategoryUseCase } from './application/usecase/SaveMenuCategoryUseCase';
 import { SaveMenuUseCase } from './application/usecase/SaveMenuUseCase';
@@ -57,6 +60,7 @@ import { ApproveUserController } from './controller/ApproveUserController';
 import { CreateCustomerController } from './controller/CreateCustomerController';
 import { CreateEmployeeController } from './controller/CreateEmployeeController';
 import { CreatePaymentRecordController } from './controller/CreatePaymentRecordController';
+import { CreateRegisterTerminalController } from './controller/CreateRegisterTerminalController';
 import { CreateTreatmentController } from './controller/CreateTreatmentController';
 import { CreateUserController } from './controller/CreateUserController';
 import { DeleteUserController } from './controller/DeleteUserController';
@@ -64,9 +68,11 @@ import { DoGetController } from './controller/DoGetController';
 import { ForgotPasswordController } from './controller/ForgotPasswordController';
 import { IsSetupCompletedController } from './controller/IsSetupCompletedController';
 import { IsTermsAcceptedController } from './controller/IsTermsAcceptedController';
+import { LoginRegisterTerminalController } from './controller/LoginRegisterTerminalController';
 import { LoginUserController } from './controller/LoginUserController';
 import { LogoutUserController } from './controller/LogoutUserController';
 import { PullDataBaseController } from './controller/PullDataBaseController';
+import { RefreshRegisterTerminalTokenController } from './controller/RefreshRegisterTerminalTokenController';
 import { ResetPasswordController } from './controller/ResetPasswordController';
 import { SaveMenuCategoryController } from './controller/SaveMenuCategoryController';
 import { SaveMenuController } from './controller/SaveMenuController';
@@ -207,6 +213,15 @@ testContainer.register({
     createCustomerUseCase: asClass(CreateCustomerUseCase).scoped(),
     createTreatmentUseCase: asClass(CreateTreatmentUseCase).scoped(),
     createPaymentRecordUseCase: asClass(CreatePaymentRecordUseCase).scoped(),
+    createRegisterTerminalUseCase: asClass(
+        CreateRegisterTerminalUseCase
+    ).scoped(),
+    refreshRegisterTerminalTokenUseCase: asClass(
+        RefreshRegisterTerminalTokenUseCase
+    ).scoped(),
+    loginRegisterTerminalUseCase: asClass(
+        LoginRegisterTerminalUseCase
+    ).scoped(),
     saveMenuCategoryUseCase: asClass(SaveMenuCategoryUseCase).scoped(),
     saveMenuUseCase: asClass(SaveMenuUseCase).scoped(),
     saveTreatmentMenusUseCase: asClass(SaveTreatmentMenusUseCase).scoped(),
@@ -233,6 +248,15 @@ testContainer.register({
     createTreatmentController: asClass(CreateTreatmentController).scoped(),
     createPaymentRecordController: asClass(
         CreatePaymentRecordController
+    ).scoped(),
+    createRegisterTerminalController: asClass(
+        CreateRegisterTerminalController
+    ).scoped(),
+    refreshRegisterTerminalTokenController: asClass(
+        RefreshRegisterTerminalTokenController
+    ).scoped(),
+    loginRegisterTerminalController: asClass(
+        LoginRegisterTerminalController
     ).scoped(),
     saveMenuCategoryController: asClass(SaveMenuCategoryController).scoped(),
     saveMenuController: asClass(SaveMenuController).scoped(),

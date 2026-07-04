@@ -10,6 +10,14 @@ import type {
     CreatePaymentRecordRequest,
     CreatePaymentRecordResponse,
 } from './paymentRecord';
+import type {
+    CreateRegisterTerminalRequest,
+    CreateRegisterTerminalResponse,
+    LoginRegisterTerminalRequest,
+    LoginRegisterTerminalResponse,
+    RefreshRegisterTerminalTokenRequest,
+    RefreshRegisterTerminalTokenResponse,
+} from './registerTerminal';
 import type { PullDatabaseInput, PullDatabaseOutput } from './system';
 import type {
     CreateTreatmentRequest,
@@ -105,4 +113,13 @@ export type API = {
     createPaymentRecord: (
         input: CreatePaymentRecordRequest
     ) => AppsScriptServerResponse<CreatePaymentRecordResponse>;
+    createRegisterTerminal: (
+        input: CreateRegisterTerminalRequest
+    ) => AppsScriptServerResponse<CreateRegisterTerminalResponse>;
+    refreshRegisterTerminalToken: (
+        input: RefreshRegisterTerminalTokenRequest
+    ) => AppsScriptServerResponse<RefreshRegisterTerminalTokenResponse>;
+    loginRegisterTerminal: (
+        input: LoginRegisterTerminalRequest
+    ) => AppsScriptServerResponse<LoginRegisterTerminalResponse>;
 };

@@ -54,10 +54,6 @@ export class User extends SheetEntity {
         return this.role.includes('システム管理者');
     }
 
-    isRegisterTerminal(): boolean {
-        return this.role.includes('レジ端末');
-    }
-
     serializeEmptyPassword() {
         return {
             ID: this.id,

@@ -3,7 +3,7 @@ import { registerTerminalSchema } from '../schemas/database';
 
 export const registerTerminalPlaneTokenSchema = z
     .string()
-    .regex(/^RGT-[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/);
+    .regex(/^RGT-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/);
 
 export const createRegisterTerminalRequest = z.object({
     sessionToken: z.string(),

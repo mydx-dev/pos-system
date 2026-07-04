@@ -74,4 +74,7 @@ export const routes = {
         login: '/register/login',
         cashier: '/register',
     },
+    registerTerminal: {
+        list: '/register-terminals',
+    },
 };

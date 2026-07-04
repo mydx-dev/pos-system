@@ -3,8 +3,11 @@ import { InitializeProvider } from '@/context/InitializeContext';
 import { AdminGuard } from '@/guards/AdminGuard';
 import { AuthGuard } from '@/guards/AuthGuard';
 import { InitializeGuard } from '@/guards/InitializeGuard';
+import { RegisterGuard } from '@/guards/RegisterGuard';
+import { RegisterLayout } from '@/layouts/register/RegisterLayout';
 import { CreateCustomerPage } from '@/pages/CreateCustomerPage';
 import { CreateEmployeePage } from '@/pages/CreateEmployeePage';
+import { CreateTreatmentPage } from '@/pages/CreateTreatmentPage';
 import { CreateUserPage } from '@/pages/CreateUserPage';
 import { CustomerListPage } from '@/pages/CustomerListPage';
 import { EmployeeDetailPage } from '@/pages/EmployeeDetailPage';
@@ -14,8 +17,8 @@ import { LoginPage } from '@/pages/LoginPage';
 import { MenuCategoryListModal } from '@/pages/MenuCategoryListModal';
 import { MenuListPage } from '@/pages/MenuListPage';
 import { ProfilePage } from '@/pages/ProfilePage';
+import { RegisterTerminalListPage } from '@/pages/RegisterTerminalListPage';
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage';
-import { CreateTreatmentPage } from '@/pages/CreateTreatmentPage';
 import { UserDetailPage } from '@/pages/UserDetailPage';
 import { UserEditPage } from '@/pages/UserEditPage';
 import { UserListPage } from '@/pages/UserListPage';
@@ -83,6 +86,12 @@ createRoot(document.getElementById('root')!).render(
                                                 element={<LoginPage />}
                                             />
                                         </Route>
+
+                                        <Route element={<RegisterGuard />}>
+                                            <Route
+                                                element={<RegisterLayout />}
+                                            ></Route>
+                                        </Route>
                                         <Route element={<AuthGuard />}>
                                             {/* 認証が必要なルート */}
                                             <Route element={<AuthedLayout />}>
@@ -126,7 +135,6 @@ createRoot(document.getElementById('root')!).render(
                                                         <CreateTreatmentPage />
                                                     }
                                                 />
-
                                                 <Route element={<AdminGuard />}>
                                                     <Route
                                                         path={
@@ -158,6 +166,16 @@ createRoot(document.getElementById('root')!).render(
                                                         path={routes.menu.list}
                                                         element={
                                                             <MenuListPage />
+                                                        }
+                                                    />
+                                                    <Route
+                                                        path={
+                                                            routes
+                                                                .registerTerminal
+                                                                .list
+                                                        }
+                                                        element={
+                                                            <RegisterTerminalListPage />
                                                         }
                                                     />
                                                     <Route

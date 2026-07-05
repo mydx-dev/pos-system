@@ -87,7 +87,7 @@ export default defineConfig({
             name: 'inject-ssr',
             transformIndexHtml(html) {
                 const ssrData = {
-                    scriptId: 'local-script-id',
+                    scriptId: 'pos-system-admin',
                     isSetupCompleted: true,
                     isTermsAccepted: true,
                 };

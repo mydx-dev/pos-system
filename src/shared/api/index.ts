@@ -18,7 +18,12 @@ import type {
     RefreshRegisterTerminalTokenRequest,
     RefreshRegisterTerminalTokenResponse,
 } from './registerTerminal';
-import type { PullDatabaseInput, PullDatabaseOutput } from './system';
+import type {
+    PullDatabaseInput,
+    PullDatabaseOutput,
+    PullDatabaseRegisterTerminalInput,
+    PullDatabaseRegisterTerminalOutput,
+} from './system';
 import type {
     CreateTreatmentRequest,
     CreateTreatmentResponse,
@@ -122,4 +127,7 @@ export type API = {
     loginRegisterTerminal: (
         input: LoginRegisterTerminalRequest
     ) => AppsScriptServerResponse<LoginRegisterTerminalResponse>;
+    pullDatabaseRegisterTerminal: (
+        input: PullDatabaseRegisterTerminalInput
+    ) => AppsScriptServerResponse<PullDatabaseRegisterTerminalOutput>;
 };

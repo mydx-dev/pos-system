@@ -12,10 +12,16 @@ export function context() {
     const loginRegisterTerminalUseCase = ctx.scope.resolve(
         'loginRegisterTerminalUseCase'
     );
+    const pullDatabaseRegisterTerminalUseCase = ctx.scope.resolve(
+        'pullDatabaseRegisterTerminalUseCase'
+    );
 
     return {
         ...ctx,
         passwordProtection: ctx.scope.resolve('passwordProtection'),
+        registerTerminalAuthentication: ctx.scope.resolve(
+            'registerTerminalAuthentication'
+        ),
         createRegisterTerminal: {
             usecase: createRegisterTerminalUseCase,
             usecaseSpy: vi.spyOn(createRegisterTerminalUseCase, 'execute'),
@@ -35,6 +41,16 @@ export function context() {
             usecase: loginRegisterTerminalUseCase,
             usecaseSpy: vi.spyOn(loginRegisterTerminalUseCase, 'execute'),
             controller: ctx.scope.resolve('loginRegisterTerminalController'),
+        },
+        pullDatabaseRegisterTerminal: {
+            usecase: pullDatabaseRegisterTerminalUseCase,
+            usecaseSpy: vi.spyOn(
+                pullDatabaseRegisterTerminalUseCase,
+                'execute'
+            ),
+            controller: ctx.scope.resolve(
+                'pullDatabaseRegisterTerminalController'
+            ),
         },
     };
 }

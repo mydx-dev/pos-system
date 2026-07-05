@@ -9,6 +9,7 @@ import { Authentication } from './application/service/Authentication';
 import { ExistsCheck } from './application/service/ExistsCheck';
 import { PasswordProtection } from './application/service/PasswordProtection';
 import { PermissionCheck } from './application/service/PermissionCheck';
+import { RegisterTerminalAuthentication } from './application/service/RegisterTerminalAuthentication';
 import { SystemAdmins } from './application/service/SystemAdmins';
 import { AcceptTermsUseCase } from './application/usecase/AcceptTermsUseCase';
 import { ApproveUserUseCase } from './application/usecase/ApproveUserUseCase';
@@ -27,6 +28,7 @@ import { LoginRegisterTerminalUseCase } from './application/usecase/LoginRegiste
 import { LoginUserUseCase } from './application/usecase/LoginUserUseCase';
 import { LogoutUserUseCase } from './application/usecase/LogoutUserUseCase';
 import { PullDataBaseUseCase } from './application/usecase/PullDataBaseUseCase';
+import { PullDataBaseRegisterTerminalUseCase } from './application/usecase/PullDatabaseRegisterTerminalUseCase';
 import { RefreshRegisterTerminalTokenUseCase } from './application/usecase/RefreshRegisterTerminalTokenUseCase';
 import { ResetPasswordUseCase } from './application/usecase/ResetPasswordUseCase';
 import { SaveMenuCategoryUseCase } from './application/usecase/SaveMenuCategoryUseCase';
@@ -57,6 +59,7 @@ import {
     OpenController,
 } from './controller/OnOpenController';
 import { PullDataBaseController } from './controller/PullDataBaseController';
+import { PullDatabaseRegisterTerminalController } from './controller/PullDatabaseRegisterTerminalController';
 import { RefreshRegisterTerminalTokenController } from './controller/RefreshRegisterTerminalTokenController';
 import { ResetPasswordController } from './controller/ResetPasswordController';
 import { SaveMenuCategoryController } from './controller/SaveMenuCategoryController';
@@ -101,6 +104,7 @@ export type AppContainer = {
     createUserUseCase: CreateUserUseCase;
     createUserController: CreateUserController;
     permissionCheck: PermissionCheck;
+    registerTerminalAuthentication: RegisterTerminalAuthentication;
     acceptTermsUseCase: AcceptTermsUseCase;
     acceptTermsController: AcceptTermsController;
     approveUserUseCase: ApproveUserUseCase;
@@ -123,6 +127,8 @@ export type AppContainer = {
     logoutUserController: LogoutUserController;
     pullDataBaseUseCase: PullDataBaseUseCase;
     pullDataBaseController: PullDataBaseController;
+    pullDatabaseRegisterTerminalUseCase: PullDataBaseRegisterTerminalUseCase;
+    pullDatabaseRegisterTerminalController: PullDatabaseRegisterTerminalController;
     resetPasswordUseCase: ResetPasswordUseCase;
     resetPasswordController: ResetPasswordController;
     unapproveUserUseCase: UnapproveUserUseCase;
@@ -205,6 +211,10 @@ container.register({
     ).singleton(),
     permissionCheck: asFunction(
         ({ db }: AppContainer) => new PermissionCheck(db)
+    ).singleton(),
+    registerTerminalAuthentication: asFunction(
+        ({ passwordProtection, db }: AppContainer) =>
+            new RegisterTerminalAuthentication(passwordProtection, db)
     ).singleton(),
     existsCheck: asFunction(
         ({ db }: AppContainer) => new ExistsCheck(db)
@@ -341,6 +351,9 @@ container.register({
     }).singleton(),
     pullDataBaseUseCase: asFunction(({ db }: AppContainer) => {
         return new PullDataBaseUseCase(db);
+    }).singleton(),
+    pullDatabaseRegisterTerminalUseCase: asFunction(({ db }: AppContainer) => {
+        return new PullDataBaseRegisterTerminalUseCase(db);
     }).singleton(),
     resetPasswordUseCase: asFunction(
         ({ db, passwordProtection }: AppContainer) => {
@@ -490,6 +503,17 @@ container.register({
             return new PullDataBaseController(
                 authentication,
                 pullDataBaseUseCase
+            );
+        }
+    ).singleton(),
+    pullDatabaseRegisterTerminalController: asFunction(
+        ({
+            registerTerminalAuthentication,
+            pullDatabaseRegisterTerminalUseCase,
+        }: AppContainer) => {
+            return new PullDatabaseRegisterTerminalController(
+                registerTerminalAuthentication,
+                pullDatabaseRegisterTerminalUseCase
             );
         }
     ).singleton(),

@@ -29,6 +29,7 @@ import { Authentication } from './application/service/Authentication';
 import { ExistsCheck } from './application/service/ExistsCheck';
 import { PasswordProtection } from './application/service/PasswordProtection';
 import { PermissionCheck } from './application/service/PermissionCheck';
+import { RegisterTerminalAuthentication } from './application/service/RegisterTerminalAuthentication';
 import { SystemAdmins } from './application/service/SystemAdmins';
 import { AcceptTermsUseCase } from './application/usecase/AcceptTermsUseCase';
 import { ApproveUserUseCase } from './application/usecase/ApproveUserUseCase';
@@ -47,6 +48,7 @@ import { LoginRegisterTerminalUseCase } from './application/usecase/LoginRegiste
 import { LoginUserUseCase } from './application/usecase/LoginUserUseCase';
 import { LogoutUserUseCase } from './application/usecase/LogoutUserUseCase';
 import { PullDataBaseUseCase } from './application/usecase/PullDataBaseUseCase';
+import { PullDataBaseRegisterTerminalUseCase } from './application/usecase/PullDatabaseRegisterTerminalUseCase';
 import { RefreshRegisterTerminalTokenUseCase } from './application/usecase/RefreshRegisterTerminalTokenUseCase';
 import { ResetPasswordUseCase } from './application/usecase/ResetPasswordUseCase';
 import { SaveMenuCategoryUseCase } from './application/usecase/SaveMenuCategoryUseCase';
@@ -72,6 +74,7 @@ import { LoginRegisterTerminalController } from './controller/LoginRegisterTermi
 import { LoginUserController } from './controller/LoginUserController';
 import { LogoutUserController } from './controller/LogoutUserController';
 import { PullDataBaseController } from './controller/PullDataBaseController';
+import { PullDatabaseRegisterTerminalController } from './controller/PullDatabaseRegisterTerminalController';
 import { RefreshRegisterTerminalTokenController } from './controller/RefreshRegisterTerminalTokenController';
 import { ResetPasswordController } from './controller/ResetPasswordController';
 import { SaveMenuCategoryController } from './controller/SaveMenuCategoryController';
@@ -189,6 +192,9 @@ testContainer.register({
     permissionCheck: asClass(PermissionCheck).scoped(),
     existsCheck: asClass(ExistsCheck).scoped(),
     authentication: asClass(Authentication).scoped(),
+    registerTerminalAuthentication: asClass(
+        RegisterTerminalAuthentication
+    ).scoped(),
     passwordProtection: asClass(PasswordProtection).scoped(),
     systemAdmins: asClass(SystemAdmins).scoped(),
 });
@@ -206,6 +212,9 @@ testContainer.register({
     loginUserUseCase: asClass(LoginUserUseCase).scoped(),
     logoutUserUseCase: asClass(LogoutUserUseCase).scoped(),
     pullDataBaseUseCase: asClass(PullDataBaseUseCase).scoped(),
+    pullDatabaseRegisterTerminalUseCase: asClass(
+        PullDataBaseRegisterTerminalUseCase
+    ).scoped(),
     resetPasswordUseCase: asClass(ResetPasswordUseCase).scoped(),
     unapproveUserUseCase: asClass(UnapproveUserUseCase).scoped(),
     updateUserUseCase: asClass(UpdateUserUseCase).scoped(),
@@ -240,6 +249,9 @@ testContainer.register({
     loginUserController: asClass(LoginUserController).scoped(),
     logoutUserController: asClass(LogoutUserController).scoped(),
     pullDataBaseController: asClass(PullDataBaseController).scoped(),
+    pullDatabaseRegisterTerminalController: asClass(
+        PullDatabaseRegisterTerminalController
+    ).scoped(),
     resetPasswordController: asClass(ResetPasswordController).scoped(),
     unapproveUserController: asClass(UnapproveUserController).scoped(),
     updateUserController: asClass(UpdateUserController).scoped(),

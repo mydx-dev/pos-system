@@ -5,16 +5,21 @@ import Dexie from 'dexie';
 import { toast } from 'sonner';
 
 type SyncRecord = Record<string, unknown>;
+type RemoteDatabase = Array<{
+    table: {
+        name: string;
+        primaryKey: string;
+    };
+    records: unknown[];
+}>;
 const isSyncRecord = (value: unknown): value is SyncRecord =>
     typeof value === 'object' && value !== null;
 const getRecordId = (record: SyncRecord, primaryKeyName: string): unknown =>
     record[primaryKeyName];
 
-async function mergeDatabase(
-    remoteDatabase: Awaited<ReturnType<typeof server.pullDatabase>>
-) {
+export async function mergeDatabase(db: Dexie, remoteDatabase: RemoteDatabase) {
     for (const { table, records } of remoteDatabase) {
-        const localTable = replica[table.name] as Dexie.Table<
+        const localTable = db.table(table.name) as Dexie.Table<
             SyncRecord,
             unknown
         >;
@@ -38,7 +43,7 @@ async function mergeDatabase(
             (id) => !remoteRecordIds.includes(id)
         );
 
-        await replica.transaction('rw', localTable, async () => {
+        await db.transaction('rw', localTable, async () => {
             if (remoteRecords.length) {
                 await localTable.bulkPut(remoteRecords);
             }
@@ -60,7 +65,7 @@ export const useSyncDatabase = ({
     return useMutation({
         mutationFn: async (sessionToken: string) => {
             const database = await server.pullDatabase({ sessionToken });
-            await mergeDatabase(database);
+            await mergeDatabase(replica, database);
         },
 
         onSuccess: async () => {

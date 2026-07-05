@@ -1,6 +1,7 @@
 import { createAppsScriptClient } from '@mydx-dev/gas-boost-react-apps-script';
 import { ALL_TABLES } from '../../backend/infrastructure/database/tables';
 import { API, SSR } from '../../shared/api';
+import { labels } from './AppsScriptClientLabels';
 
 export const ssr: SSR = {
     scriptId: window.__SSR__.scriptId,
@@ -8,33 +9,22 @@ export const ssr: SSR = {
     isTermsAccepted: window.__SSR__.isTermsAccepted,
 };
 
-export const labels = {
-    pullDatabase: 'データ同期',
-    createUser: 'ユーザー作成',
-    loginUser: 'ログイン',
-    logoutUser: 'ログアウト',
-    updateUser: 'ユーザー更新',
-    deleteUser: 'ユーザー削除',
-    approveUser: 'ユーザー承認',
-    unapproveUser: 'ユーザー承認取消',
-    forgotPassword: 'パスワード再設定',
-    resetPassword: 'パスワードリセット',
-    isSetupCompleted: '初期設定完了確認',
-    isTermsAccepted: '利用規約同意確認',
-    acceptTerms: '利用規約同意',
-    createEmployee: 'スタッフ作成',
-    createCustomer: '顧客作成',
-    createTreatment: '施術登録',
-    saveTreatmentMenus: '施術メニュー保存',
-    createPaymentRecord: '精算履歴作成',
-    createRegisterTerminal: 'レジ端末登録',
-    refreshRegisterTerminalToken: 'レジ端末トークン再発行',
-    loginRegisterTerminal: 'レジ端末ログイン',
-    saveMenuCategory: 'カテゴリー保存',
-    saveMenu: 'メニュー保存',
-};
+const adminClient = createAppsScriptClient<API, typeof ALL_TABLES>(
+    ALL_TABLES,
+    'pos-system-admin',
+    labels
+);
 
-export const { server, replica, replicaQL, job } = createAppsScriptClient<
-    API,
-    typeof ALL_TABLES
->(ALL_TABLES, ssr.scriptId, labels);
+const registerClient = createAppsScriptClient<API, typeof ALL_TABLES>(
+    ALL_TABLES,
+    'pos-system-register',
+    labels
+);
+
+export const { server, replica, replicaQL, job } = adminClient;
+
+export const {
+    replica: registerReplica,
+    replicaQL: registerReplicaQL,
+    job: registerJob,
+} = registerClient;

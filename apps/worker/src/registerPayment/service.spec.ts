@@ -231,6 +231,77 @@ describe('RegisterPaymentService', () => {
         ).rejects.toThrow('Invalid payment record.');
     });
 
+    it('rejects additional paid records for an already paid treatment', async () => {
+        const existingPaidRecord: PaymentRecordRow = {
+            id: '00000000-0000-4000-8000-000000000050',
+            treatment_id: treatmentId,
+            type: '精算',
+            amount: 5000,
+            payment_method: '現金',
+            occurred_at: '2026-07-07T08:30:00.000Z',
+            note: null,
+            target_payment_record_id: null,
+            version: 1,
+        };
+        const service = await createService({
+            findTreatmentById: async () => ({
+                ...treatment,
+                status: '精算済み',
+            }),
+            listPaymentRecordsByTreatmentId: async () => [existingPaidRecord],
+        });
+
+        await expect(
+            service.createPaymentRecord({
+                registerTerminalToken: 'RGT-ABCD-1234-EFGH',
+                paymentRecord: {
+                    施術ID: treatmentId,
+                    種別: '精算',
+                    金額: 5000,
+                    支払方法: '現金',
+                    備考: null,
+                    対象精算ID: null,
+                },
+            })
+        ).rejects.toThrow('Invalid payment record.');
+    });
+
+    it.each(['取消', '返金'] as const)(
+        'rejects %s records without target payment record id',
+        async (type) => {
+            const existingPaidRecord: PaymentRecordRow = {
+                id: '00000000-0000-4000-8000-000000000050',
+                treatment_id: treatmentId,
+                type: '精算',
+                amount: 5000,
+                payment_method: '現金',
+                occurred_at: '2026-07-07T08:30:00.000Z',
+                note: null,
+                target_payment_record_id: null,
+                version: 1,
+            };
+            const service = await createService({
+                listPaymentRecordsByTreatmentId: async () => [
+                    existingPaidRecord,
+                ],
+            });
+
+            await expect(
+                service.createPaymentRecord({
+                    registerTerminalToken: 'RGT-ABCD-1234-EFGH',
+                    paymentRecord: {
+                        施術ID: treatmentId,
+                        種別: type,
+                        金額: 5000,
+                        支払方法: '現金',
+                        備考: null,
+                        対象精算ID: null,
+                    },
+                })
+            ).rejects.toThrow('Invalid payment record.');
+        }
+    );
+
     it('summarizes cancellation against an existing paid payment record', async () => {
         const existingPaidRecord: PaymentRecordRow = {
             id: '00000000-0000-4000-8000-000000000050',

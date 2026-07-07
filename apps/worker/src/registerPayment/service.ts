@@ -207,7 +207,7 @@ const canUseTargetPaymentRecord = (
     records: PaymentRecordRow[]
 ) => {
     if (!targetPaymentRecordId) {
-        return true;
+        return false;
     }
 
     return records.some(
@@ -217,10 +217,15 @@ const canUseTargetPaymentRecord = (
 
 const canCreatePaymentRecord = (
     input: CreatePaymentRecordRequest['paymentRecord'],
+    treatment: TreatmentRecord,
     existingRecords: PaymentRecordRow[]
 ) => {
     if (input.種別 === '精算') {
-        return input.金額 > 0;
+        return (
+            input.金額 > 0 &&
+            treatment.status !== '精算済み' &&
+            !hasPaidPaymentRecord(existingRecords)
+        );
     }
 
     if (!canUseTargetPaymentRecord(input.対象精算ID, existingRecords)) {
@@ -374,7 +379,13 @@ export class RegisterPaymentService {
 
         const existingRecords =
             await this.repository.listPaymentRecordsByTreatmentId(treatment.id);
-        if (!canCreatePaymentRecord(input.paymentRecord, existingRecords)) {
+        if (
+            !canCreatePaymentRecord(
+                input.paymentRecord,
+                treatment,
+                existingRecords
+            )
+        ) {
             throw new AuthApiError(
                 'validation_error',
                 'Invalid payment record.'

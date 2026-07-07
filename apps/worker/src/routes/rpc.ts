@@ -1,4 +1,7 @@
 import type { API } from '@mydx-pos/shared/api';
+import { createPaymentRecordRequest } from '@mydx-pos/shared/api/paymentRecord';
+import { loginRegisterTerminalRequest } from '@mydx-pos/shared/api/registerTerminal';
+import { pullDatabaseRegisterTerminalInput } from '@mydx-pos/shared/api/system';
 import {
     createUserInputSchema,
     forgotPasswordInputSchema,
@@ -19,11 +22,16 @@ import {
     unauthorized,
     validationError,
 } from '../http';
+import { RegisterPaymentService } from '../registerPayment/service';
 
 type RpcName = keyof API;
 type RpcHandler = (context: HttpContext) => Promise<Response> | Response;
 type AuthRpcHandler = (
     service: AuthService,
+    context: HttpContext
+) => Promise<Response> | Response;
+type RegisterPaymentRpcHandler = (
+    service: RegisterPaymentService,
     context: HttpContext
 ) => Promise<Response> | Response;
 
@@ -61,6 +69,16 @@ const authRoute =
     async (context) => {
         try {
             return await handler(new AuthService(context.env), context);
+        } catch (caught) {
+            return toErrorResponse(caught, context);
+        }
+    };
+
+const registerPaymentRoute =
+    (handler: RegisterPaymentRpcHandler): RpcHandler =>
+    async (context) => {
+        try {
+            return await handler(new RegisterPaymentService(context.env), context);
         } catch (caught) {
             return toErrorResponse(caught, context);
         }
@@ -138,6 +156,50 @@ const rpcRoutes: Partial<Record<RpcName, RpcRoute>> = {
             }
 
             return ok(await service.resetPassword(body.data), context);
+        }),
+    },
+    loginRegisterTerminal: {
+        methods: ['POST'],
+        handler: registerPaymentRoute(async (service, context) => {
+            const body = await parseJsonBody(
+                context,
+                loginRegisterTerminalRequest
+            );
+            if (!body.ok) {
+                return body.response;
+            }
+
+            return ok(await service.loginRegisterTerminal(body.data), context);
+        }),
+    },
+    pullDatabaseRegisterTerminal: {
+        methods: ['POST'],
+        handler: registerPaymentRoute(async (service, context) => {
+            const body = await parseJsonBody(
+                context,
+                pullDatabaseRegisterTerminalInput
+            );
+            if (!body.ok) {
+                return body.response;
+            }
+
+            return ok(
+                await service.pullDatabaseRegisterTerminal(
+                    body.data.registerTerminalToken
+                ),
+                context
+            );
+        }),
+    },
+    createPaymentRecord: {
+        methods: ['POST'],
+        handler: registerPaymentRoute(async (service, context) => {
+            const body = await parseJsonBody(context, createPaymentRecordRequest);
+            if (!body.ok) {
+                return body.response;
+            }
+
+            return ok(await service.createPaymentRecord(body.data), context);
         }),
     },
 };

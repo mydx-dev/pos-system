@@ -1,31 +1,40 @@
-import { error, options } from './http';
+import {
+    internalServerError,
+    methodNotAllowed,
+    notFound,
+    options,
+} from './http';
 import { health } from './routes/health';
 import { rpc } from './routes/rpc';
 
-const notFound = () =>
-    error('not_found', 'The requested endpoint was not found.', {
-        status: 404,
-    });
-
 export default {
     async fetch(request, env): Promise<Response> {
+        const context = { env, request };
+
         if (request.method === 'OPTIONS') {
-            return options();
+            return options(context);
         }
 
         const url = new URL(request.url);
 
         try {
-            if (request.method === 'GET' && url.pathname === '/health') {
-                return await health(env);
+            if (url.pathname === '/health') {
+                if (request.method !== 'GET') {
+                    return methodNotAllowed(['GET', 'OPTIONS'], context);
+                }
+
+                return await health(env, context);
             }
 
             if (url.pathname.startsWith('/rpc/')) {
-                const response = await rpc(url.pathname.replace('/rpc/', ''));
-                return response ?? notFound();
+                const response = await rpc(
+                    url.pathname.replace('/rpc/', ''),
+                    context
+                );
+                return response ?? notFound(context);
             }
 
-            return notFound();
+            return notFound(context);
         } catch (caught) {
             console.error(
                 JSON.stringify({
@@ -35,7 +44,7 @@ export default {
                 })
             );
 
-            return error('internal_server_error', 'Unexpected worker error.');
+            return internalServerError(context);
         }
     },
 } satisfies ExportedHandler<Env>;

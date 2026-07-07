@@ -1,5 +1,8 @@
 import { AppsScriptServerResponse } from '@mydx-dev/gas-boost-runtime/core';
-import { PullDatabaseInput, PullDatabaseOutput } from '../../shared/api/system';
+import {
+    PullDatabaseInput,
+    PullDatabaseOutput,
+} from '@mydx-pos/shared/api/system';
 import { Authentication } from '../application/service/Authentication';
 import { PullDataBaseUseCase } from '../application/usecase/PullDataBaseUseCase';
 

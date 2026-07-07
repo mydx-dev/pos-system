@@ -7,7 +7,7 @@ import {
     RefreshRegisterTerminalTokenRequest,
     RefreshRegisterTerminalTokenResponse,
     refreshRegisterTerminalTokenRequest,
-} from '../../shared/api/registerTerminal';
+} from '@mydx-pos/shared/api/registerTerminal';
 import { Authentication } from '../application/service/Authentication';
 import { RefreshRegisterTerminalTokenUseCase } from '../application/usecase/RefreshRegisterTerminalTokenUseCase';
 

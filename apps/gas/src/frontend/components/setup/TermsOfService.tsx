@@ -1,4 +1,4 @@
-import { Terms } from '@/../shared/domain/valueObject/Terms';
+import { Terms } from '@mydx-pos/shared/domain/valueObject/Terms';
 import { useInitialize } from '@/hooks/useInitialize';
 import { server } from '@/lib/AppsScriptClient';
 import { useMutation } from '@tanstack/react-query';

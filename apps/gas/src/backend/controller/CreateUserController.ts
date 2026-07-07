@@ -3,7 +3,7 @@ import {
     CreateUserInput,
     createUserInputSchema,
     CreateUserOutput,
-} from '../../shared/api/user';
+} from '@mydx-pos/shared/api/user';
 import { CreateUserUseCase } from '../application/usecase/CreateUserUseCase';
 
 export class CreateUserController {

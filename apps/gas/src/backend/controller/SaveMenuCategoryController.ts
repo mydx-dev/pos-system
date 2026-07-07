@@ -7,7 +7,7 @@ import {
     SaveMenuCategoryRequest,
     SaveMenuCategoryResponse,
     saveMenuCategoryRequest,
-} from '../../shared/api/menuCategory';
+} from '@mydx-pos/shared/api/menuCategory';
 import { Authentication } from '../application/service/Authentication';
 import { SaveMenuCategoryUseCase } from '../application/usecase/SaveMenuCategoryUseCase';
 

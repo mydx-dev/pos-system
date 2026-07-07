@@ -1,6 +1,6 @@
-import { Customer } from '@/../shared/domain/entity/Customer';
-import { Treatment } from '@/../shared/domain/entity/Treatment';
-import { TreatmentMenu } from '@/../shared/domain/entity/TreatmentMenu';
+import { Customer } from '@mydx-pos/shared/domain/entity/Customer';
+import { Treatment } from '@mydx-pos/shared/domain/entity/Treatment';
+import { TreatmentMenu } from '@mydx-pos/shared/domain/entity/TreatmentMenu';
 import { Search } from 'lucide-react';
 import { formatCurrency, inputClassName, timeText } from './cashRegisterUtils';
 

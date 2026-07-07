@@ -1,5 +1,5 @@
 import { SheetDB } from '@mydx-dev/gas-boost-runtime/core';
-import { PullDatabaseRegisterTerminalOutput } from '../../../shared/api/system';
+import { PullDatabaseRegisterTerminalOutput } from '@mydx-pos/shared/api/system';
 import {
     ALL_TABLES,
     CustomerTable,

@@ -6,7 +6,7 @@ import {
 import {
     CreateEmployeeInput,
     CreateEmployeeOutput,
-} from '../../../shared/api/employee';
+} from '@mydx-pos/shared/api/employee';
 import { ALL_TABLES } from '../../infrastructure/database/tables';
 import { PermissionCheck } from '../service/PermissionCheck';
 

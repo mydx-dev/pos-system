@@ -7,7 +7,7 @@ import {
     UpdateUserInput,
     updateUserInputSchema,
     UpdateUserOutput,
-} from '../../shared/api/user';
+} from '@mydx-pos/shared/api/user';
 import { Authentication } from '../application/service/Authentication';
 import { UpdateUserUseCase } from '../application/usecase/UpdateUserUseCase';
 

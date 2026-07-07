@@ -1,6 +1,6 @@
 import { SheetDB } from '@mydx-dev/gas-boost-runtime/core';
-import { RoleName } from '../../../shared/domain/entity/Role';
-import { User } from '../../../shared/domain/entity/User';
+import { RoleName } from '@mydx-pos/shared/domain/entity/Role';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import { ALL_TABLES } from '../../infrastructure/database/tables';
 
 type NotHaveRole = { hasRole: false; user: null };

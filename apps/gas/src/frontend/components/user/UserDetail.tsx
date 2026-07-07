@@ -1,4 +1,4 @@
-import { emailSchema } from '@/../shared/schemas/form';
+import { emailSchema } from '@mydx-pos/shared/schemas/form';
 import { Spinner } from '@/components/ui/spinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserApprovedBadge } from '@/components/user/UserApprovedBadge';

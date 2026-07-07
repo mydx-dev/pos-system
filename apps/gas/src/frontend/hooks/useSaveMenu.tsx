@@ -1,5 +1,5 @@
-import { ProductType, TaxType } from '@/../shared/domain/entity/Menu';
-import { MenuType } from '@/../shared/domain/entity/MenuCategory';
+import { ProductType, TaxType } from '@mydx-pos/shared/domain/entity/Menu';
+import { MenuType } from '@mydx-pos/shared/domain/entity/MenuCategory';
 import { replica, server } from '@/lib/AppsScriptClient';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';

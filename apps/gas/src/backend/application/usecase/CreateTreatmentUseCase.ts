@@ -6,11 +6,11 @@ import {
 import {
     CreateTreatmentRequest,
     CreateTreatmentResponse,
-} from '../../../shared/api/treatment';
-import { TreatmentStatus } from '../../../shared/domain/entity/Treatment';
-import { TreatmentDuration } from '../../../shared/domain/valueObject/TreatmentDuration';
-import { TreatmentEndDate } from '../../../shared/domain/valueObject/TreatmentEndDate';
-import { TreatmentStartDate } from '../../../shared/domain/valueObject/TreatmentStartDate';
+} from '@mydx-pos/shared/api/treatment';
+import { TreatmentStatus } from '@mydx-pos/shared/domain/entity/Treatment';
+import { TreatmentDuration } from '@mydx-pos/shared/domain/valueObject/TreatmentDuration';
+import { TreatmentEndDate } from '@mydx-pos/shared/domain/valueObject/TreatmentEndDate';
+import { TreatmentStartDate } from '@mydx-pos/shared/domain/valueObject/TreatmentStartDate';
 import {
     ALL_TABLES,
     TreatmentMenuTable,

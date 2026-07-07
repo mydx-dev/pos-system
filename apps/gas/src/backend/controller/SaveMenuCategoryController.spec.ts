@@ -9,7 +9,7 @@ import { context } from '../../../tests/contexts/saveMenuCategoryTestContext';
 import {
     saveMenuCategoryRequest,
     saveMenuCategoryResponse,
-} from '../../shared/api/menuCategory';
+} from '@mydx-pos/shared/api/menuCategory';
 
 describe('バリデーション', () => {
     it('セッショントークンが空の場合はエラー', () => {

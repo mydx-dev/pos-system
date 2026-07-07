@@ -1,4 +1,4 @@
-import { User } from '@/../shared/domain/entity/User';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import { routes } from '@/../shared/routes';
 import { useNavigate } from 'react-router-dom';
 import { UserActionMenu } from './UserActionMenu';

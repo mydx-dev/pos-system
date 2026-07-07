@@ -7,7 +7,7 @@ import {
     CreateCustomerInput,
     CreateCustomerOutput,
     createCustomerInput,
-} from '../../shared/api/customer';
+} from '@mydx-pos/shared/api/customer';
 import { Authentication } from '../application/service/Authentication';
 import { CreateCustomerUseCase } from '../application/usecase/CreateCustomerUseCase';
 

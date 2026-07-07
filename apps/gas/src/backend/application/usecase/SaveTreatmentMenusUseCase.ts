@@ -6,7 +6,7 @@ import {
 import {
     SaveTreatmentMenusRequest,
     SaveTreatmentMenusResponse,
-} from '../../../shared/api/treatment';
+} from '@mydx-pos/shared/api/treatment';
 import {
     ALL_TABLES,
     TreatmentMenuTable,

@@ -10,8 +10,8 @@ import {
     NodeUtilities,
 } from '@mydx-dev/gas-boost-runtime/testing';
 import { describe, expect, it, vi } from 'vitest';
-import { Role } from '../../../shared/domain/entity/Role';
-import { User } from '../../../shared/domain/entity/User';
+import { Role } from '@mydx-pos/shared/domain/entity/Role';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import { ALL_TABLES } from '../../infrastructure/database/tables';
 import { UnapproveUserUseCase } from './UnapproveUserUseCase';
 

@@ -1,6 +1,6 @@
 import { SheetDB } from '@mydx-dev/gas-boost-runtime/core';
-import { UserEmail } from '../../../shared/domain/valueObject/UserEmail';
-import { UserPassword } from '../../../shared/domain/valueObject/UserPassword';
+import { UserEmail } from '@mydx-pos/shared/domain/valueObject/UserEmail';
+import { UserPassword } from '@mydx-pos/shared/domain/valueObject/UserPassword';
 import { ALL_TABLES } from '../../infrastructure/database/tables';
 import { PasswordProtection } from '../service/PasswordProtection';
 

@@ -1,4 +1,4 @@
-import { RoleName } from '@/../shared/domain/entity/Role';
+import { RoleName } from '@mydx-pos/shared/domain/entity/Role';
 
 export const RoleBadge: React.FC<{ role: RoleName }> = ({ role }) => {
     if (role === 'システム管理者') {

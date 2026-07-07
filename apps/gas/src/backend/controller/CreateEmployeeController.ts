@@ -7,7 +7,7 @@ import {
     CreateEmployeeInput,
     CreateEmployeeOutput,
     createEmployeeInput,
-} from '../../shared/api/employee';
+} from '@mydx-pos/shared/api/employee';
 import { Authentication } from '../application/service/Authentication';
 import { CreateEmployeeUseCase } from '../application/usecase/CreateEmployeeUseCase';
 import { ForgotPasswordUseCase } from '../application/usecase/ForgotPasswordUseCase';

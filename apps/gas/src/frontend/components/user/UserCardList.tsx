@@ -1,4 +1,4 @@
-import { User } from '@/../shared/domain/entity/User';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import { UserCard } from './UserCard';
 
 export const UserCardList = ({ users }: { users: User[] }) => {

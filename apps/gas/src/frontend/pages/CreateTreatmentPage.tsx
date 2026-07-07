@@ -1,4 +1,4 @@
-import { TreatmentStatus } from '@/../shared/domain/entity/Treatment';
+import { TreatmentStatus } from '@mydx-pos/shared/domain/entity/Treatment';
 import { CustomerCombobox } from '@/components/customer/CustomerCombobox';
 import { StaffCombobox } from '@/components/employee/StaffCombobox';
 import { Button } from '@/components/ui/button';

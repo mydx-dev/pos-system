@@ -1,4 +1,4 @@
-import { Customer } from '@/../shared/domain/entity/Customer';
+import { Customer } from '@mydx-pos/shared/domain/entity/Customer';
 import { routes } from '@/../shared/routes';
 import {
     Combobox,

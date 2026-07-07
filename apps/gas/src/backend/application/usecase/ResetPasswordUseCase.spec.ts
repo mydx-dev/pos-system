@@ -12,8 +12,8 @@ import {
     NodeUtilities,
 } from '@mydx-dev/gas-boost-runtime/testing';
 import { describe, expect, it, vi } from 'vitest';
-import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
-import { User } from '../../../shared/domain/entity/User';
+import { PasswordReset } from '@mydx-pos/shared/domain/entity/PasswordReset';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import { PasswordProtection } from '../../application/service/PasswordProtection';
 import { ALL_TABLES } from '../../infrastructure/database/tables';
 import { ResetPasswordUseCase } from './ResetPasswordUseCase';

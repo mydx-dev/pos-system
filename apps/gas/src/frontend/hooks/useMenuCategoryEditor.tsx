@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
     MenuCategory,
     MenuType,
-} from '../../shared/domain/entity/MenuCategory';
+} from '@mydx-pos/shared/domain/entity/MenuCategory';
 import { useFindMenuCategory } from './useFindMenuCategory';
 import { useSaveMenuCategory } from './useSaveMenuCategory';
 

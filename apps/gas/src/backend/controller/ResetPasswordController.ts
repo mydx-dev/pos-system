@@ -3,7 +3,7 @@ import {
     ResetPasswordInput,
     resetPasswordInputSchema,
     ResetPasswordOutput,
-} from '../../shared/api/user';
+} from '@mydx-pos/shared/api/user';
 import { ResetPasswordUseCase } from '../application/usecase/ResetPasswordUseCase';
 
 export class ResetPasswordController {

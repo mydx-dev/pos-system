@@ -1,5 +1,5 @@
-import { Customer } from '@/../shared/domain/entity/Customer';
-import { Employee } from '@/../shared/domain/entity/Employee';
+import { Customer } from '@mydx-pos/shared/domain/entity/Customer';
+import { Employee } from '@mydx-pos/shared/domain/entity/Employee';
 import { routes } from '@/../shared/routes';
 import { useCustomerFilters } from '@/hooks/useCustomerFilters';
 import { useFindCustomer } from '@/hooks/useFindCustomer';

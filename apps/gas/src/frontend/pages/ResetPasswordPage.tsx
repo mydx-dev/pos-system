@@ -9,7 +9,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { routes } from '../../shared/routes';
-import { passwordSchema } from '../../shared/schemas/form';
+import { passwordSchema } from '@mydx-pos/shared/schemas/form';
 import {
     Field,
     FieldContent,

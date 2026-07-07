@@ -9,7 +9,7 @@ import { context } from '../../../tests/contexts/createPaymentRecordTestContext'
 import {
     createPaymentRecordRequest,
     createPaymentRecordResponse,
-} from '../../shared/api/paymentRecord';
+} from '@mydx-pos/shared/api/paymentRecord';
 
 describe('バリデーション', () => {
     it('レジ端末トークンが空の場合はエラー', () => {

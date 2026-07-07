@@ -7,7 +7,7 @@ import {
     SaveMenuRequest,
     SaveMenuResponse,
     saveMenuRequest,
-} from '../../shared/api/menu';
+} from '@mydx-pos/shared/api/menu';
 import { Authentication } from '../application/service/Authentication';
 import { SaveMenuUseCase } from '../application/usecase/SaveMenuUseCase';
 

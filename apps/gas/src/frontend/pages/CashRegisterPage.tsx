@@ -1,8 +1,8 @@
-import { Customer } from '@/../shared/domain/entity/Customer';
-import { PaymentRecord } from '@/../shared/domain/entity/PaymentRecord';
-import { Treatment } from '@/../shared/domain/entity/Treatment';
-import { TreatmentMenu } from '@/../shared/domain/entity/TreatmentMenu';
-import { ReceiptData } from '@/../shared/domain/valueObject/Receipt';
+import { Customer } from '@mydx-pos/shared/domain/entity/Customer';
+import { PaymentRecord } from '@mydx-pos/shared/domain/entity/PaymentRecord';
+import { Treatment } from '@mydx-pos/shared/domain/entity/Treatment';
+import { TreatmentMenu } from '@mydx-pos/shared/domain/entity/TreatmentMenu';
+import { ReceiptData } from '@mydx-pos/shared/domain/valueObject/Receipt';
 import { CashRegisterModal } from '@/components/register/CashRegisterModal';
 import { CashRegisterTreatmentDetail } from '@/components/register/CashRegisterTreatmentDetail';
 import {

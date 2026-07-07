@@ -2,9 +2,9 @@ import {
     InvalidArgumentError,
     SheetDB,
 } from '@mydx-dev/gas-boost-runtime/core';
-import { RoleName } from '../../../shared/domain/entity/Role';
-import { NewUserNotification } from '../../../shared/domain/valueObject/NewUserNotification';
-import { UserEmail } from '../../../shared/domain/valueObject/UserEmail';
+import { RoleName } from '@mydx-pos/shared/domain/entity/Role';
+import { NewUserNotification } from '@mydx-pos/shared/domain/valueObject/NewUserNotification';
+import { UserEmail } from '@mydx-pos/shared/domain/valueObject/UserEmail';
 import { ALL_TABLES } from '../../infrastructure/database/tables';
 import { PasswordProtection } from '../service/PasswordProtection';
 import { SystemAdmins } from '../service/SystemAdmins';

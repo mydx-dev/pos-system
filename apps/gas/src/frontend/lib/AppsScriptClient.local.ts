@@ -3,7 +3,7 @@ import {
     FetchTransport,
 } from '@mydx-dev/gas-boost-react-apps-script';
 import { ALL_TABLES } from '../../backend/infrastructure/database/tables';
-import { API } from '../../shared/api';
+import { API } from '@mydx-pos/shared/api';
 import { labels } from './AppsScriptClientLabels';
 
 const adminClient = createAppsScriptClient<API, typeof ALL_TABLES>(

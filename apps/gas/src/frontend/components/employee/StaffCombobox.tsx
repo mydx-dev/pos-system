@@ -1,4 +1,4 @@
-import { Employee } from '@/../shared/domain/entity/Employee';
+import { Employee } from '@mydx-pos/shared/domain/entity/Employee';
 import {
     Combobox,
     ComboboxContent,

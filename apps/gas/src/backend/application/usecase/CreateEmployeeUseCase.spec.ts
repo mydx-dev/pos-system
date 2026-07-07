@@ -1,7 +1,7 @@
 import { ForbiddenError } from '@mydx-dev/gas-boost-runtime/core';
 import { describe, expect, it } from 'vitest';
 import { context } from '../../../../tests/contexts/createEmployeeTestContext';
-import { User } from '../../../shared/domain/entity/User';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 
 function correctInput() {
     return {

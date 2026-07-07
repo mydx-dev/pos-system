@@ -3,7 +3,7 @@ import {
     LogoutUserInput,
     logoutUserInputSchema,
     LogoutUserOutput,
-} from '../../shared/api/user';
+} from '@mydx-pos/shared/api/user';
 import { LogoutUserUseCase } from '../application/usecase/LogoutUserUseCase';
 
 export class LogoutUserController {

@@ -11,9 +11,9 @@ import {
 } from '@mydx-dev/gas-boost-runtime/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { systemName } from '../../../shared/config';
-import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
-import { User } from '../../../shared/domain/entity/User';
-import { PasswordResetNotification } from '../../../shared/domain/valueObject/PasswordResetNotification';
+import { PasswordReset } from '@mydx-pos/shared/domain/entity/PasswordReset';
+import { User } from '@mydx-pos/shared/domain/entity/User';
+import { PasswordResetNotification } from '@mydx-pos/shared/domain/valueObject/PasswordResetNotification';
 import { ALL_TABLES } from '../../infrastructure/database/tables';
 import { initializeEmptyTables } from './CreateUserUseCase.spec';
 import { ForgotPasswordUseCase } from './ForgotPasswordUseCase';

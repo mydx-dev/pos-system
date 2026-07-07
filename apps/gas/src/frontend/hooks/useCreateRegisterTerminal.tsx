@@ -1,7 +1,7 @@
 import { server } from '@/lib/AppsScriptClient';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { CreateRegisterTerminalRequest } from '../../shared/api/registerTerminal';
+import { CreateRegisterTerminalRequest } from '@mydx-pos/shared/api/registerTerminal';
 import { useAuth } from './useAuth';
 
 export const useCreateRegisterTerminal = () => {

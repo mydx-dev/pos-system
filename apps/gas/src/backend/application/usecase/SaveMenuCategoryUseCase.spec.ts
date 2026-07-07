@@ -9,7 +9,7 @@ import { context } from '../../../../tests/contexts/saveMenuCategoryTestContext'
 import {
     saveMenuCategoryRequest,
     SaveMenuCategoryRequest,
-} from '../../../shared/api/menuCategory';
+} from '@mydx-pos/shared/api/menuCategory';
 import {
     MenuCategoryTable,
     UserTable,

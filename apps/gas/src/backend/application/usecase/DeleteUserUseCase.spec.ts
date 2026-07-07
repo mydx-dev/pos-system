@@ -11,8 +11,8 @@ import {
 import { describe, expect, it, vi } from 'vitest';
 import { zocker } from 'zocker';
 import { context } from '../../../../tests/contexts/deleteUserTestContext';
-import { Role } from '../../../shared/domain/entity/Role';
-import { User } from '../../../shared/domain/entity/User';
+import { Role } from '@mydx-pos/shared/domain/entity/Role';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import {
     ALL_TABLES,
     EmployeeTable,

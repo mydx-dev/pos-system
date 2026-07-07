@@ -6,7 +6,7 @@ import {
 import {
     CreateCustomerInput,
     CreateCustomerOutput,
-} from '../../../shared/api/customer';
+} from '@mydx-pos/shared/api/customer';
 import {
     ALL_TABLES,
     CustomerTable,

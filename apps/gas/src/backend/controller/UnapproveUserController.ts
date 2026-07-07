@@ -7,7 +7,7 @@ import {
     UnapproveUserInput,
     unapproveUserInputSchema,
     UnapproveUserOutput,
-} from '../../shared/api/user';
+} from '@mydx-pos/shared/api/user';
 import { Authentication } from '../application/service/Authentication';
 import { UnapproveUserUseCase } from '../application/usecase/UnapproveUserUseCase';
 

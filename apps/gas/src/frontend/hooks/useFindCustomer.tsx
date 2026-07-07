@@ -1,8 +1,8 @@
 import { SheetQuery } from '@mydx-dev/gas-boost-runtime/core';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ALL_TABLES } from '../../backend/infrastructure/database/tables';
-import { Customer } from '../../shared/domain/entity/Customer';
-import { customerSchema } from '../../shared/schemas/database';
+import { Customer } from '@mydx-pos/shared/domain/entity/Customer';
+import { customerSchema } from '@mydx-pos/shared/schemas/database';
 import { replicaQL } from '../lib/AppsScriptClient';
 
 export const useFindCustomer = (

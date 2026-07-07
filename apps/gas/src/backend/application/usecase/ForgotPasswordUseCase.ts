@@ -4,8 +4,8 @@ import {
     SheetDB,
 } from '@mydx-dev/gas-boost-runtime/core';
 import { systemName } from '../../../shared/config';
-import { PasswordResetNotification } from '../../../shared/domain/valueObject/PasswordResetNotification';
-import { UserEmail } from '../../../shared/domain/valueObject/UserEmail';
+import { PasswordResetNotification } from '@mydx-pos/shared/domain/valueObject/PasswordResetNotification';
+import { UserEmail } from '@mydx-pos/shared/domain/valueObject/UserEmail';
 import { ALL_TABLES } from '../../infrastructure/database/tables';
 
 export class ForgotPasswordUseCase {

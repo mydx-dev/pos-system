@@ -6,7 +6,7 @@ import {
 import {
     SaveMenuCategoryRequest,
     SaveMenuCategoryResponse,
-} from '../../../shared/api/menuCategory';
+} from '@mydx-pos/shared/api/menuCategory';
 import {
     ALL_TABLES,
     MenuCategoryTable,

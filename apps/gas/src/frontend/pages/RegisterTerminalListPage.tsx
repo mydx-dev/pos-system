@@ -3,7 +3,7 @@ import { Plus, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { CreateRegisterTerminalResponse } from '../../shared/api/registerTerminal';
+import { CreateRegisterTerminalResponse } from '@mydx-pos/shared/api/registerTerminal';
 import { RegisterTerminalCard } from '../components/registerTerminal/RegisterTerminalCard';
 import { RegisterTerminalRegistrationCompleteModal } from '../components/registerTerminal/RegisterTerminalRegistrationCompleteModal';
 import { useCreateRegisterTerminal } from '../hooks/useCreateRegisterTerminal';

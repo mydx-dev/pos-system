@@ -4,7 +4,7 @@ import {
 } from '@mydx-dev/gas-boost-runtime/core';
 import { describe, expect, it, vi } from 'vitest';
 import { context } from '../../../tests/contexts/createEmployeeTestContext';
-import { CreateEmployeeInput } from '../../shared/api/employee';
+import { CreateEmployeeInput } from '@mydx-pos/shared/api/employee';
 
 function correctInput(): CreateEmployeeInput {
     return {

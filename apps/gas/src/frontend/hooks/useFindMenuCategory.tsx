@@ -1,8 +1,8 @@
 import { SheetQuery } from '@mydx-dev/gas-boost-runtime/core';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ALL_TABLES } from '../../backend/infrastructure/database/tables';
-import { MenuCategory } from '../../shared/domain/entity/MenuCategory';
-import { menuCategorySchema } from '../../shared/schemas/database';
+import { MenuCategory } from '@mydx-pos/shared/domain/entity/MenuCategory';
+import { menuCategorySchema } from '@mydx-pos/shared/schemas/database';
 import { replicaQL } from '../lib/AppsScriptClient';
 
 export const useFindMenuCategory = (

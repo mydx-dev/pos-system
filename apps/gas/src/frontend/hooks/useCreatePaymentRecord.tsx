@@ -1,4 +1,4 @@
-import { CreatePaymentRecordRequest } from '@/../shared/api/paymentRecord';
+import { CreatePaymentRecordRequest } from '@mydx-pos/shared/api/paymentRecord';
 import { registerReplica, server } from '@/lib/AppsScriptClient';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';

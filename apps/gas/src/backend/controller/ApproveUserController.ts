@@ -6,7 +6,7 @@ import {
     ApproveUserInput,
     approveUserInputSchema,
     ApproveUserOutput,
-} from '../../shared/api/user';
+} from '@mydx-pos/shared/api/user';
 import { Authentication } from '../application/service/Authentication';
 import { ApproveUserUseCase } from '../application/usecase/ApproveUserUseCase';
 

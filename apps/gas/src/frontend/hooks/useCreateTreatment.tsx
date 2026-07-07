@@ -1,4 +1,4 @@
-import { CreateTreatmentRequest } from '@/../shared/api/treatment';
+import { CreateTreatmentRequest } from '@mydx-pos/shared/api/treatment';
 import { replica, server } from '@/lib/AppsScriptClient';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';

@@ -1,6 +1,6 @@
-import { PaymentRecord } from '@/../shared/domain/entity/PaymentRecord';
-import { Treatment } from '@/../shared/domain/entity/Treatment';
-import { TreatmentMenu } from '@/../shared/domain/entity/TreatmentMenu';
+import { PaymentRecord } from '@mydx-pos/shared/domain/entity/PaymentRecord';
+import { Treatment } from '@mydx-pos/shared/domain/entity/Treatment';
+import { TreatmentMenu } from '@mydx-pos/shared/domain/entity/TreatmentMenu';
 import { Button } from '@/components/ui/button';
 import { Printer, Settings } from 'lucide-react';
 import { dateTimeText, formatCurrency, timeText } from './cashRegisterUtils';

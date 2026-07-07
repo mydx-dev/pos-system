@@ -6,7 +6,7 @@ import {
 import { describe, expect, it } from 'vitest';
 import { zocker } from 'zocker';
 import { context } from '../../../tests/contexts/saveMenuTestContext';
-import { saveMenuRequest, saveMenuResponse } from '../../shared/api/menu';
+import { saveMenuRequest, saveMenuResponse } from '@mydx-pos/shared/api/menu';
 
 describe('バリデーション', () => {
     it('セッショントークンが空の場合はエラー', () => {

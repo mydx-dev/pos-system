@@ -7,7 +7,7 @@ import {
     CreateTreatmentRequest,
     CreateTreatmentResponse,
     createTreatmentRequest,
-} from '../../shared/api/treatment';
+} from '@mydx-pos/shared/api/treatment';
 import { Authentication } from '../application/service/Authentication';
 import { CreateTreatmentUseCase } from '../application/usecase/CreateTreatmentUseCase';
 

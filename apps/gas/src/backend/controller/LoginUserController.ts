@@ -3,7 +3,7 @@ import {
     LoginUserInput,
     loginUserInputSchema,
     LoginUserOutput,
-} from '../../shared/api/user';
+} from '@mydx-pos/shared/api/user';
 import { LoginUserUseCase } from '../application/usecase/LoginUserUseCase';
 
 export class LoginUserController {

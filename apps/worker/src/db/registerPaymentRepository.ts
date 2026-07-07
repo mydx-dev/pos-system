@@ -75,6 +75,18 @@ export type TreatmentRecord = {
     version: number;
 };
 
+export type RegisterTreatmentListRecord = {
+    id: string;
+    customer_id: string;
+    customer_name: string;
+    staff_id: string;
+    staff_name: string;
+    status: TreatmentStatus;
+    start_at: string;
+    total_amount: number;
+    version: number;
+};
+
 export type TreatmentMenuRecord = {
     id: string;
     treatment_id: string;
@@ -227,6 +239,49 @@ export class RegisterPaymentRepository {
         return result.results;
     }
 
+    async listRegisterTreatments() {
+        const result = await this.db
+            .prepare(
+                `SELECT
+                    treatments.id,
+                    treatments.customer_id,
+                    customers.name AS customer_name,
+                    treatments.staff_id,
+                    users.name AS staff_name,
+                    treatments.status,
+                    treatments.start_at,
+                    COALESCE(
+                        SUM(
+                            (treatment_menus.regular_price - treatment_menus.discount_amount)
+                            * treatment_menus.quantity
+                        ),
+                        0
+                    ) AS total_amount,
+                    treatments.version
+                 FROM treatments
+                 INNER JOIN customers
+                    ON customers.id = treatments.customer_id
+                 INNER JOIN users
+                    ON users.id = treatments.staff_id
+                 LEFT JOIN treatment_menus
+                    ON treatment_menus.treatment_id = treatments.id
+                 WHERE treatments.status IN ('予約済み', '来店済み')
+                 GROUP BY
+                    treatments.id,
+                    treatments.customer_id,
+                    customers.name,
+                    treatments.staff_id,
+                    users.name,
+                    treatments.status,
+                    treatments.start_at,
+                    treatments.version
+                 ORDER BY treatments.start_at, treatments.id`
+            )
+            .all<RegisterTreatmentListRecord>();
+
+        return result.results;
+    }
+
     async listTreatmentMenus() {
         const result = await this.db
             .prepare(
@@ -248,6 +303,29 @@ export class RegisterPaymentRepository {
         return result.results;
     }
 
+    async listTreatmentMenusByTreatmentId(treatmentId: string) {
+        const result = await this.db
+            .prepare(
+                `SELECT
+                    id,
+                    treatment_id,
+                    menu_id,
+                    menu_name,
+                    regular_price,
+                    quantity,
+                    discount_amount,
+                    display_order,
+                    version
+                 FROM treatment_menus
+                 WHERE treatment_id = ?
+                 ORDER BY display_order, id`
+            )
+            .bind(treatmentId)
+            .all<TreatmentMenuRecord>();
+
+        return result.results;
+    }
+
     async listMenus() {
         const result = await this.db
             .prepare(
@@ -263,7 +341,7 @@ export class RegisterPaymentRepository {
                     category_id,
                     version
                  FROM menus
-                 ORDER BY id`
+                 ORDER BY menu_number, id`
             )
             .all<MenuRecord>();
 
@@ -279,7 +357,7 @@ export class RegisterPaymentRepository {
                     menu_type,
                     version
                  FROM menu_categories
-                 ORDER BY id`
+                 ORDER BY name, id`
             )
             .all<MenuCategoryRecord>();
 
@@ -321,6 +399,49 @@ export class RegisterPaymentRepository {
                         note,
                         version
                      FROM treatments
+                     WHERE id = ?
+                     LIMIT 1`
+                )
+                .bind(id)
+        );
+    }
+
+    findCustomerById(id: string) {
+        return firstOrNull<CustomerRecord>(
+            this.db
+                .prepare(
+                    `SELECT
+                        id,
+                        name,
+                        primary_staff_id,
+                        is_staff_fixed,
+                        email,
+                        phone_number,
+                        birth_date,
+                        postal_code,
+                        address,
+                        note,
+                        version
+                     FROM customers
+                     WHERE id = ?
+                     LIMIT 1`
+                )
+                .bind(id)
+        );
+    }
+
+    findUserById(id: string) {
+        return firstOrNull<UserRecord>(
+            this.db
+                .prepare(
+                    `SELECT
+                        id,
+                        name,
+                        email,
+                        password,
+                        approval,
+                        version
+                     FROM users
                      WHERE id = ?
                      LIMIT 1`
                 )

@@ -4,6 +4,7 @@ export * from './api/employee';
 export * from './api/menu';
 export * from './api/menuCategory';
 export * from './api/paymentRecord';
+export * from './api/register';
 export * from './api/registerTerminal';
 export * from './api/system';
 export * from './api/treatment';

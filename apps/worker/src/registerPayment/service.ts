@@ -7,6 +7,14 @@ import type {
     LoginRegisterTerminalRequest,
     LoginRegisterTerminalResponse,
 } from '@mydx-pos/shared/api/registerTerminal';
+import type {
+    GetRegisterTreatmentDetailRequest,
+    GetRegisterTreatmentDetailResponse,
+    ListRegisterMenusRequest,
+    ListRegisterMenusResponse,
+    ListRegisterTreatmentsRequest,
+    ListRegisterTreatmentsResponse,
+} from '@mydx-pos/shared/api/register';
 import type { PullDatabaseRegisterTerminalOutput } from '@mydx-pos/shared/api/system';
 import {
     RegisterPaymentRepository,
@@ -16,6 +24,7 @@ import {
     type MenuRecord,
     type PaymentRecordInputRow,
     type PaymentRecordRow,
+    type RegisterTreatmentListRecord,
     type RegisterTerminalRecord,
     type TreatmentMenuRecord,
     type TreatmentRecord,
@@ -31,11 +40,15 @@ export type RegisterPaymentStore = {
     listEmployees: RegisterPaymentRepository['listEmployees'];
     listUsers: RegisterPaymentRepository['listUsers'];
     listTreatments: RegisterPaymentRepository['listTreatments'];
+    listRegisterTreatments: RegisterPaymentRepository['listRegisterTreatments'];
     listTreatmentMenus: RegisterPaymentRepository['listTreatmentMenus'];
+    listTreatmentMenusByTreatmentId: RegisterPaymentRepository['listTreatmentMenusByTreatmentId'];
     listMenus: RegisterPaymentRepository['listMenus'];
     listMenuCategories: RegisterPaymentRepository['listMenuCategories'];
     listPaymentRecords: RegisterPaymentRepository['listPaymentRecords'];
     findTreatmentById: RegisterPaymentRepository['findTreatmentById'];
+    findCustomerById: RegisterPaymentRepository['findCustomerById'];
+    findUserById: RegisterPaymentRepository['findUserById'];
     listPaymentRecordsByTreatmentId: RegisterPaymentRepository['listPaymentRecordsByTreatmentId'];
     createPaymentRecord: RegisterPaymentRepository['createPaymentRecord'];
 };
@@ -168,6 +181,20 @@ const paymentRecord = (record: PaymentRecordRow) => ({
     発生日時: record.occurred_at,
     備考: record.note,
     対象精算ID: record.target_payment_record_id,
+    バージョン: record.version,
+});
+
+const registerTreatmentListRecord = (
+    record: RegisterTreatmentListRecord
+): ListRegisterTreatmentsResponse['treatments'][number] => ({
+    ID: record.id,
+    顧客ID: record.customer_id,
+    顧客名: record.customer_name,
+    担当スタッフID: record.staff_id,
+    担当スタッフ名: record.staff_name,
+    状態: record.status,
+    開始日時: record.start_at,
+    合計金額: record.total_amount,
     バージョン: record.version,
 });
 
@@ -307,6 +334,8 @@ export class RegisterPaymentService {
     async pullDatabaseRegisterTerminal(
         registerTerminalToken: string
     ): Promise<PullDatabaseRegisterTerminalOutput> {
+        // Legacy compatibility API for the GAS / Spreadsheet-era register sync model.
+        // New register screen implementations should use purpose-specific register APIs.
         await this.authenticateRegisterTerminal(registerTerminalToken);
 
         const [
@@ -363,6 +392,70 @@ export class RegisterPaymentService {
                 records: paymentRecords.map(paymentRecord),
             },
         ];
+    }
+
+    async listRegisterTreatments({
+        registerTerminalToken,
+    }: ListRegisterTreatmentsRequest): Promise<ListRegisterTreatmentsResponse> {
+        await this.authenticateRegisterTerminal(registerTerminalToken);
+
+        const treatments = await this.repository.listRegisterTreatments();
+
+        return {
+            treatments: treatments.map(registerTreatmentListRecord),
+        };
+    }
+
+    async getRegisterTreatmentDetail({
+        registerTerminalToken,
+        treatmentId,
+    }: GetRegisterTreatmentDetailRequest): Promise<GetRegisterTreatmentDetailResponse> {
+        await this.authenticateRegisterTerminal(registerTerminalToken);
+
+        const treatment = await this.repository.findTreatmentById(treatmentId);
+        if (!treatment) {
+            throw new AuthApiError('validation_error', 'Treatment not found.');
+        }
+
+        const [customer, staff, treatmentMenus, paymentRecords] =
+            await Promise.all([
+                this.repository.findCustomerById(treatment.customer_id),
+                this.repository.findUserById(treatment.staff_id),
+                this.repository.listTreatmentMenusByTreatmentId(treatment.id),
+                this.repository.listPaymentRecordsByTreatmentId(treatment.id),
+            ]);
+
+        if (!customer || !staff) {
+            throw new AuthApiError('validation_error', 'Treatment not found.');
+        }
+
+        return {
+            treatment: treatmentRecord(treatment),
+            customer: customerRecord(customer),
+            staff: {
+                ユーザーID: staff.id,
+                氏名: staff.name,
+            },
+            treatmentMenus: treatmentMenus.map(treatmentMenuRecord),
+            paymentRecords: paymentRecords.map(paymentRecord),
+            summary: calculateSummary(paymentRecords),
+        };
+    }
+
+    async listRegisterMenus({
+        registerTerminalToken,
+    }: ListRegisterMenusRequest): Promise<ListRegisterMenusResponse> {
+        await this.authenticateRegisterTerminal(registerTerminalToken);
+
+        const [menuCategories, menus] = await Promise.all([
+            this.repository.listMenuCategories(),
+            this.repository.listMenus(),
+        ]);
+
+        return {
+            menuCategories: menuCategories.map(menuCategoryRecord),
+            menus: menus.map(menuRecord),
+        };
     }
 
     async createPaymentRecord(

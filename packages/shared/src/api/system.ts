@@ -53,6 +53,10 @@ export const pullDatabaseRegisterTerminalInput = z.object({
     registerTerminalToken: z.string(),
 });
 
+/**
+ * Legacy compatibility API for the GAS / Spreadsheet-era register sync model.
+ * New register screen implementations should use purpose-specific register APIs.
+ */
 export type PullDatabaseRegisterTerminalInput = z.infer<
     typeof pullDatabaseRegisterTerminalInput
 >;

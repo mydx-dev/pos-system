@@ -1,0 +1,19 @@
+{
+    "name": "@mydx-pos/worker",
+    "private": true,
+    "type": "module",
+    "dependencies": {
+        "@mydx-pos/shared": "workspace:*"
+    },
+    "devDependencies": {
+        "typescript": "^6.0.3",
+        "wrangler": "^4.49.0"
+    },
+    "scripts": {
+        "dev": "wrangler dev",
+        "build": "wrangler deploy --dry-run",
+        "typecheck": "tsc --noEmit",
+        "check": "pnpm typecheck && pnpm build",
+        "types": "wrangler types"
+    }
+}

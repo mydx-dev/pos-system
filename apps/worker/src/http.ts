@@ -60,6 +60,7 @@ const corsHeaders = ({ env, request }: HttpContext) => {
     // Authentication is expected to use Bearer tokens in Authorization, not browser credentials.
     if (origin && parseAllowedOrigins(env).includes(origin)) {
         headers['access-control-allow-origin'] = origin;
+        headers['access-control-allow-credentials'] = 'true';
     }
 
     return headers;

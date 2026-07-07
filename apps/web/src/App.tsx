@@ -60,7 +60,6 @@ type StatusFilter = '来店済み' | '予約済み' | '精算済み' | 'all';
 type SelectedCharacterEncoding = NonNullable<CharacterEncoding>;
 type SelectedCommand = NonNullable<Command>;
 
-const tokenStorageKey = 'registerTerminalToken';
 const terminalStorageKey = 'registerTerminal';
 const defaultEncoding: SelectedCharacterEncoding = 'shiftjis';
 const defaultCommand: SelectedCommand = 'escpos';
@@ -105,6 +104,7 @@ const rpc = async <TResponse, TRequest = unknown>(
     try {
         response = await fetch(`${apiBaseUrl()}/rpc/${name}`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'content-type': 'application/json',
             },
@@ -148,27 +148,27 @@ const registerApi = {
             'loginRegisterTerminal',
             input
         ),
-    listRegisterTreatments: (registerTerminalToken: string) =>
-        rpc<
-            ListRegisterTreatmentsResponse,
-            { registerTerminalToken: string }
-        >('listRegisterTreatments', { registerTerminalToken }),
-    getRegisterTreatmentDetail: (
-        registerTerminalToken: string,
-        treatmentId: string
-    ) =>
+    listRegisterTreatments: () =>
+        rpc<ListRegisterTreatmentsResponse>('listRegisterTreatments'),
+    getRegisterTreatmentDetail: (treatmentId: string) =>
         rpc<
             GetRegisterTreatmentDetailResponse,
-            { registerTerminalToken: string; treatmentId: string }
+            { treatmentId: string }
         >('getRegisterTreatmentDetail', {
-            registerTerminalToken,
             treatmentId,
         }),
-    createPaymentRecord: (input: CreatePaymentRecordRequest) =>
-        rpc<CreatePaymentRecordResponse, CreatePaymentRecordRequest>(
+    createPaymentRecord: (
+        paymentRecord: CreatePaymentRecordRequest['paymentRecord']
+    ) =>
+        rpc<
+            CreatePaymentRecordResponse,
+            { paymentRecord: CreatePaymentRecordRequest['paymentRecord'] }
+        >(
             'createPaymentRecord',
-            input
+            { paymentRecord }
         ),
+    logoutRegisterTerminal: () =>
+        rpc<{ ok: true }>('logoutRegisterTerminal'),
 };
 
 const formatCurrency = (value: number) =>
@@ -504,11 +504,9 @@ const ErrorMessage = ({ message }: { message: string }) => (
 );
 
 const RegisterPage = ({
-    token,
     terminal,
     onLogout,
 }: {
-    token: string;
     terminal: RegisterTerminal | null;
     onLogout: () => void;
 }) => {
@@ -545,7 +543,7 @@ const RegisterPage = ({
         setError('');
 
         try {
-            const response = await registerApi.listRegisterTreatments(token);
+            const response = await registerApi.listRegisterTreatments();
             setRows(response.treatments);
             setSelectedTreatmentId((current) => {
                 if (
@@ -565,7 +563,7 @@ const RegisterPage = ({
         } finally {
             setIsLoadingRows(false);
         }
-    }, [onLogout, token]);
+    }, [onLogout]);
 
     const loadDetail = useCallback(
         async (treatmentId: string) => {
@@ -579,10 +577,7 @@ const RegisterPage = ({
 
             try {
                 setDetail(
-                    await registerApi.getRegisterTreatmentDetail(
-                        token,
-                        treatmentId
-                    )
+                    await registerApi.getRegisterTreatmentDetail(treatmentId)
                 );
             } catch (caught) {
                 if (caught instanceof WorkerApiError && caught.status === 401) {
@@ -594,7 +589,7 @@ const RegisterPage = ({
                 setIsLoadingDetail(false);
             }
         },
-        [onLogout, token]
+        [onLogout]
     );
 
     useEffect(() => {
@@ -736,15 +731,12 @@ const RegisterPage = ({
 
         try {
             const response = await registerApi.createPaymentRecord({
-                registerTerminalToken: token,
-                paymentRecord: {
-                    施術ID: detail.treatment.ID,
-                    種別: operation,
-                    金額: operationAmount,
-                    支払方法: '現金',
-                    備考: operationNote.trim() || null,
-                    対象精算ID: targetPaymentRecordId,
-                },
+                施術ID: detail.treatment.ID,
+                種別: operation,
+                金額: operationAmount,
+                支払方法: '現金',
+                備考: operationNote.trim() || null,
+                対象精算ID: targetPaymentRecordId,
             });
 
             const receipt = buildReceipt(
@@ -1410,29 +1402,26 @@ const PrinterConfigModal = ({
 );
 
 export const App = () => {
-    const [token, setToken] = useState<string | null>(() =>
-        localStorage.getItem(tokenStorageKey)
-    );
     const [terminal, setTerminal] = useState<RegisterTerminal | null>(() =>
         readStoredTerminal()
     );
 
-    const login = (nextToken: string, nextTerminal: RegisterTerminal) => {
-        localStorage.setItem(tokenStorageKey, nextToken);
+    const login = (_nextToken: string, nextTerminal: RegisterTerminal) => {
         localStorage.setItem(terminalStorageKey, JSON.stringify(nextTerminal));
-        setToken(nextToken);
         setTerminal(nextTerminal);
     };
 
     const logout = useCallback(() => {
-        localStorage.removeItem(tokenStorageKey);
         localStorage.removeItem(terminalStorageKey);
-        setToken(null);
         setTerminal(null);
     }, []);
 
-    return token ? (
-        <RegisterPage token={token} terminal={terminal} onLogout={logout} />
+    const logoutWithServer = useCallback(() => {
+        void registerApi.logoutRegisterTerminal().finally(logout);
+    }, [logout]);
+
+    return terminal ? (
+        <RegisterPage terminal={terminal} onLogout={logoutWithServer} />
     ) : (
         <LoginPage onLogin={login} />
     );

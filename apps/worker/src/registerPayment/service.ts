@@ -31,7 +31,9 @@ import {
     type UserRecord,
 } from '../db/registerPaymentRepository';
 import { AuthApiError } from '../auth/service';
-import { randomId, sha256Base64 } from '../auth/crypto';
+import { hashToken, randomId, randomToken, sha256Base64 } from '../auth/crypto';
+
+const REGISTER_TERMINAL_SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 export type RegisterPaymentStore = {
     listEnabledRegisterTerminals: RegisterPaymentRepository['listEnabledRegisterTerminals'];
@@ -51,7 +53,20 @@ export type RegisterPaymentStore = {
     findUserById: RegisterPaymentRepository['findUserById'];
     listPaymentRecordsByTreatmentId: RegisterPaymentRepository['listPaymentRecordsByTreatmentId'];
     createPaymentRecord: RegisterPaymentRepository['createPaymentRecord'];
+    createRegisterTerminalSession: RegisterPaymentRepository['createRegisterTerminalSession'];
+    findActiveRegisterTerminalBySession: RegisterPaymentRepository['findActiveRegisterTerminalBySession'];
+    touchRegisterTerminalSession: RegisterPaymentRepository['touchRegisterTerminalSession'];
+    deleteRegisterTerminalSession: RegisterPaymentRepository['deleteRegisterTerminalSession'];
 };
+
+type RegisterTerminalAuthInput = {
+    registerTerminalToken?: string | null;
+    registerTerminalSessionToken?: string | null;
+};
+
+type RegisterTerminalSessionRequest<
+    T extends { registerTerminalToken: string },
+> = Omit<T, 'registerTerminalToken'> & RegisterTerminalAuthInput;
 
 const requirePasswordPepper = (env: Env) => {
     const pepper = env.PASSWORD_PEPPER;
@@ -321,14 +336,77 @@ export class RegisterPaymentService {
         );
     }
 
-    async loginRegisterTerminal({
-        token,
-    }: LoginRegisterTerminalRequest): Promise<LoginRegisterTerminalResponse> {
+    private async authenticateRegisterTerminalSession(sessionToken: string) {
+        const tokenHash = await hashToken(sessionToken);
+        const terminal =
+            await this.repository.findActiveRegisterTerminalBySession(
+                tokenHash,
+                Date.now()
+            );
+
+        if (!terminal) {
+            throw new AuthApiError(
+                'unauthorized',
+                'Invalid register terminal session.'
+            );
+        }
+
+        await this.repository.touchRegisterTerminalSession(tokenHash, this.now());
+        return terminal;
+    }
+
+    private async authenticateRegisterTerminalRequest({
+        registerTerminalSessionToken,
+        registerTerminalToken,
+    }: RegisterTerminalAuthInput) {
+        if (registerTerminalSessionToken) {
+            return this.authenticateRegisterTerminalSession(
+                registerTerminalSessionToken
+            );
+        }
+
+        if (registerTerminalToken) {
+            return (await this.authenticateRegisterTerminal(registerTerminalToken))
+                .terminal;
+        }
+
+        throw new AuthApiError(
+            'unauthorized',
+            'Register terminal session is required.'
+        );
+    }
+
+    async loginRegisterTerminal({ token }: LoginRegisterTerminalRequest): Promise<
+        LoginRegisterTerminalResponse & {
+            sessionToken: string;
+            sessionExpiresAt: number;
+        }
+    > {
         const { terminal, usedAt } = await this.authenticateRegisterTerminal(token);
+        const sessionToken = randomToken();
+        const sessionExpiresAt = Date.now() + REGISTER_TERMINAL_SESSION_TTL_MS;
+        await this.repository.createRegisterTerminalSession(
+            await hashToken(sessionToken),
+            terminal.id,
+            sessionExpiresAt,
+            usedAt
+        );
 
         return {
             registerTerminal: registerTerminalResponse(terminal, usedAt),
+            sessionToken,
+            sessionExpiresAt,
         };
+    }
+
+    async logoutRegisterTerminal(sessionToken: string | null | undefined) {
+        if (sessionToken) {
+            await this.repository.deleteRegisterTerminalSession(
+                await hashToken(sessionToken)
+            );
+        }
+
+        return { ok: true as const };
     }
 
     async pullDatabaseRegisterTerminal(
@@ -394,10 +472,10 @@ export class RegisterPaymentService {
         ];
     }
 
-    async listRegisterTreatments({
-        registerTerminalToken,
-    }: ListRegisterTreatmentsRequest): Promise<ListRegisterTreatmentsResponse> {
-        await this.authenticateRegisterTerminal(registerTerminalToken);
+    async listRegisterTreatments(
+        input: RegisterTerminalSessionRequest<ListRegisterTreatmentsRequest>
+    ): Promise<ListRegisterTreatmentsResponse> {
+        await this.authenticateRegisterTerminalRequest(input);
 
         const treatments = await this.repository.listRegisterTreatments();
 
@@ -407,10 +485,10 @@ export class RegisterPaymentService {
     }
 
     async getRegisterTreatmentDetail({
-        registerTerminalToken,
         treatmentId,
-    }: GetRegisterTreatmentDetailRequest): Promise<GetRegisterTreatmentDetailResponse> {
-        await this.authenticateRegisterTerminal(registerTerminalToken);
+        ...authInput
+    }: RegisterTerminalSessionRequest<GetRegisterTreatmentDetailRequest>): Promise<GetRegisterTreatmentDetailResponse> {
+        await this.authenticateRegisterTerminalRequest(authInput);
 
         const treatment = await this.repository.findTreatmentById(treatmentId);
         if (!treatment) {
@@ -442,10 +520,10 @@ export class RegisterPaymentService {
         };
     }
 
-    async listRegisterMenus({
-        registerTerminalToken,
-    }: ListRegisterMenusRequest): Promise<ListRegisterMenusResponse> {
-        await this.authenticateRegisterTerminal(registerTerminalToken);
+    async listRegisterMenus(
+        input: RegisterTerminalSessionRequest<ListRegisterMenusRequest>
+    ): Promise<ListRegisterMenusResponse> {
+        await this.authenticateRegisterTerminalRequest(input);
 
         const [menuCategories, menus] = await Promise.all([
             this.repository.listMenuCategories(),
@@ -459,9 +537,9 @@ export class RegisterPaymentService {
     }
 
     async createPaymentRecord(
-        input: CreatePaymentRecordRequest
+        input: RegisterTerminalSessionRequest<CreatePaymentRecordRequest>
     ): Promise<CreatePaymentRecordResponse> {
-        await this.authenticateRegisterTerminal(input.registerTerminalToken);
+        await this.authenticateRegisterTerminalRequest(input);
 
         const treatment = await this.repository.findTreatmentById(
             input.paymentRecord.施術ID

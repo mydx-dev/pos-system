@@ -64,3 +64,10 @@ export const loginRegisterTerminalResponse = z.object({
 export type LoginRegisterTerminalResponse = z.infer<
     typeof loginRegisterTerminalResponse
 >;
+
+export const logoutRegisterTerminalResponse = z.object({
+    ok: z.literal(true),
+});
+export type LogoutRegisterTerminalResponse = z.infer<
+    typeof logoutRegisterTerminalResponse
+>;

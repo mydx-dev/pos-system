@@ -18,6 +18,11 @@ export type UserWithRole = {
     role: RoleName;
 };
 
+const changedRows = (result: D1Result) => {
+    const changes = result.meta.changes;
+    return typeof changes === 'number' ? changes : 0;
+};
+
 export class AuthRepository {
     constructor(private readonly db: D1Database) {}
 
@@ -26,7 +31,7 @@ export class AuthRepository {
             .prepare("SELECT value FROM settings WHERE key = 'setup_completed'")
             .first<{ value: string }>();
 
-        if (setting) {
+        if (setting?.value === 'true' || setting?.value === 'false') {
             return setting.value === 'true';
         }
 
@@ -68,6 +73,27 @@ export class AuthRepository {
             .first<{ count: number }>();
 
         return result?.count ?? 0;
+    }
+
+    async tryAcquireSetupLock() {
+        const result = await this.db
+            .prepare(
+                `INSERT INTO settings (key, value, updated_at)
+                 VALUES ('setup_completed', 'creating', ?)
+                 ON CONFLICT(key) DO NOTHING`
+            )
+            .bind(new Date().toISOString())
+            .run();
+
+        return changedRows(result) === 1;
+    }
+
+    async releaseSetupLock() {
+        await this.db
+            .prepare(
+                "DELETE FROM settings WHERE key = 'setup_completed' AND value = 'creating'"
+            )
+            .run();
     }
 
     async createUser(user: CreateUserRecord) {
@@ -117,7 +143,7 @@ export class AuthRepository {
             .first<{ id: string; email: string }>();
     }
 
-    async findUserByResetToken(token: string) {
+    async findUserByResetTokenHash(tokenHash: string) {
         return this.db
             .prepare(
                 `SELECT
@@ -128,11 +154,15 @@ export class AuthRepository {
                  WHERE password_resets.token = ?
                  LIMIT 1`
             )
-            .bind(token)
+            .bind(tokenHash)
             .first<{ id: string; expires_at: number }>();
     }
 
-    async replacePasswordReset(userId: string, token: string, expiresAt: number) {
+    async replacePasswordReset(
+        userId: string,
+        tokenHash: string,
+        expiresAt: number
+    ) {
         await this.db
             .prepare(
                 `INSERT INTO password_resets (user_id, token, expires_at)
@@ -141,7 +171,7 @@ export class AuthRepository {
                     token = excluded.token,
                     expires_at = excluded.expires_at`
             )
-            .bind(userId, token, expiresAt)
+            .bind(userId, tokenHash, expiresAt)
             .run();
     }
 

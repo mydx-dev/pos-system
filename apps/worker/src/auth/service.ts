@@ -64,7 +64,16 @@ export class AuthService {
 
         const userId = randomId();
         const adminCount = await this.repository.countSystemAdmins();
-        const isFirstAdmin = adminCount === 0;
+        const isFirstSetupRequest = adminCount === 0;
+        const hasSetupLock = isFirstSetupRequest
+            ? await this.repository.tryAcquireSetupLock()
+            : false;
+
+        if (isFirstSetupRequest && !hasSetupLock) {
+            throw new AuthApiError('conflict', 'Initial setup is already running.');
+        }
+
+        const isFirstAdmin = hasSetupLock;
         const passwordHash = await hashPassword(
             input.password,
             userId,
@@ -82,7 +91,13 @@ export class AuthService {
             });
         } catch (caught) {
             if (caught instanceof Error && caught.message.includes('UNIQUE')) {
+                if (hasSetupLock) {
+                    await this.repository.releaseSetupLock();
+                }
                 throw new AuthApiError('conflict', 'User already exists.');
+            }
+            if (hasSetupLock) {
+                await this.repository.releaseSetupLock();
             }
             throw caught;
         }
@@ -137,11 +152,13 @@ export class AuthService {
             return { ok: true };
         }
 
+        const rawResetToken = randomToken();
         await this.repository.replacePasswordReset(
             user.id,
-            randomToken(),
+            await hashToken(rawResetToken),
             Date.now() + PASSWORD_RESET_TTL_MS
         );
+        // Email delivery is intentionally left for a provider-specific follow-up.
 
         return { ok: true };
     }
@@ -156,7 +173,9 @@ export class AuthService {
             throw new AuthApiError('validation_error', passwordError);
         }
 
-        const reset = await this.repository.findUserByResetToken(input.token);
+        const reset = await this.repository.findUserByResetTokenHash(
+            await hashToken(input.token)
+        );
         if (!reset || reset.expires_at < Date.now()) {
             throw new AuthApiError('forbidden', 'Invalid or expired token.');
         }

@@ -1,4 +1,6 @@
 {
+    "name": "pos-system",
+    "private": true,
     "devDependencies": {
         "@emotion/cache": "^11.14.0",
         "@emotion/react": "^11.14.0",
@@ -81,23 +83,23 @@
         "zod": "4.4.3"
     },
     "scripts": {
-        "test:component": "pnpm vitest src/frontend/**/*.{spec,test}.tsx --run --config vitest.frontend.config.ts --coverage",
-        "test:page": "pnpm vitest src/frontend/pages/**/*.{spec,test}.tsx --run --config vitest.frontend.config.ts --coverage",
-        "test:layout": "pnpm vitest src/frontend/layouts/**/*.{spec,test}.tsx --run --config vitest.frontend.config.ts --coverage",
-        "test:hook": "pnpm vitest src/frontend/hooks/**/*.{spec,test}.ts --run --config vitest.frontend.config.ts --coverage",
-        "test:route": "pnpm vitest src/frontend/routes/**/*.{spec,test}.tsx --run --config vitest.frontend.config.ts --coverage",
-        "format": "prettier . --write ",
-        "format:check": "prettier . --check",
-        "typecheck": "tsc --noEmit",
-        "lint": "pnpm eslint . --ext .ts,.tsx",
-        "test:back": "pnpm vitest --run --config vitest.backend.config.ts --coverage",
-        "test:tables": "pnpm vitest src/backend/infrastructure/database/tables.spec.ts --run --config vitest.backend.config.ts --coverage",
-        "test:domain": "pnpm vitest src/shared/domain/**/*.{spec,test}.ts --run --config vitest.backend.config.ts --coverage",
-        "test:app": "pnpm vitest src/backend/application/**/*.{spec,test}.ts --run --config vitest.backend.config.ts --coverage",
-        "test:controller": "pnpm vitest src/backend/controller/*.{spec,test}.ts --run --config vitest.backend.config.ts --coverage",
-        "dev": "pnpm vite --mode dev",
-        "build": "pnpm gas-boost build dev",
-        "push": "pnpm gas-boost push dev",
-        "deploy": "pnpm gas-boost deploy dev"
+        "dev:gas": "pnpm --filter @mydx-pos/gas dev",
+        "build:gas": "pnpm --filter @mydx-pos/gas build",
+        "test:gas": "pnpm --filter @mydx-pos/gas test",
+        "format:gas": "pnpm --filter @mydx-pos/gas format",
+        "format:check:gas": "pnpm --filter @mydx-pos/gas format:check",
+        "lint:gas": "pnpm --filter @mydx-pos/gas lint",
+        "typecheck:gas": "pnpm --filter @mydx-pos/gas typecheck",
+        "push:gas": "pnpm --filter @mydx-pos/gas push",
+        "deploy:gas": "pnpm --filter @mydx-pos/gas deploy",
+        "dev": "pnpm dev:gas",
+        "build": "pnpm build:gas",
+        "test": "pnpm test:gas",
+        "format": "pnpm format:gas",
+        "format:check": "pnpm format:check:gas",
+        "lint": "pnpm lint:gas",
+        "typecheck": "pnpm typecheck:gas",
+        "push": "pnpm push:gas",
+        "deploy": "pnpm deploy:gas"
     }
 }

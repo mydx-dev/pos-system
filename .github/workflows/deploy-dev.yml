@@ -69,22 +69,22 @@ jobs:
 
       - name: Write clasp config
         run: |
-          mkdir -p config
-          printf '%s' "$CLASP_JSON" > config/.clasp.dev.json
+          mkdir -p apps/gas/config
+          printf '%s' "$CLASP_JSON" > apps/gas/config/.clasp.dev.json
         env:
           CLASP_JSON: ${{ secrets.CLASP_JSON_DEV }}
 
       - name: Build project
-        run: pnpm gas-boost build dev
+        run: pnpm run build:gas
 
       - name: Push to GAS
         run: |
-          pnpm gas-boost push dev
+          pnpm run push:gas
 
       - name: Deploy to GAS
         id: deploy
         run: |
-          pnpm gas-boost deploy dev | tee deploy.log
+          pnpm run deploy:gas | tee deploy.log
 
           URL=$(grep -Eo 'WEB_APP_URL=\S+' deploy.log | tail -n1 | cut -d= -f2-)
           DEPLOY_ID=$(grep -Eo 'DEPLOY_ID=\S+' deploy.log | tail -n1 | cut -d= -f2-)

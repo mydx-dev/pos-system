@@ -382,12 +382,8 @@ container.register({
         }
     ).singleton(),
     createPaymentRecordUseCase: asFunction(
-        ({ permissionCheck, db, existsCheck }: AppContainer) => {
-            return new CreatePaymentRecordUseCase(
-                permissionCheck,
-                db,
-                existsCheck
-            );
+        ({ db, existsCheck }: AppContainer) => {
+            return new CreatePaymentRecordUseCase(db, existsCheck);
         }
     ).singleton(),
     createRegisterTerminalUseCase: asFunction(
@@ -576,9 +572,12 @@ container.register({
         }
     ).singleton(),
     createPaymentRecordController: asFunction(
-        ({ authentication, createPaymentRecordUseCase }: AppContainer) => {
+        ({
+            registerTerminalAuthentication,
+            createPaymentRecordUseCase,
+        }: AppContainer) => {
             return new CreatePaymentRecordController(
-                authentication,
+                registerTerminalAuthentication,
                 createPaymentRecordUseCase
             );
         }

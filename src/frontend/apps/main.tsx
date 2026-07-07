@@ -6,6 +6,7 @@ import { AuthGuard } from '@/guards/AuthGuard';
 import { InitializeGuard } from '@/guards/InitializeGuard';
 import { RegisterGuard } from '@/guards/RegisterGuard';
 import { RegisterLayout } from '@/layouts/register/RegisterLayout';
+import { CashRegisterPage } from '@/pages/CashRegisterPage';
 import { CreateCustomerPage } from '@/pages/CreateCustomerPage';
 import { CreateEmployeePage } from '@/pages/CreateEmployeePage';
 import { CreateTreatmentPage } from '@/pages/CreateTreatmentPage';
@@ -109,7 +110,9 @@ createRoot(document.getElementById('root')!).render(
                                                             routes.register
                                                                 .cashier
                                                         }
-                                                        element={<></>}
+                                                        element={
+                                                            <CashRegisterPage />
+                                                        }
                                                     />
                                                 </Route>
                                             </Route>

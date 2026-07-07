@@ -14,7 +14,7 @@ export const paymentRecordSummarySchema = z.object({
 export type PaymentSummary = z.infer<typeof paymentRecordSummarySchema>;
 
 export const createPaymentRecordRequest = z.object({
-    sessionToken: z.string(),
+    registerTerminalToken: z.string(),
     paymentRecord: paymentRecordSchema
         .pick({
             施術ID: true,

@@ -103,7 +103,6 @@ const endTimeText = (date: string, time: string, duration: number) => {
     );
 };
 
-// eslint-disable-next-line complexity
 export const CreateTreatmentPage = () => {
     const { userId } = useAuth();
     const customers = useFindCustomer();

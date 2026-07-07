@@ -8,7 +8,10 @@ import {
     NodeUtilities,
 } from '@mydx-dev/gas-boost-runtime/testing';
 import { describe, expect, it, vi } from 'vitest';
-import { ALL_TABLES } from '../../infrastructure/database/tables';
+import {
+    ALL_TABLES,
+    TreatmentTable,
+} from '../../infrastructure/database/tables';
 import { PullDataBaseUseCase } from './PullDataBaseUseCase';
 
 function factory() {
@@ -30,6 +33,7 @@ function factory() {
         ['4', 'ユーザー'],
         ['5', 'ユーザー'],
     ]);
+    dataStore.set(':施術', [Object.keys(TreatmentTable.schema.def.shape)]);
 
     const gateway = new InMemoryGateway(dataStore);
     const db = new SheetDB(
@@ -59,6 +63,10 @@ describe('SyncDataBaseUseCase', () => {
             const result = usecase.execute('2');
 
             it('ユーザーテーブルは自分のみ取得できる', () => {
+                expect(result[0].table).toEqual({
+                    name: 'ユーザー',
+                    primaryKey: 'ID',
+                });
                 expect(result[0].records).toEqual([
                     {
                         ID: '2',
@@ -70,6 +78,10 @@ describe('SyncDataBaseUseCase', () => {
             });
 
             it('権限テーブルは自分のみ取得できる', () => {
+                expect(result[1].table).toEqual({
+                    name: 'ロール',
+                    primaryKey: 'ユーザーID',
+                });
                 expect(result[1].records).toEqual([
                     {
                         ユーザーID: '2',

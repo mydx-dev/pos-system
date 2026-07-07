@@ -20,7 +20,8 @@
             "vite/client",
             "@types/node",
             "vitest/globals",
-            "@testing-library/jest-dom"
+            "@testing-library/jest-dom",
+            "w3c-web-usb"
         ],
         "paths": {
             "@/*": ["./src/frontend/*"]

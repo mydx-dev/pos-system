@@ -19,6 +19,14 @@ import type {
     RefreshRegisterTerminalTokenResponse,
 } from './registerTerminal';
 import type {
+    GetRegisterTreatmentDetailRequest,
+    GetRegisterTreatmentDetailResponse,
+    ListRegisterMenusRequest,
+    ListRegisterMenusResponse,
+    ListRegisterTreatmentsRequest,
+    ListRegisterTreatmentsResponse,
+} from './register';
+import type {
     PullDatabaseInput,
     PullDatabaseOutput,
     PullDatabaseRegisterTerminalInput,
@@ -130,4 +138,13 @@ export type API = {
     pullDatabaseRegisterTerminal: (
         input: PullDatabaseRegisterTerminalInput
     ) => AppsScriptServerResponse<PullDatabaseRegisterTerminalOutput>;
+    listRegisterTreatments: (
+        input: ListRegisterTreatmentsRequest
+    ) => AppsScriptServerResponse<ListRegisterTreatmentsResponse>;
+    getRegisterTreatmentDetail: (
+        input: GetRegisterTreatmentDetailRequest
+    ) => AppsScriptServerResponse<GetRegisterTreatmentDetailResponse>;
+    listRegisterMenus: (
+        input: ListRegisterMenusRequest
+    ) => AppsScriptServerResponse<ListRegisterMenusResponse>;
 };

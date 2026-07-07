@@ -1,6 +1,10 @@
 import { API } from '@mydx-pos/shared/api';
 import { container } from './di';
 
+const unsupportedRegisterWorkerApi = () => {
+    throw new Error('This register API is only supported by apps/worker.');
+};
+
 export const ServerFunctions: API & Record<string, unknown> = {
     setupSystem: () => container.resolve('setupSystemController').execute(),
     migration: () => container.resolve('migrationController').execute(),
@@ -57,6 +61,9 @@ export const ServerFunctions: API & Record<string, unknown> = {
             .execute(input),
     loginRegisterTerminal: (input) =>
         container.resolve('loginRegisterTerminalController').execute(input),
+    listRegisterTreatments: unsupportedRegisterWorkerApi,
+    getRegisterTreatmentDetail: unsupportedRegisterWorkerApi,
+    listRegisterMenus: unsupportedRegisterWorkerApi,
 };
 
 Object.entries(ServerFunctions).forEach(([name, fn]) => {

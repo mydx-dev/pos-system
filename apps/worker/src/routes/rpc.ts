@@ -1,5 +1,10 @@
 import type { API } from '@mydx-pos/shared/api';
 import { createPaymentRecordRequest } from '@mydx-pos/shared/api/paymentRecord';
+import {
+    getRegisterTreatmentDetailRequest,
+    listRegisterMenusRequest,
+    listRegisterTreatmentsRequest,
+} from '@mydx-pos/shared/api/register';
 import { loginRegisterTerminalRequest } from '@mydx-pos/shared/api/registerTerminal';
 import { pullDatabaseRegisterTerminalInput } from '@mydx-pos/shared/api/system';
 import {
@@ -189,6 +194,48 @@ const rpcRoutes: Partial<Record<RpcName, RpcRoute>> = {
                 ),
                 context
             );
+        }),
+    },
+    listRegisterTreatments: {
+        methods: ['POST'],
+        handler: registerPaymentRoute(async (service, context) => {
+            const body = await parseJsonBody(
+                context,
+                listRegisterTreatmentsRequest
+            );
+            if (!body.ok) {
+                return body.response;
+            }
+
+            return ok(await service.listRegisterTreatments(body.data), context);
+        }),
+    },
+    getRegisterTreatmentDetail: {
+        methods: ['POST'],
+        handler: registerPaymentRoute(async (service, context) => {
+            const body = await parseJsonBody(
+                context,
+                getRegisterTreatmentDetailRequest
+            );
+            if (!body.ok) {
+                return body.response;
+            }
+
+            return ok(
+                await service.getRegisterTreatmentDetail(body.data),
+                context
+            );
+        }),
+    },
+    listRegisterMenus: {
+        methods: ['POST'],
+        handler: registerPaymentRoute(async (service, context) => {
+            const body = await parseJsonBody(context, listRegisterMenusRequest);
+            if (!body.ok) {
+                return body.response;
+            }
+
+            return ok(await service.listRegisterMenus(body.data), context);
         }),
     },
     createPaymentRecord: {

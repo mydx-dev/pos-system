@@ -1,4 +1,4 @@
-import { menuType, MenuType } from '@/../shared/domain/entity/MenuCategory';
+import { menuType, MenuType } from '@mydx-pos/shared/domain/entity/MenuCategory';
 import { CategoryItem } from '@/components/menu/CategoryItem';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';

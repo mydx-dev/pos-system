@@ -1,4 +1,4 @@
-import { User } from '@/../shared/domain/entity/User';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import { replica, server } from '@/lib/AppsScriptClient';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';

@@ -6,8 +6,8 @@ import {
 import {
     RefreshRegisterTerminalTokenRequest,
     RefreshRegisterTerminalTokenResponse,
-} from '../../../shared/api/registerTerminal';
-import { RegisterTerminalPlaneToken } from '../../../shared/domain/valueObject/RegisterTerminalPlaneToken';
+} from '@mydx-pos/shared/api/registerTerminal';
+import { RegisterTerminalPlaneToken } from '@mydx-pos/shared/domain/valueObject/RegisterTerminalPlaneToken';
 import {
     ALL_TABLES,
     RegisterTerminalTable,

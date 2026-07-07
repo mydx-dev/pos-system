@@ -6,7 +6,7 @@ import {
     PullDatabaseRegisterTerminalInput,
     PullDatabaseRegisterTerminalOutput,
     pullDatabaseRegisterTerminalInput,
-} from '../../shared/api/system';
+} from '@mydx-pos/shared/api/system';
 import { RegisterTerminalAuthentication } from '../application/service/RegisterTerminalAuthentication';
 import { PullDataBaseRegisterTerminalUseCase } from '../application/usecase/PullDatabaseRegisterTerminalUseCase';
 

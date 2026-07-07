@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { emailSchema } from '../../../shared/schemas/form';
+import { emailSchema } from '@mydx-pos/shared/schemas/form';
 import { useCreateEmployee } from '../../hooks/useCreateEmployee';
 
 export const EmployeeForm = () => {

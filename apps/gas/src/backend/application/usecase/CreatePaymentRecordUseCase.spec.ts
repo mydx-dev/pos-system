@@ -1,7 +1,7 @@
 import { InvalidArgumentError } from '@mydx-dev/gas-boost-runtime/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { context } from '../../../../tests/contexts/createPaymentRecordTestContext';
-import { CreatePaymentRecordRequest } from '../../../shared/api/paymentRecord';
+import { CreatePaymentRecordRequest } from '@mydx-pos/shared/api/paymentRecord';
 import {
     PaymentRecordTable,
     TreatmentMenuTable,

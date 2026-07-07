@@ -9,7 +9,7 @@ import { context } from '../../../tests/contexts/saveTreatmentMenusTestContext';
 import {
     saveTreatmentMenusRequest,
     saveTreatmentMenusResponse,
-} from '../../shared/api/treatment';
+} from '@mydx-pos/shared/api/treatment';
 
 describe('バリデーション', () => {
     it('セッショントークンが空の場合はエラー', () => {

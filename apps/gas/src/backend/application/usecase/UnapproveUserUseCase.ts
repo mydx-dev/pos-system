@@ -4,8 +4,8 @@ import {
     NotFoundError,
     SheetDB,
 } from '@mydx-dev/gas-boost-runtime/core';
-import { UnapproveUserInput } from '../../../shared/api/user';
-import { User } from '../../../shared/domain/entity/User';
+import { UnapproveUserInput } from '@mydx-pos/shared/api/user';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import { ALL_TABLES } from '../../infrastructure/database/tables';
 
 export class UnapproveUserUseCase {

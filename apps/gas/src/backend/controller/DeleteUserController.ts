@@ -6,7 +6,7 @@ import {
     DeleteUserInput,
     deleteUserInputSchema,
     DeleteUserOutput,
-} from '../../shared/api/user';
+} from '@mydx-pos/shared/api/user';
 import { Authentication } from '../application/service/Authentication';
 import { DeleteUserUseCase } from '../application/usecase/DeleteUserUseCase';
 

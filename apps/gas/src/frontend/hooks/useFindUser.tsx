@@ -4,7 +4,7 @@ import {
     ALL_TABLES,
     AllTableName,
 } from '../../backend/infrastructure/database/tables';
-import { userSchema } from '../../shared/schemas/database';
+import { userSchema } from '@mydx-pos/shared/schemas/database';
 import { replicaQL } from '../lib/AppsScriptClient';
 
 export const useFindUser = (

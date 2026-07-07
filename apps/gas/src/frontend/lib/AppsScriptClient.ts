@@ -1,6 +1,6 @@
 import { createAppsScriptClient } from '@mydx-dev/gas-boost-react-apps-script';
 import { ALL_TABLES } from '../../backend/infrastructure/database/tables';
-import { API, SSR } from '../../shared/api';
+import { API, SSR } from '@mydx-pos/shared/api';
 import { labels } from './AppsScriptClientLabels';
 
 export const ssr: SSR = {

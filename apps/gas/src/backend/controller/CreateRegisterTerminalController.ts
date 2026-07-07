@@ -7,7 +7,7 @@ import {
     CreateRegisterTerminalRequest,
     CreateRegisterTerminalResponse,
     createRegisterTerminalRequest,
-} from '../../shared/api/registerTerminal';
+} from '@mydx-pos/shared/api/registerTerminal';
 import { Authentication } from '../application/service/Authentication';
 import { CreateRegisterTerminalUseCase } from '../application/usecase/CreateRegisterTerminalUseCase';
 

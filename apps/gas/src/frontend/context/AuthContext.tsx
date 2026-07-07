@@ -1,7 +1,7 @@
 import { useSyncDatabase } from '@/hooks/useSyncDatabase';
 import { createContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User } from '../../shared/domain/entity/User';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import { routes } from '../../shared/routes';
 
 type AuthContextType = {

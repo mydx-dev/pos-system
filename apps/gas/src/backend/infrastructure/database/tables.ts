@@ -1,15 +1,15 @@
 import { SheetTable } from '@mydx-dev/gas-boost-runtime/core';
-import { Customer } from '../../../shared/domain/entity/Customer';
-import { Employee } from '../../../shared/domain/entity/Employee';
-import { Menu } from '../../../shared/domain/entity/Menu';
-import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
-import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
-import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
-import { RegisterTerminal } from '../../../shared/domain/entity/RegisterTerminal';
-import { Role } from '../../../shared/domain/entity/Role';
-import { Treatment } from '../../../shared/domain/entity/Treatment';
-import { TreatmentMenu } from '../../../shared/domain/entity/TreatmentMenu';
-import { User } from '../../../shared/domain/entity/User';
+import { Customer } from '@mydx-pos/shared/domain/entity/Customer';
+import { Employee } from '@mydx-pos/shared/domain/entity/Employee';
+import { Menu } from '@mydx-pos/shared/domain/entity/Menu';
+import { MenuCategory } from '@mydx-pos/shared/domain/entity/MenuCategory';
+import { PasswordReset } from '@mydx-pos/shared/domain/entity/PasswordReset';
+import { PaymentRecord } from '@mydx-pos/shared/domain/entity/PaymentRecord';
+import { RegisterTerminal } from '@mydx-pos/shared/domain/entity/RegisterTerminal';
+import { Role } from '@mydx-pos/shared/domain/entity/Role';
+import { Treatment } from '@mydx-pos/shared/domain/entity/Treatment';
+import { TreatmentMenu } from '@mydx-pos/shared/domain/entity/TreatmentMenu';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import {
     customerSchema,
     employeeSchema,
@@ -22,7 +22,7 @@ import {
     treatmentMenuSchema,
     treatmentSchema,
     userSchema,
-} from '../../../shared/schemas/database';
+} from '@mydx-pos/shared/schemas/database';
 
 export const UserTable = new SheetTable(
     '',

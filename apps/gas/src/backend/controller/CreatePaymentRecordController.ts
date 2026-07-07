@@ -7,7 +7,7 @@ import {
     CreatePaymentRecordRequest,
     CreatePaymentRecordResponse,
     createPaymentRecordRequest,
-} from '../../shared/api/paymentRecord';
+} from '@mydx-pos/shared/api/paymentRecord';
 import { RegisterTerminalAuthentication } from '../application/service/RegisterTerminalAuthentication';
 import { CreatePaymentRecordUseCase } from '../application/usecase/CreatePaymentRecordUseCase';
 

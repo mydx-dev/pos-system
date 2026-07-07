@@ -1,4 +1,4 @@
-import { PaymentRecordType } from '@/../shared/domain/entity/PaymentRecord';
+import { PaymentRecordType } from '@mydx-pos/shared/domain/entity/PaymentRecord';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 import {

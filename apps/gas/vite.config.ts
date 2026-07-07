@@ -108,6 +108,9 @@ export default defineConfig({
                 fileURLToPath(
                     new URL('../../packages/printer/src', import.meta.url)
                 ),
+                fileURLToPath(
+                    new URL('../../packages/shared/src', import.meta.url)
+                ),
             ],
         },
     },

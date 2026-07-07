@@ -11,7 +11,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { NavLink } from 'react-router-dom';
 import { z } from 'zod';
-import { emailSchema, passwordSchema } from '../../shared/schemas/form';
+import { emailSchema, passwordSchema } from '@mydx-pos/shared/schemas/form';
 import { useAuth } from '../hooks/useAuth';
 
 const loginFormSchema = z.object({

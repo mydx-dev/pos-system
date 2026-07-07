@@ -1,5 +1,5 @@
 import { SheetDB } from '@mydx-dev/gas-boost-runtime/core';
-import { PullDatabaseOutput } from '../../../shared/api/system';
+import { PullDatabaseOutput } from '@mydx-pos/shared/api/system';
 import {
     ALL_TABLES,
     MenuTable,

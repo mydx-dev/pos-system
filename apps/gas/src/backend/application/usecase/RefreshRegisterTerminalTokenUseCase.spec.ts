@@ -4,7 +4,7 @@ import {
 } from '@mydx-dev/gas-boost-runtime/core';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { context } from '../../../../tests/contexts/registerTerminalTestContext';
-import { User } from '../../../shared/domain/entity/User';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import { RegisterTerminalTable } from '../../infrastructure/database/tables';
 
 const userId = '123e4567-e89b-42d3-a456-426614174000';

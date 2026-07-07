@@ -1,7 +1,7 @@
 import { replica, server } from '@/lib/AppsScriptClient';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { CreateEmployeeInput } from '../../shared/api/employee';
+import { CreateEmployeeInput } from '@mydx-pos/shared/api/employee';
 import { useAuth } from './useAuth';
 
 export const useCreateEmployee = () => {

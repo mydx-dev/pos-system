@@ -4,7 +4,7 @@ import {
 } from '@mydx-dev/gas-boost-runtime/core';
 import { describe, expect, it } from 'vitest';
 import { context } from '../../../../tests/contexts/saveTreatmentMenusTestContext';
-import { SaveTreatmentMenusRequest } from '../../../shared/api/treatment';
+import { SaveTreatmentMenusRequest } from '@mydx-pos/shared/api/treatment';
 import {
     CustomerTable,
     EmployeeTable,

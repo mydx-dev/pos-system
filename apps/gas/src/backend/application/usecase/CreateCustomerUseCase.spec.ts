@@ -4,7 +4,7 @@ import {
 } from '@mydx-dev/gas-boost-runtime/core';
 import { describe, expect, it } from 'vitest';
 import { context } from '../../../../tests/contexts/createCustomerTestContext';
-import { CreateCustomerInput } from '../../../shared/api/customer';
+import { CreateCustomerInput } from '@mydx-pos/shared/api/customer';
 
 const staffId = '223e4567-e89b-42d3-a456-426614174000';
 

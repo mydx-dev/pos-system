@@ -5,7 +5,7 @@ import {
 } from '@mydx-dev/gas-boost-runtime/core';
 import { describe, expect, it } from 'vitest';
 import { context } from '../../../tests/contexts/registerTerminalTestContext';
-import { CreateRegisterTerminalRequest } from '../../shared/api/registerTerminal';
+import { CreateRegisterTerminalRequest } from '@mydx-pos/shared/api/registerTerminal';
 
 function correctInput(): CreateRegisterTerminalRequest {
     return {

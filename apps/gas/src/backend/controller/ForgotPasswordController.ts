@@ -3,7 +3,7 @@ import {
     ForgotPasswordInput,
     forgotPasswordInputSchema,
     ForgotPasswordOutput,
-} from '../../shared/api/user';
+} from '@mydx-pos/shared/api/user';
 import { ForgotPasswordUseCase } from '../application/usecase/ForgotPasswordUseCase';
 
 export class ForgotPasswordController {

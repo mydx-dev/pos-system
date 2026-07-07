@@ -1,16 +1,16 @@
 import { vi } from 'vitest';
 import { TableSpec } from '../../../../tests/helpers/TableSpec';
-import { Customer } from '../../../shared/domain/entity/Customer';
-import { Employee } from '../../../shared/domain/entity/Employee';
-import { Menu } from '../../../shared/domain/entity/Menu';
-import { MenuCategory } from '../../../shared/domain/entity/MenuCategory';
-import { PasswordReset } from '../../../shared/domain/entity/PasswordReset';
-import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
-import { RegisterTerminal } from '../../../shared/domain/entity/RegisterTerminal';
-import { Role } from '../../../shared/domain/entity/Role';
-import { Treatment } from '../../../shared/domain/entity/Treatment';
-import { TreatmentMenu } from '../../../shared/domain/entity/TreatmentMenu';
-import { User } from '../../../shared/domain/entity/User';
+import { Customer } from '@mydx-pos/shared/domain/entity/Customer';
+import { Employee } from '@mydx-pos/shared/domain/entity/Employee';
+import { Menu } from '@mydx-pos/shared/domain/entity/Menu';
+import { MenuCategory } from '@mydx-pos/shared/domain/entity/MenuCategory';
+import { PasswordReset } from '@mydx-pos/shared/domain/entity/PasswordReset';
+import { PaymentRecord } from '@mydx-pos/shared/domain/entity/PaymentRecord';
+import { RegisterTerminal } from '@mydx-pos/shared/domain/entity/RegisterTerminal';
+import { Role } from '@mydx-pos/shared/domain/entity/Role';
+import { Treatment } from '@mydx-pos/shared/domain/entity/Treatment';
+import { TreatmentMenu } from '@mydx-pos/shared/domain/entity/TreatmentMenu';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import {
     CustomerTable,
     EmployeeTable,

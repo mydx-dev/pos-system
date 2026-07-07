@@ -1,4 +1,4 @@
-import { API } from '../shared/api';
+import { API } from '@mydx-pos/shared/api';
 import { container } from './di';
 
 export const ServerFunctions: API & Record<string, unknown> = {

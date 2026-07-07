@@ -5,9 +5,9 @@ import {
 import {
     CreatePaymentRecordRequest,
     CreatePaymentRecordResponse,
-} from '../../../shared/api/paymentRecord';
-import { PaymentRecord } from '../../../shared/domain/entity/PaymentRecord';
-import { Treatment } from '../../../shared/domain/entity/Treatment';
+} from '@mydx-pos/shared/api/paymentRecord';
+import { PaymentRecord } from '@mydx-pos/shared/domain/entity/PaymentRecord';
+import { Treatment } from '@mydx-pos/shared/domain/entity/Treatment';
 import {
     ALL_TABLES,
     PaymentRecordTable,

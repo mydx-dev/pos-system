@@ -2,7 +2,7 @@ import { SheetDB, UnauthorizedError } from '@mydx-dev/gas-boost-runtime/core';
 import {
     LoginRegisterTerminalRequest,
     LoginRegisterTerminalResponse,
-} from '../../../shared/api/registerTerminal';
+} from '@mydx-pos/shared/api/registerTerminal';
 import { ALL_TABLES } from '../../infrastructure/database/tables';
 import { PasswordProtection } from '../service/PasswordProtection';
 

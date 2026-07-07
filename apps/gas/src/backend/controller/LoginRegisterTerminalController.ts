@@ -6,7 +6,7 @@ import {
     LoginRegisterTerminalRequest,
     LoginRegisterTerminalResponse,
     loginRegisterTerminalRequest,
-} from '../../shared/api/registerTerminal';
+} from '@mydx-pos/shared/api/registerTerminal';
 import { LoginRegisterTerminalUseCase } from '../application/usecase/LoginRegisterTerminalUseCase';
 
 export class LoginRegisterTerminalController {

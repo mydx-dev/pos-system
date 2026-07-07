@@ -1,4 +1,4 @@
-import { RoleName } from '@/../shared/domain/entity/Role';
+import { RoleName } from '@mydx-pos/shared/domain/entity/Role';
 import { routes } from '@/../shared/routes';
 import { EmployeeDeleteDialog } from '@/components/employee/EmployeeDeleteDialog';
 import { RoleBadge } from '@/components/employee/RoleBadge';

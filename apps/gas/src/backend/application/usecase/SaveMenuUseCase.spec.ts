@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { zocker } from 'zocker';
 import { z } from 'zod';
 import { context } from '../../../../tests/contexts/saveMenuTestContext';
-import { saveMenuRequest, SaveMenuRequest } from '../../../shared/api/menu';
+import { saveMenuRequest, SaveMenuRequest } from '@mydx-pos/shared/api/menu';
 import {
     MenuCategoryTable,
     MenuTable,

@@ -1,4 +1,4 @@
-import { User } from '@/../shared/domain/entity/User';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import { replica, replicaQL, server } from '@/lib/AppsScriptClient';
 import { useMutation } from '@tanstack/react-query';
 import Dexie from 'dexie';

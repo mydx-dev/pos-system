@@ -3,7 +3,7 @@ import {
     InvalidArgumentError,
     SheetDB,
 } from '@mydx-dev/gas-boost-runtime/core';
-import { SaveMenuRequest, SaveMenuResponse } from '../../../shared/api/menu';
+import { SaveMenuRequest, SaveMenuResponse } from '@mydx-pos/shared/api/menu';
 import { ALL_TABLES, MenuTable } from '../../infrastructure/database/tables';
 import { PermissionCheck } from '../service/PermissionCheck';
 

@@ -4,7 +4,7 @@ import {
 } from '@mydx-dev/gas-boost-runtime/core';
 import { describe, expect, it } from 'vitest';
 import { context } from '../../../tests/contexts/createTreatmentTestContext';
-import { CreateTreatmentRequest } from '../../shared/api/treatment';
+import { CreateTreatmentRequest } from '@mydx-pos/shared/api/treatment';
 
 function correctInput(): CreateTreatmentRequest {
     return {

@@ -7,7 +7,7 @@ import {
     SaveTreatmentMenusRequest,
     SaveTreatmentMenusResponse,
     saveTreatmentMenusRequest,
-} from '../../shared/api/treatment';
+} from '@mydx-pos/shared/api/treatment';
 import { Authentication } from '../application/service/Authentication';
 import { SaveTreatmentMenusUseCase } from '../application/usecase/SaveTreatmentMenusUseCase';
 

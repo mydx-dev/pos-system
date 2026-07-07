@@ -1,0 +1,25 @@
+{
+    "name": "@mydx-pos/shared",
+    "private": true,
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts",
+        "./api": "./src/api/index.ts",
+        "./api/*": "./src/api/*.ts",
+        "./domain/*": "./src/domain/*.ts",
+        "./schemas/*": "./src/schemas/*.ts"
+    },
+    "dependencies": {
+        "@mydx-dev/gas-boost-runtime": "^4.8.3",
+        "zod": "4.4.3"
+    },
+    "devDependencies": {
+        "@types/node": "^25.9.2",
+        "typescript": "^6.0.3",
+        "vitest": "^4.1.8"
+    },
+    "scripts": {
+        "typecheck": "tsc --noEmit",
+        "test": "pnpm vitest --run"
+    }
+}

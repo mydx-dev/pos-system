@@ -1,4 +1,4 @@
-import { SSR } from '../../../shared/api';
+import { SSR } from '@mydx-pos/shared/api';
 import { systemName } from '../../../shared/config';
 
 export class DoGetUseCase {

@@ -1,7 +1,7 @@
 import { AlertTriangle, CheckCircle2, Copy } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { CreateRegisterTerminalResponse } from '../../../shared/api/registerTerminal';
+import { CreateRegisterTerminalResponse } from '@mydx-pos/shared/api/registerTerminal';
 
 type RegisterTerminalRegistrationCompleteModalProps = {
     result: CreateRegisterTerminalResponse & {

@@ -1,5 +1,5 @@
 import { SheetDB } from '@mydx-dev/gas-boost-runtime/core';
-import { User } from '../../../shared/domain/entity/User';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import { ALL_TABLES } from '../../infrastructure/database/tables';
 
 export class SystemAdmins {

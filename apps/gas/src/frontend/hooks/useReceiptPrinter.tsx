@@ -8,7 +8,7 @@ import {
     type Command,
     PrinterConfig,
 } from '@mydx-pos/printer';
-import { ReceiptData } from '../../shared/domain/valueObject/Receipt';
+import { ReceiptData } from '@mydx-pos/shared/domain/valueObject/Receipt';
 
 type PrinterConfigInput = {
     characterEncoding: CharacterEncoding;

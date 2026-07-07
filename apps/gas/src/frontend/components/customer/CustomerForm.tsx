@@ -14,8 +14,8 @@ import {
 import { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
-import { CreateCustomerInput } from '../../../shared/api/customer';
-import { emailSchema } from '../../../shared/schemas/form';
+import { CreateCustomerInput } from '@mydx-pos/shared/api/customer';
+import { emailSchema } from '@mydx-pos/shared/schemas/form';
 import { useCreateCustomer } from '../../hooks/useCreateCustomer';
 import { useFindEmployee } from '../../hooks/useFindEmployee';
 import { replicaQL } from '../../lib/AppsScriptClient';

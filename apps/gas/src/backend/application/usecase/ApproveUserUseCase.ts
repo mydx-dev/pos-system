@@ -4,8 +4,8 @@ import {
     SheetDB,
     UnauthorizedError,
 } from '@mydx-dev/gas-boost-runtime/core';
-import { ApproveUserInput } from '../../../shared/api/user';
-import { User } from '../../../shared/domain/entity/User';
+import { ApproveUserInput } from '@mydx-pos/shared/api/user';
+import { User } from '@mydx-pos/shared/domain/entity/User';
 import { ALL_TABLES } from '../../infrastructure/database/tables';
 
 export class ApproveUserUseCase {

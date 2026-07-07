@@ -2,7 +2,8 @@
     "name": "@mydx-pos/gas",
     "private": true,
     "dependencies": {
-        "@mydx-pos/printer": "workspace:*"
+        "@mydx-pos/printer": "workspace:*",
+        "@mydx-pos/shared": "workspace:*"
     },
     "scripts": {
         "test:component": "pnpm vitest src/frontend/**/*.{spec,test}.tsx --run --config vitest.frontend.config.ts --coverage",
@@ -17,7 +18,7 @@
         "test": "pnpm test:back",
         "test:back": "pnpm vitest --run --config vitest.backend.config.ts --coverage",
         "test:tables": "pnpm vitest src/backend/infrastructure/database/tables.spec.ts --run --config vitest.backend.config.ts --coverage",
-        "test:domain": "pnpm vitest src/shared/domain/**/*.{spec,test}.ts --run --config vitest.backend.config.ts --coverage",
+        "test:domain": "pnpm --filter @mydx-pos/shared test",
         "test:app": "pnpm vitest src/backend/application/**/*.{spec,test}.ts --run --config vitest.backend.config.ts --coverage",
         "test:controller": "pnpm vitest src/backend/controller/*.{spec,test}.ts --run --config vitest.backend.config.ts --coverage",
         "dev": "pnpm vite --mode dev",

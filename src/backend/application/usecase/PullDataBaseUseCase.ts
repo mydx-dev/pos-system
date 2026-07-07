@@ -2,9 +2,26 @@ import { SheetDB } from '@mydx-dev/gas-boost-runtime/core';
 import { PullDatabaseOutput } from '../../../shared/api/system';
 import {
     ALL_TABLES,
+    MenuTable,
+    PaymentRecordTable,
     RoleTable,
+    TreatmentMenuTable,
+    TreatmentTable,
     UserTable,
 } from '../../infrastructure/database/tables';
+
+const syncTable = (
+    table:
+        | typeof UserTable
+        | typeof RoleTable
+        | typeof TreatmentTable
+        | typeof MenuTable
+        | typeof TreatmentMenuTable
+        | typeof PaymentRecordTable
+) => ({
+    name: table.name,
+    primaryKey: table.primaryKey as string,
+});
 
 export class PullDataBaseUseCase {
     constructor(private db: SheetDB<typeof ALL_TABLES>) {}
@@ -28,15 +45,23 @@ export class PullDataBaseUseCase {
         }
 
         result.push({
-            table: UserTable,
+            table: syncTable(UserTable),
             records: users.map((user) => user.serializeEmptyPassword()),
         });
 
         const permissions = this.db.table('ロール').find(permissionQuery);
         result.push({
-            table: RoleTable,
+            table: syncTable(RoleTable),
             records: permissions.map((permission) =>
                 RoleTable.serialize(permission)
+            ),
+        });
+
+        const treatments = this.db.table('施術').find(this.db.query('施術'));
+        result.push({
+            table: syncTable(TreatmentTable),
+            records: treatments.map((treatment) =>
+                TreatmentTable.serialize(treatment)
             ),
         });
 

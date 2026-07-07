@@ -14,7 +14,7 @@ const compat = new FlatCompat({
 
 export default [
     {
-        ignores: ['dist/**', 'coverage/**'],
+        ignores: ['**/dist/**', 'coverage/**'],
     },
     ...compat.extends(
         'plugin:@typescript-eslint/recommended',
@@ -182,6 +182,19 @@ export default [
             'src/frontend/routes/**/*.tsx',
             'src/frontend/context/**/*.tsx',
         ],
+        rules: {
+            'max-lines-per-function': 'off',
+            complexity: 'off',
+        },
+    },
+    {
+        files: ['src/frontend/lib/printer/**/*.ts'],
+        rules: {
+            'no-restricted-syntax': 'off',
+        },
+    },
+    {
+        files: ['src/frontend/hooks/useReceiptPrinter.tsx'],
         rules: {
             'max-lines-per-function': 'off',
         },

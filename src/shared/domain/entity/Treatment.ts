@@ -1,4 +1,5 @@
 import { SheetEntity } from '@mydx-dev/gas-boost-runtime/core';
+import { Employee } from './Employee';
 import { PaymentRecord, PaymentRecordType } from './PaymentRecord';
 import { TreatmentMenu } from './TreatmentMenu';
 
@@ -105,6 +106,10 @@ export class Treatment extends SheetEntity {
 
     get cancelAmount(): number {
         return this.currentSales;
+    }
+
+    get staff(): Employee | null {
+        return this.getRelation(Employee)[0] ?? null;
     }
 
     canRepay(amount: number): boolean {

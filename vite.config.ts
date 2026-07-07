@@ -79,6 +79,7 @@ const findDealAlias = isDev
       );
 
 export default defineConfig({
+    envDir: fileURLToPath(new URL('./config', import.meta.url)),
     plugins: [
         localDiAlias(),
         react(),

@@ -1,4 +1,8 @@
-import { Menu, ProductType, TaxType } from '@mydx-pos/shared/domain/entity/Menu';
+import {
+    Menu,
+    ProductType,
+    TaxType,
+} from '@mydx-pos/shared/domain/entity/Menu';
 import { MenuType } from '@mydx-pos/shared/domain/entity/MenuCategory';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';

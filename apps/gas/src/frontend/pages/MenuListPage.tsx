@@ -4,7 +4,10 @@ import {
     taxType,
     TaxType,
 } from '@mydx-pos/shared/domain/entity/Menu';
-import { menuType, MenuType } from '@mydx-pos/shared/domain/entity/MenuCategory';
+import {
+    menuType,
+    MenuType,
+} from '@mydx-pos/shared/domain/entity/MenuCategory';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useFindMenuCategory } from '@/hooks/useFindMenuCategory';
 import { useMenuEditor } from '@/hooks/useMenuEditor';

@@ -8,12 +8,12 @@ import {
     CreatePaymentRecordResponse,
     createPaymentRecordRequest,
 } from '../../shared/api/paymentRecord';
-import { Authentication } from '../application/service/Authentication';
+import { RegisterTerminalAuthentication } from '../application/service/RegisterTerminalAuthentication';
 import { CreatePaymentRecordUseCase } from '../application/usecase/CreatePaymentRecordUseCase';
 
 export class CreatePaymentRecordController {
     constructor(
-        private readonly authentication: Authentication,
+        private readonly registerTerminalAuthentication: RegisterTerminalAuthentication,
         private readonly createPaymentRecordUseCase: CreatePaymentRecordUseCase
     ) {}
 
@@ -28,15 +28,16 @@ export class CreatePaymentRecordController {
             );
         }
 
-        let userId: string;
         try {
-            userId = this.authentication.execute(parsedInput.data.sessionToken);
+            this.registerTerminalAuthentication.execute(
+                parsedInput.data.registerTerminalToken
+            );
         } catch {
             throw new UnauthorizedError();
         }
 
         return new AppsScriptServerResponse(
-            this.createPaymentRecordUseCase.execute(userId, parsedInput.data)
+            this.createPaymentRecordUseCase.execute(parsedInput.data)
         );
     }
 }

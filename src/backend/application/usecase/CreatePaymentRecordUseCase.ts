@@ -1,5 +1,4 @@
 import {
-    ForbiddenError,
     InvalidArgumentError,
     SheetDB,
 } from '@mydx-dev/gas-boost-runtime/core';
@@ -14,29 +13,19 @@ import {
     PaymentRecordTable,
 } from '../../infrastructure/database/tables';
 import { ExistsCheck } from '../service/ExistsCheck';
-import { PermissionCheck } from '../service/PermissionCheck';
 
 export class CreatePaymentRecordUseCase {
     constructor(
-        private readonly permissionCheck: PermissionCheck,
         private readonly db: SheetDB<typeof ALL_TABLES>,
         private readonly existsCheck: ExistsCheck
     ) {}
 
-    execute(
-        userId: string,
-        { paymentRecord }: Pick<CreatePaymentRecordRequest, 'paymentRecord'>
-    ): CreatePaymentRecordResponse {
-        if (!userId) {
-            throw new InvalidArgumentError('User ID is required');
-        }
-
-        if (!this.permissionCheck.isApprovedSystemAdminOrEmployee(userId)) {
-            throw new ForbiddenError(
-                'You do not have permission to perform this action'
-            );
-        }
-
+    execute({
+        paymentRecord,
+    }: Pick<
+        CreatePaymentRecordRequest,
+        'paymentRecord'
+    >): CreatePaymentRecordResponse {
         if (!this.existsCheck.hasTreatment(paymentRecord.施術ID)) {
             throw new InvalidArgumentError('Treatment not found');
         }

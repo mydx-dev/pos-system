@@ -1,7 +1,4 @@
-import {
-    ForbiddenError,
-    InvalidArgumentError,
-} from '@mydx-dev/gas-boost-runtime/core';
+import { InvalidArgumentError } from '@mydx-dev/gas-boost-runtime/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { context } from '../../../../tests/contexts/createPaymentRecordTestContext';
 import { CreatePaymentRecordRequest } from '../../../shared/api/paymentRecord';
@@ -101,24 +98,12 @@ beforeEach(() => {
 });
 
 describe('バリデーション', () => {
-    it('ユーザーIDが空の場合はエラー', () => {
-        const {
-            createPaymentRecord: { usecase },
-        } = context();
-
-        expect(() =>
-            usecase.execute(undefined as unknown as string, correctInput())
-        ).toThrow(InvalidArgumentError);
-    });
-
     it('存在しない施術IDの場合はエラー', () => {
         const {
             createPaymentRecord: { usecase },
-            permissionCheckSpy: { isApprovedSystemAdminOrEmployeeSpy },
         } = context();
-        isApprovedSystemAdminOrEmployeeSpy.mockReturnValue(true);
 
-        expect(() => usecase.execute(staffId, correctInput())).toThrow(
+        expect(() => usecase.execute(correctInput())).toThrow(
             InvalidArgumentError
         );
     });
@@ -126,15 +111,13 @@ describe('バリデーション', () => {
     it('精算金額が施術合計と一致しない場合でも精算履歴を登録できる', () => {
         const {
             createPaymentRecord: { usecase },
-            permissionCheckSpy: { isApprovedSystemAdminOrEmployeeSpy },
             dataStore,
         } = context();
         seedTreatment(dataStore);
-        isApprovedSystemAdminOrEmployeeSpy.mockReturnValue(true);
         const input = correctInput();
         input.paymentRecord.金額 = 20499;
 
-        const result = usecase.execute(staffId, input);
+        const result = usecase.execute(input);
 
         expect(result.paymentRecord.金額).toBe(20499);
         expect(result.summary).toEqual({
@@ -148,13 +131,11 @@ describe('バリデーション', () => {
     it('差引売上が残っている施術でも再精算できる', () => {
         const {
             createPaymentRecord: { usecase },
-            permissionCheckSpy: { isApprovedSystemAdminOrEmployeeSpy },
             dataStore,
         } = context();
         seedPaidTreatment(dataStore);
-        isApprovedSystemAdminOrEmployeeSpy.mockReturnValue(true);
 
-        const result = usecase.execute(staffId, correctInput());
+        const result = usecase.execute(correctInput());
 
         expect(result.summary).toEqual({
             精算合計: 41000,
@@ -165,32 +146,16 @@ describe('バリデーション', () => {
     });
 });
 
-describe('認可', () => {
-    it('承認済みシステム管理者またはスタッフでない場合はエラー', () => {
-        const {
-            createPaymentRecord: { usecase },
-            permissionCheckSpy: { isApprovedSystemAdminOrEmployeeSpy },
-        } = context();
-        isApprovedSystemAdminOrEmployeeSpy.mockReturnValue(false);
-
-        expect(() => usecase.execute(staffId, correctInput())).toThrow(
-            ForbiddenError
-        );
-    });
-});
-
 describe('精算履歴作成', () => {
     it('精算履歴を登録し、施術状態を精算済みに更新できる', () => {
         const {
             createPaymentRecord: { usecase },
-            permissionCheckSpy: { isApprovedSystemAdminOrEmployeeSpy },
             dataStore,
             getUuidSpy,
         } = context();
         seedTreatment(dataStore);
-        isApprovedSystemAdminOrEmployeeSpy.mockReturnValue(true);
 
-        const result = usecase.execute(staffId, correctInput());
+        const result = usecase.execute(correctInput());
         const savedPaymentRecordId = getUuidSpy.mock.results[0].value;
 
         expect(result).toEqual({
@@ -262,13 +227,11 @@ describe('精算履歴作成', () => {
     it('取消履歴を登録できる', () => {
         const {
             createPaymentRecord: { usecase },
-            permissionCheckSpy: { isApprovedSystemAdminOrEmployeeSpy },
             dataStore,
         } = context();
         seedPaidTreatment(dataStore);
-        isApprovedSystemAdminOrEmployeeSpy.mockReturnValue(true);
 
-        const result = usecase.execute(staffId, {
+        const result = usecase.execute({
             paymentRecord: {
                 施術ID: treatmentId,
                 種別: '取消',
@@ -343,13 +306,11 @@ describe('精算履歴作成', () => {
     it('返金履歴を登録できる', () => {
         const {
             createPaymentRecord: { usecase },
-            permissionCheckSpy: { isApprovedSystemAdminOrEmployeeSpy },
             dataStore,
         } = context();
         seedPaidTreatment(dataStore);
-        isApprovedSystemAdminOrEmployeeSpy.mockReturnValue(true);
 
-        const result = usecase.execute(staffId, {
+        const result = usecase.execute({
             paymentRecord: {
                 施術ID: treatmentId,
                 種別: '返金',
@@ -423,14 +384,12 @@ describe('精算履歴作成', () => {
     it('精算履歴がない施術には取消を登録できない', () => {
         const {
             createPaymentRecord: { usecase },
-            permissionCheckSpy: { isApprovedSystemAdminOrEmployeeSpy },
             dataStore,
         } = context();
         seedTreatment(dataStore);
-        isApprovedSystemAdminOrEmployeeSpy.mockReturnValue(true);
 
         expect(() =>
-            usecase.execute(staffId, {
+            usecase.execute({
                 paymentRecord: {
                     施術ID: treatmentId,
                     種別: '取消',
@@ -444,14 +403,12 @@ describe('精算履歴作成', () => {
     it('精算履歴がない施術には返金を登録できない', () => {
         const {
             createPaymentRecord: { usecase },
-            permissionCheckSpy: { isApprovedSystemAdminOrEmployeeSpy },
             dataStore,
         } = context();
         seedTreatment(dataStore);
-        isApprovedSystemAdminOrEmployeeSpy.mockReturnValue(true);
 
         expect(() =>
-            usecase.execute(staffId, {
+            usecase.execute({
                 paymentRecord: {
                     施術ID: treatmentId,
                     種別: '返金',
@@ -465,14 +422,12 @@ describe('精算履歴作成', () => {
     it('対象精算IDが同一施術の精算履歴でない場合はエラー', () => {
         const {
             createPaymentRecord: { usecase },
-            permissionCheckSpy: { isApprovedSystemAdminOrEmployeeSpy },
             dataStore,
         } = context();
         seedPaidTreatment(dataStore);
-        isApprovedSystemAdminOrEmployeeSpy.mockReturnValue(true);
 
         expect(() =>
-            usecase.execute(staffId, {
+            usecase.execute({
                 paymentRecord: {
                     施術ID: treatmentId,
                     種別: '返金',

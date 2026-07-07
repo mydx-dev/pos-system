@@ -24,6 +24,10 @@ export function createTestContext() {
             upsertSpy: vi.spyOn(db, 'upsert'),
         },
         authSpy: vi.spyOn(scope.resolve('authentication'), 'execute'),
+        registerTerminalAuthSpy: vi.spyOn(
+            scope.resolve('registerTerminalAuthentication'),
+            'execute'
+        ),
         permissionCheckSpy: {
             isApprovedDeveloperSpy: vi.spyOn(
                 permissionCheck,

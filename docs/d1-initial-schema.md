@@ -12,6 +12,7 @@ Issue: [#64](https://github.com/mydx-dev/pos-system/issues/64)
 - Booleans are stored as `INTEGER` with `0` / `1` checks.
 - Date/time values remain `TEXT` or `INTEGER` according to the current Zod schema.
 - Foreign key behavior follows `SheetTable.reference`.
+- `password_resets.user_id` and `menus.category_id` add D1 foreign keys even though the current `SheetTable.reference` definition does not declare them. They are intentional constraints derived from the existing schema and domain relationships.
 
 ## Migration
 

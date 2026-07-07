@@ -1,4 +1,4 @@
-export interface PrinterConfig {
+export interface UsbPrinterConfig {
     vendorId: number;
     productId: number;
     serialNumber?: string | null;
@@ -20,7 +20,7 @@ export class PrinterConnection {
             return await this.requestUsbPrinter();
         }
 
-        const saved: PrinterConfig = JSON.parse(stored);
+        const saved: UsbPrinterConfig = JSON.parse(stored);
 
         const devices = await navigator.usb.getDevices();
 

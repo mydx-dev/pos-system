@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "baseUrl": ".",
-        "rootDir": ".",
+        "rootDir": "../..",
         "outDir": "../../dist",
         "types": [
             "google-apps-script",
@@ -14,6 +14,7 @@
             "w3c-web-usb"
         ],
         "paths": {
+            "@mydx-pos/printer": ["../../packages/printer/src/index.ts"],
             "@/*": ["./src/frontend/*"]
         }
     },

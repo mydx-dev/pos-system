@@ -1,6 +1,40 @@
 import Mustache from 'mustache';
-import { ReceiptData } from '../../../shared/domain/valueObject/Receipt';
-import { Printable } from '../../lib/printer/core/Printer';
+import { Printable } from '../printer/Printer';
+
+export type ReceiptStore = {
+    name: string;
+    postalCode?: string | null;
+    address1?: string | null;
+    address2?: string | null;
+    phoneNumber?: string | null;
+    message?: string | null;
+};
+
+export type ReceiptLineItem = {
+    name: string;
+    quantity: number;
+    regularPrice: number;
+    discountAmount: number;
+    subtotal: number;
+};
+
+export type ReceiptData = {
+    receiptNo: string;
+    paymentRecordId: string;
+    treatmentId: string;
+    issuedAt: string;
+    paidAt: string;
+    paymentMethod: unknown;
+    customerName?: string | null;
+    staffName?: string | null;
+    registerTerminalId?: string | null;
+    store: ReceiptStore;
+    items: ReceiptLineItem[];
+    subtotal: number;
+    discountTotal: number;
+    total: number;
+    paidAmount: number;
+};
 
 const money = (value: number) =>
     new Intl.NumberFormat('ja-JP', {

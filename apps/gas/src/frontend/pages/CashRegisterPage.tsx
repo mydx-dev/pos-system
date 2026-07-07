@@ -19,7 +19,7 @@ import { PrinterConfigModal } from '@/components/register/PrinterConfigModal';
 import { useCreatePaymentRecord } from '@/hooks/useCreatePaymentRecord';
 import { useReceiptPrinter } from '@/hooks/useReceiptPrinter';
 import { registerReplicaQL } from '@/lib/AppsScriptClient';
-import { CharacterEncoding, Command } from '@/lib/printer/core/PrinterConfig';
+import { type CharacterEncoding, type Command } from '@mydx-pos/printer';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useMemo, useState } from 'react';
 

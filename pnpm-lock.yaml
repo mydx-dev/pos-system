@@ -241,7 +241,33 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0(zod@4.4.3)
 
-  apps/gas: {}
+  apps/gas:
+    dependencies:
+      '@mydx-pos/printer':
+        specifier: workspace:*
+        version: link:../../packages/printer
+
+  packages/printer:
+    dependencies:
+      mustache:
+        specifier: ^4.2.0
+        version: 4.2.0
+      receiptline:
+        specifier: ^4.0.2
+        version: 4.0.2
+    devDependencies:
+      '@types/mustache':
+        specifier: ^4.2.6
+        version: 4.2.6
+      '@types/w3c-web-usb':
+        specifier: ^1.0.14
+        version: 1.0.14
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.16
+        version: 8.1.0(@types/node@25.9.4)(jiti@2.7.0)
 
 packages:
 

@@ -1,6 +1,9 @@
 {
     "name": "@mydx-pos/gas",
     "private": true,
+    "dependencies": {
+        "@mydx-pos/printer": "workspace:*"
+    },
     "scripts": {
         "test:component": "pnpm vitest src/frontend/**/*.{spec,test}.tsx --run --config vitest.frontend.config.ts --coverage",
         "test:page": "pnpm vitest src/frontend/pages/**/*.{spec,test}.tsx --run --config vitest.frontend.config.ts --coverage",

@@ -57,23 +57,23 @@ jobs:
 
       - name: Write clasp config
         run: |
-          mkdir -p config
-          printf '%s' "$CLASP_JSON" > config/.clasp.prd.json
+          mkdir -p apps/gas/config
+          printf '%s' "$CLASP_JSON" > apps/gas/config/.clasp.prd.json
         env:
           CLASP_JSON: ${{ secrets.CLASP_JSON_PRD }}
 
       - name: Build project
         run: |
-          pnpm gas-boost build prd
+          pnpm --filter @mydx-pos/gas build:prd
 
       - name: Push to GAS
         run: |
-          pnpm gas-boost push prd
+          pnpm --filter @mydx-pos/gas push:prd
 
       - name: Deploy to GAS
         id: deploy
         run: |
-          pnpm gas-boost deploy prd | tee deploy.log
+          pnpm --filter @mydx-pos/gas deploy:prd | tee deploy.log
 
           URL=$(grep -Eo 'WEB_APP_URL=\S+' deploy.log | tail -n1 | cut -d= -f2-)
           DEPLOY_ID=$(grep -Eo 'DEPLOY_ID=\S+' deploy.log | tail -n1 | cut -d= -f2-)

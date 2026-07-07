@@ -1,0 +1,21 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "rootDir": ".",
+        "outDir": "../../dist",
+        "types": [
+            "google-apps-script",
+            "node",
+            "vite/client",
+            "@types/node",
+            "vitest/globals",
+            "@testing-library/jest-dom",
+            "w3c-web-usb"
+        ],
+        "paths": {
+            "@/*": ["./src/frontend/*"]
+        }
+    },
+    "include": ["./**/*.ts", "./**/*.tsx"]
+}

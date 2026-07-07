@@ -49,7 +49,7 @@ jobs:
         run: pnpm run lint
 
       - name: Test
-        run: pnpm run test:back
+        run: pnpm run test:gas
 
       - name: Build
-        run: pnpm gas-boost build dev
+        run: pnpm run build:gas

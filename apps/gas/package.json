@@ -1,0 +1,31 @@
+{
+    "name": "@mydx-pos/gas",
+    "private": true,
+    "scripts": {
+        "test:component": "pnpm vitest src/frontend/**/*.{spec,test}.tsx --run --config vitest.frontend.config.ts --coverage",
+        "test:page": "pnpm vitest src/frontend/pages/**/*.{spec,test}.tsx --run --config vitest.frontend.config.ts --coverage",
+        "test:layout": "pnpm vitest src/frontend/layouts/**/*.{spec,test}.tsx --run --config vitest.frontend.config.ts --coverage",
+        "test:hook": "pnpm vitest src/frontend/hooks/**/*.{spec,test}.ts --run --config vitest.frontend.config.ts --coverage",
+        "test:route": "pnpm vitest src/frontend/routes/**/*.{spec,test}.tsx --run --config vitest.frontend.config.ts --coverage",
+        "format": "prettier . --write",
+        "format:check": "prettier . --check",
+        "typecheck": "tsc --noEmit",
+        "lint": "pnpm eslint . --ext .ts,.tsx",
+        "test": "pnpm test:back",
+        "test:back": "pnpm vitest --run --config vitest.backend.config.ts --coverage",
+        "test:tables": "pnpm vitest src/backend/infrastructure/database/tables.spec.ts --run --config vitest.backend.config.ts --coverage",
+        "test:domain": "pnpm vitest src/shared/domain/**/*.{spec,test}.ts --run --config vitest.backend.config.ts --coverage",
+        "test:app": "pnpm vitest src/backend/application/**/*.{spec,test}.ts --run --config vitest.backend.config.ts --coverage",
+        "test:controller": "pnpm vitest src/backend/controller/*.{spec,test}.ts --run --config vitest.backend.config.ts --coverage",
+        "dev": "pnpm vite --mode dev",
+        "build": "pnpm gas-boost build dev",
+        "build:dev": "pnpm gas-boost build dev",
+        "build:prd": "pnpm gas-boost build prd",
+        "push": "pnpm gas-boost push dev",
+        "push:dev": "pnpm gas-boost push dev",
+        "push:prd": "pnpm gas-boost push prd",
+        "deploy": "pnpm gas-boost deploy dev",
+        "deploy:dev": "pnpm gas-boost deploy dev",
+        "deploy:prd": "pnpm gas-boost deploy prd"
+    }
+}

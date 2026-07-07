@@ -1,0 +1,177 @@
+import type { RoleName } from '@mydx-pos/shared/domain/entity/Role';
+
+export type CreateUserRecord = {
+    id: string;
+    name: string;
+    email: string;
+    passwordHash: string;
+    approval: boolean;
+    role: RoleName;
+};
+
+export type UserWithRole = {
+    id: string;
+    name: string;
+    email: string;
+    password: string;
+    approval: number;
+    role: RoleName;
+};
+
+export class AuthRepository {
+    constructor(private readonly db: D1Database) {}
+
+    async isSetupCompleted() {
+        const setting = await this.db
+            .prepare("SELECT value FROM settings WHERE key = 'setup_completed'")
+            .first<{ value: string }>();
+
+        if (setting) {
+            return setting.value === 'true';
+        }
+
+        const admin = await this.db
+            .prepare(
+                "SELECT 1 AS ok FROM roles WHERE name = 'システム管理者' LIMIT 1"
+            )
+            .first<{ ok: number }>();
+
+        return admin?.ok === 1;
+    }
+
+    async isTermsAccepted() {
+        const setting = await this.db
+            .prepare("SELECT value FROM settings WHERE key = 'terms_accepted'")
+            .first<{ value: string }>();
+
+        return setting?.value === 'true';
+    }
+
+    async setBooleanSetting(key: string, value: boolean) {
+        await this.db
+            .prepare(
+                `INSERT INTO settings (key, value, updated_at)
+                 VALUES (?, ?, ?)
+                 ON CONFLICT(key) DO UPDATE SET
+                    value = excluded.value,
+                    updated_at = excluded.updated_at`
+            )
+            .bind(key, String(value), new Date().toISOString())
+            .run();
+    }
+
+    async countSystemAdmins() {
+        const result = await this.db
+            .prepare(
+                "SELECT COUNT(*) AS count FROM roles WHERE name = 'システム管理者'"
+            )
+            .first<{ count: number }>();
+
+        return result?.count ?? 0;
+    }
+
+    async createUser(user: CreateUserRecord) {
+        await this.db.batch([
+            this.db
+                .prepare(
+                    `INSERT INTO users
+                        (id, name, email, password, approval, version)
+                     VALUES (?, ?, ?, ?, ?, 1)`
+                )
+                .bind(
+                    user.id,
+                    user.name,
+                    user.email,
+                    user.passwordHash,
+                    user.approval ? 1 : 0
+                ),
+            this.db
+                .prepare('INSERT INTO roles (user_id, name) VALUES (?, ?)')
+                .bind(user.id, user.role),
+        ]);
+    }
+
+    async findApprovedUserByEmail(email: string) {
+        return this.db
+            .prepare(
+                `SELECT
+                    users.id,
+                    users.name,
+                    users.email,
+                    users.password,
+                    users.approval,
+                    roles.name AS role
+                 FROM users
+                 INNER JOIN roles ON roles.user_id = users.id
+                 WHERE users.email = ? AND users.approval = 1
+                 LIMIT 1`
+            )
+            .bind(email)
+            .first<UserWithRole>();
+    }
+
+    async findUserByEmail(email: string) {
+        return this.db
+            .prepare('SELECT id, email FROM users WHERE email = ? LIMIT 1')
+            .bind(email)
+            .first<{ id: string; email: string }>();
+    }
+
+    async findUserByResetToken(token: string) {
+        return this.db
+            .prepare(
+                `SELECT
+                    users.id,
+                    password_resets.expires_at
+                 FROM password_resets
+                 INNER JOIN users ON users.id = password_resets.user_id
+                 WHERE password_resets.token = ?
+                 LIMIT 1`
+            )
+            .bind(token)
+            .first<{ id: string; expires_at: number }>();
+    }
+
+    async replacePasswordReset(userId: string, token: string, expiresAt: number) {
+        await this.db
+            .prepare(
+                `INSERT INTO password_resets (user_id, token, expires_at)
+                 VALUES (?, ?, ?)
+                 ON CONFLICT(user_id) DO UPDATE SET
+                    token = excluded.token,
+                    expires_at = excluded.expires_at`
+            )
+            .bind(userId, token, expiresAt)
+            .run();
+    }
+
+    async updatePassword(userId: string, passwordHash: string) {
+        await this.db.batch([
+            this.db
+                .prepare(
+                    'UPDATE users SET password = ?, version = version + 1 WHERE id = ?'
+                )
+                .bind(passwordHash, userId),
+            this.db
+                .prepare('DELETE FROM password_resets WHERE user_id = ?')
+                .bind(userId),
+        ]);
+    }
+
+    async createSession(tokenHash: string, userId: string, expiresAt: number) {
+        await this.db
+            .prepare(
+                `INSERT INTO sessions (token_hash, user_id, expires_at, created_at)
+                 VALUES (?, ?, ?, ?)`
+            )
+            .bind(tokenHash, userId, expiresAt, new Date().toISOString())
+            .run();
+    }
+
+    async deleteSession(tokenHash: string) {
+        await this.db
+            .prepare('DELETE FROM sessions WHERE token_hash = ?')
+            .bind(tokenHash)
+            .run();
+    }
+}

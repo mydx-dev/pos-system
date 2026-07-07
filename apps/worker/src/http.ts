@@ -32,12 +32,15 @@ type JsonParser<T> = {
 const localOrigins = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
+    'http://localhost:5174',
+    'http://127.0.0.1:5174',
     'http://localhost:8787',
     'http://127.0.0.1:8787',
 ];
 
 const parseAllowedOrigins = (env: Env) => {
-    const configuredOrigins = env.CORS_ALLOWED_ORIGINS.split(',')
+    const configuredOrigins = (env.CORS_ALLOWED_ORIGINS ?? '')
+        .split(',')
         .map((origin) => origin.trim())
         .filter(Boolean);
 

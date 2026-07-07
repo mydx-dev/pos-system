@@ -1,0 +1,21 @@
+{
+    "name": "@mydx-pos/printer",
+    "private": true,
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "dependencies": {
+        "mustache": "^4.2.0",
+        "receiptline": "^4.0.2"
+    },
+    "devDependencies": {
+        "@types/mustache": "^4.2.6",
+        "@types/w3c-web-usb": "^1.0.14",
+        "typescript": "^6.0.3",
+        "vite": "^8.0.16"
+    },
+    "scripts": {
+        "typecheck": "tsc --noEmit"
+    }
+}

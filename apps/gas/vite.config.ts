@@ -103,7 +103,12 @@ export default defineConfig({
     root: fileURLToPath(new URL('./src/frontend/apps', import.meta.url)),
     server: {
         fs: {
-            allow: [fileURLToPath(new URL('./src', import.meta.url))],
+            allow: [
+                fileURLToPath(new URL('./src', import.meta.url)),
+                fileURLToPath(
+                    new URL('../../packages/printer/src', import.meta.url)
+                ),
+            ],
         },
     },
     optimizeDeps: {

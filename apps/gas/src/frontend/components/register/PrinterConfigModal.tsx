@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { CharacterEncoding, Command } from '@/lib/printer/core/PrinterConfig';
+import { type CharacterEncoding, type Command } from '@mydx-pos/printer';
 import { Printer, Save, Usb } from 'lucide-react';
 import { inputClassName } from './cashRegisterUtils';
 

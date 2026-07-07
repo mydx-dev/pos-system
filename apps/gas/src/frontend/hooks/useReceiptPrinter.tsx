@@ -1,14 +1,14 @@
 import { useCallback, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { ReceiptData } from '../../shared/domain/valueObject/Receipt';
-import { Receipt } from '../components/register/Receipt';
-import { Printer } from '../lib/printer/core/Printer';
 import {
-    CharacterEncoding,
-    Command,
+    Printer,
+    PrinterConnection,
+    Receipt,
+    type CharacterEncoding,
+    type Command,
     PrinterConfig,
-} from '../lib/printer/core/PrinterConfig';
-import { PrinterConnection } from '../lib/printer/core/PrinterConnection';
+} from '@mydx-pos/printer';
+import { ReceiptData } from '../../shared/domain/valueObject/Receipt';
 
 type PrinterConfigInput = {
     characterEncoding: CharacterEncoding;

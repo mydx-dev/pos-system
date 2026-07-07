@@ -1,0 +1,7 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "types": ["vite/client", "w3c-web-usb"]
+    },
+    "include": ["src", "vite.config.ts"]
+}

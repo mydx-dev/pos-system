@@ -250,6 +250,31 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
 
+  apps/web:
+    dependencies:
+      '@mydx-pos/printer':
+        specifier: workspace:*
+        version: link:../../packages/printer
+      lucide-react:
+        specifier: ^1.17.0
+        version: 1.21.0(react@19.2.7)
+      react:
+        specifier: ^19.2.7
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.7
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      '@vitejs/plugin-react':
+        specifier: ^6.0.2
+        version: 6.0.3(vite@8.1.0(@types/node@25.9.4)(jiti@2.7.0))
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.16
+        version: 8.1.0(@types/node@25.9.4)(jiti@2.7.0)
+
   packages/printer:
     dependencies:
       mustache:

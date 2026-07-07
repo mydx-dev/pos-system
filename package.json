@@ -84,7 +84,9 @@
     },
     "scripts": {
         "dev:gas": "pnpm --filter @mydx-pos/gas dev",
+        "dev:web": "pnpm --filter @mydx-pos/web dev",
         "build:gas": "pnpm --filter @mydx-pos/gas build",
+        "build:web": "pnpm --filter @mydx-pos/web build",
         "test:gas": "pnpm --filter @mydx-pos/gas test",
         "format:gas": "pnpm --filter @mydx-pos/gas format",
         "format:check:gas": "pnpm --filter @mydx-pos/gas format:check",

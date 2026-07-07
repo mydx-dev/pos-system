@@ -255,6 +255,9 @@ importers:
       '@mydx-pos/printer':
         specifier: workspace:*
         version: link:../../packages/printer
+      '@mydx-pos/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       lucide-react:
         specifier: ^1.17.0
         version: 1.21.0(react@19.2.7)

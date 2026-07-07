@@ -1,7 +1,15 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "types": ["vite/client", "w3c-web-usb"]
+        "baseUrl": ".",
+        "rootDir": "../..",
+        "outDir": "../../dist",
+        "types": ["vite/client", "w3c-web-usb"],
+        "paths": {
+            "@mydx-pos/printer": ["../../packages/printer/src/index.ts"],
+            "@mydx-pos/shared": ["../../packages/shared/src/index.ts"],
+            "@mydx-pos/shared/*": ["../../packages/shared/src/*"]
+        }
     },
     "include": ["src", "vite.config.ts"]
 }

@@ -265,7 +265,7 @@ export class RegisterPaymentRepository {
                     ON users.id = treatments.staff_id
                  LEFT JOIN treatment_menus
                     ON treatment_menus.treatment_id = treatments.id
-                 WHERE treatments.status IN ('予約済み', '来店済み')
+                 WHERE treatments.status IN ('予約済み', '来店済み', '精算済み')
                  GROUP BY
                     treatments.id,
                     treatments.customer_id,

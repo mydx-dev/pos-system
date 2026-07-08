@@ -61,6 +61,7 @@ export const ServerFunctions: API & Record<string, unknown> = {
             .execute(input),
     loginRegisterTerminal: (input) =>
         container.resolve('loginRegisterTerminalController').execute(input),
+    logoutRegisterTerminal: unsupportedRegisterWorkerApi,
     listRegisterTreatments: unsupportedRegisterWorkerApi,
     getRegisterTreatmentDetail: unsupportedRegisterWorkerApi,
     listRegisterMenus: unsupportedRegisterWorkerApi,

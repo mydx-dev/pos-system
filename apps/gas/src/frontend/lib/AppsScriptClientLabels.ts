@@ -20,6 +20,7 @@ export const labels = {
     createRegisterTerminal: 'レジ端末登録',
     refreshRegisterTerminalToken: 'レジ端末トークン再発行',
     loginRegisterTerminal: 'レジ端末ログイン',
+    logoutRegisterTerminal: 'レジ端末ログアウト',
     listRegisterTreatments: 'レジ会計対象取得',
     getRegisterTreatmentDetail: 'レジ施術詳細取得',
     listRegisterMenus: 'レジメニュー取得',

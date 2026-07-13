@@ -5,13 +5,15 @@ import type {
     ResetPasswordInput,
 } from '@mydx-pos/shared/api/user';
 import { createAuth } from './createAuth';
-import { AuthRepository } from '../db/authRepository';
-import { hashPassword, hashToken, randomId, randomToken } from './crypto';
+import {
+    AuthRepository,
+    betterAuthManagedPasswordMarker,
+} from '../db/authRepository';
+import { hashPassword, hashToken, randomToken } from './crypto';
 import { validatePassword } from './password';
 
 const SESSION_TTL_MS = 20 * 60 * 1000;
 const PASSWORD_RESET_TTL_MS = 30 * 60 * 1000;
-const betterAuthManagedPasswordMarker = 'better-auth-managed';
 
 export class AuthApiError extends Error {
     constructor(
@@ -40,6 +42,11 @@ const requirePasswordPepper = (env: Env) => {
 
 const internalAuthBaseURL = (env: Env) =>
     env.BETTER_AUTH_URL || 'http://localhost:8787';
+
+const internalAuthHeaders = (env: Env) =>
+    new Headers({
+        origin: internalAuthBaseURL(env),
+    });
 
 export class AuthService {
     private readonly repository: AuthRepository;
@@ -92,9 +99,7 @@ export class AuthService {
                     email: input.email,
                     password: input.password,
                 },
-                headers: new Headers({
-                    origin: internalAuthBaseURL(this.env),
-                }),
+                headers: internalAuthHeaders(this.env),
             });
         } catch (caught) {
             if (hasSetupLock) {
@@ -146,6 +151,39 @@ export class AuthService {
         const user = await this.repository.findApprovedUserByEmail(input.email);
         if (!user) {
             throw new AuthApiError('unauthorized', 'Invalid email or password.');
+        }
+
+        if (user.password === betterAuthManagedPasswordMarker) {
+            const auth = createAuth(this.env, internalAuthBaseURL(this.env));
+            const signedIn = await auth.api
+                .signInEmail({
+                    body: {
+                        email: input.email,
+                        password: input.password,
+                        rememberMe: false,
+                    },
+                    headers: internalAuthHeaders(this.env),
+                })
+                .catch(() => null);
+
+            if (!signedIn) {
+                throw new AuthApiError(
+                    'unauthorized',
+                    'Invalid email or password.'
+                );
+            }
+
+            const profile = await this.repository.findApprovedUserProfileByEmail(
+                signedIn.user.email
+            );
+            if (!profile || profile.id !== signedIn.user.id) {
+                throw new AuthApiError('forbidden', 'Approved user is required.');
+            }
+
+            return {
+                sessionToken: signedIn.token,
+                userId: signedIn.user.id,
+            };
         }
 
         const passwordHash = await hashPassword(
@@ -209,14 +247,22 @@ export class AuthService {
             throw new AuthApiError('forbidden', 'Invalid or expired token.');
         }
 
-        await this.repository.updatePassword(
+        await this.repository.createBetterAuthPasswordResetVerification(
+            input.token,
             reset.id,
-            await hashPassword(
-                input.newPassword,
-                reset.id,
-                requirePasswordPepper(this.env)
-            )
+            reset.expires_at
         );
+
+        const auth = createAuth(this.env, internalAuthBaseURL(this.env));
+        await auth.api.resetPassword({
+            body: {
+                token: input.token,
+                newPassword: input.newPassword,
+            },
+            headers: internalAuthHeaders(this.env),
+        });
+
+        await this.repository.markPasswordAsBetterAuthManaged(reset.id);
 
         return { ok: true };
     }

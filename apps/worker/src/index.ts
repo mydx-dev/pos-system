@@ -1,11 +1,26 @@
 import {
+    corsHeaders,
     internalServerError,
     methodNotAllowed,
     notFound,
     options,
 } from './http';
+import { createAuth } from './auth/createAuth';
 import { health } from './routes/health';
 import { rpc } from './routes/rpc';
+
+const withCors = (response: Response, context: { env: Env; request: Request }) => {
+    const headers = new Headers(response.headers);
+    for (const [key, value] of Object.entries(corsHeaders(context))) {
+        headers.set(key, value);
+    }
+
+    return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+    });
+};
 
 export default {
     async fetch(request, env): Promise<Response> {
@@ -24,6 +39,15 @@ export default {
                 }
 
                 return await health(env, context);
+            }
+
+            if (url.pathname.startsWith('/api/auth/')) {
+                if (!['GET', 'POST'].includes(request.method)) {
+                    return methodNotAllowed(['GET', 'POST', 'OPTIONS'], context);
+                }
+
+                const auth = createAuth(env, url.origin);
+                return withCors(await auth.handler(request), context);
             }
 
             if (url.pathname.startsWith('/rpc/')) {

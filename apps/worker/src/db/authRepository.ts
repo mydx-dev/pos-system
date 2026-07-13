@@ -117,6 +117,10 @@ export class AuthRepository {
         ]);
     }
 
+    async deleteBetterAuthUser(userId: string) {
+        await this.db.prepare('DELETE FROM user WHERE id = ?').bind(userId).run();
+    }
+
     async findApprovedUserByEmail(email: string) {
         return this.db
             .prepare(

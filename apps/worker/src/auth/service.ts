@@ -4,12 +4,14 @@ import type {
     LoginUserInput,
     ResetPasswordInput,
 } from '@mydx-pos/shared/api/user';
+import { createAuth } from './createAuth';
 import { AuthRepository } from '../db/authRepository';
 import { hashPassword, hashToken, randomId, randomToken } from './crypto';
 import { validatePassword } from './password';
 
 const SESSION_TTL_MS = 20 * 60 * 1000;
 const PASSWORD_RESET_TTL_MS = 30 * 60 * 1000;
+const betterAuthManagedPasswordMarker = 'better-auth-managed';
 
 export class AuthApiError extends Error {
     constructor(
@@ -35,6 +37,9 @@ const requirePasswordPepper = (env: Env) => {
     }
     return pepper;
 };
+
+const internalAuthBaseURL = (env: Env) =>
+    env.BETTER_AUTH_URL || 'http://localhost:8787';
 
 export class AuthService {
     private readonly repository: AuthRepository;
@@ -62,7 +67,6 @@ export class AuthService {
             throw new AuthApiError('validation_error', passwordError);
         }
 
-        const userId = randomId();
         const adminCount = await this.repository.countSystemAdmins();
         const isFirstSetupRequest = adminCount === 0;
         const hasSetupLock = isFirstSetupRequest
@@ -74,22 +78,47 @@ export class AuthService {
         }
 
         const isFirstAdmin = hasSetupLock;
-        const passwordHash = await hashPassword(
-            input.password,
-            userId,
-            requirePasswordPepper(this.env)
-        );
+        let signedUp: Awaited<
+            ReturnType<ReturnType<typeof createAuth>['api']['signUpEmail']>
+        >;
+
+        try {
+            const auth = createAuth(this.env, internalAuthBaseURL(this.env), {
+                disableSignUp: false,
+            });
+            signedUp = await auth.api.signUpEmail({
+                body: {
+                    name: input.name,
+                    email: input.email,
+                    password: input.password,
+                },
+                headers: new Headers({
+                    origin: internalAuthBaseURL(this.env),
+                }),
+            });
+        } catch (caught) {
+            if (hasSetupLock) {
+                await this.repository.releaseSetupLock();
+            }
+            if (caught instanceof Error && caught.message.includes('exists')) {
+                throw new AuthApiError('conflict', 'User already exists.');
+            }
+            throw caught;
+        }
+
+        const userId = signedUp.user.id;
 
         try {
             await this.repository.createUser({
                 id: userId,
                 name: input.name,
                 email: input.email,
-                passwordHash,
+                passwordHash: betterAuthManagedPasswordMarker,
                 approval: isFirstAdmin,
                 role: isFirstAdmin ? 'システム管理者' : 'ユーザー',
             });
         } catch (caught) {
+            await this.repository.deleteBetterAuthUser(userId);
             if (caught instanceof Error && caught.message.includes('UNIQUE')) {
                 if (hasSetupLock) {
                     await this.repository.releaseSetupLock();

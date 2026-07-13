@@ -10,6 +10,7 @@ import {
     logoutUserInputSchema,
     resetPasswordInputSchema,
 } from '@mydx-pos/shared/api/user';
+import { requireManagementSession } from '../auth/managementSession';
 import { AuthApiError, AuthService } from '../auth/service';
 import {
     badRequest,
@@ -176,6 +177,19 @@ const rpcRoutes: Partial<Record<RpcName, RpcRoute>> = {
     createUser: {
         methods: ['POST'],
         handler: authRoute(async (service, context) => {
+            if (await service.isSetupCompleted()) {
+                const session = await requireManagementSession(context);
+                if (!session.ok) {
+                    return session.response;
+                }
+                if (session.user.role !== 'システム管理者') {
+                    return forbidden(
+                        'System administrator role is required.',
+                        context
+                    );
+                }
+            }
+
             const body = await parseJsonBody(context, createUserInputSchema);
             if (!body.ok) {
                 return body.response;

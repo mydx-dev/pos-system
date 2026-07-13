@@ -17,6 +17,14 @@ export type RegisterTerminalRecord = {
     version: number;
 };
 
+export type RegisterTerminalSessionRecord = {
+    token_hash: string;
+    register_terminal_id: string;
+    expires_at: number;
+    created_at: string;
+    last_used_at: string | null;
+};
+
 export type UserRecord = {
     id: string;
     name: string;
@@ -170,6 +178,74 @@ export class RegisterPaymentRepository {
         return terminal ?? null;
     }
 
+    async createRegisterTerminalSession(
+        tokenHash: string,
+        registerTerminalId: string,
+        expiresAt: number,
+        createdAt: string
+    ) {
+        await this.db
+            .prepare(
+                `INSERT INTO register_terminal_sessions
+                    (token_hash, register_terminal_id, expires_at, created_at, last_used_at)
+                 VALUES (?, ?, ?, ?, ?)`
+            )
+            .bind(tokenHash, registerTerminalId, expiresAt, createdAt, createdAt)
+            .run();
+    }
+
+    async findActiveRegisterTerminalBySession(
+        tokenHash: string,
+        nowMs: number
+    ) {
+        const terminal = await this.db
+            .prepare(
+                `SELECT
+                    register_terminals.id,
+                    register_terminals.name,
+                    register_terminals.token_hash,
+                    register_terminals.enabled,
+                    register_terminals.issued_at,
+                    register_terminals.last_used_at,
+                    register_terminals.created_by,
+                    register_terminals.updated_by,
+                    register_terminals.version
+                 FROM register_terminal_sessions
+                 INNER JOIN register_terminals
+                    ON register_terminals.id = register_terminal_sessions.register_terminal_id
+                 WHERE
+                    register_terminal_sessions.token_hash = ?
+                    AND register_terminal_sessions.expires_at > ?
+                    AND register_terminals.enabled = 1
+                 LIMIT 1`
+            )
+            .bind(tokenHash, nowMs)
+            .first<RegisterTerminalRecord>();
+
+        return terminal ?? null;
+    }
+
+    async touchRegisterTerminalSession(tokenHash: string, lastUsedAt: string) {
+        await this.db
+            .prepare(
+                `UPDATE register_terminal_sessions
+                 SET last_used_at = ?
+                 WHERE token_hash = ?`
+            )
+            .bind(lastUsedAt, tokenHash)
+            .run();
+    }
+
+    async deleteRegisterTerminalSession(tokenHash: string) {
+        await this.db
+            .prepare(
+                `DELETE FROM register_terminal_sessions
+                 WHERE token_hash = ?`
+            )
+            .bind(tokenHash)
+            .run();
+    }
+
     async listCustomers() {
         const result = await this.db
             .prepare(
@@ -265,7 +341,7 @@ export class RegisterPaymentRepository {
                     ON users.id = treatments.staff_id
                  LEFT JOIN treatment_menus
                     ON treatment_menus.treatment_id = treatments.id
-                 WHERE treatments.status IN ('予約済み', '来店済み')
+                 WHERE treatments.status IN ('予約済み', '来店済み', '精算済み')
                  GROUP BY
                     treatments.id,
                     treatments.customer_id,

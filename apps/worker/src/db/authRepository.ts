@@ -1,5 +1,7 @@
 import type { RoleName } from '@mydx-pos/shared/domain/entity/Role';
 
+export const betterAuthManagedPasswordMarker = 'better-auth-managed';
+
 export type CreateUserRecord = {
     id: string;
     name: string;
@@ -117,6 +119,10 @@ export class AuthRepository {
         ]);
     }
 
+    async deleteBetterAuthUser(userId: string) {
+        await this.db.prepare('DELETE FROM user WHERE id = ?').bind(userId).run();
+    }
+
     async findApprovedUserByEmail(email: string) {
         return this.db
             .prepare(
@@ -141,6 +147,28 @@ export class AuthRepository {
             .prepare('SELECT id, email FROM users WHERE email = ? LIMIT 1')
             .bind(email)
             .first<{ id: string; email: string }>();
+    }
+
+    async findApprovedUserProfileByEmail(email: string) {
+        return this.db
+            .prepare(
+                `SELECT
+                    users.id,
+                    users.email,
+                    users.approval,
+                    roles.name AS role
+                 FROM users
+                 INNER JOIN roles ON roles.user_id = users.id
+                 WHERE users.email = ? AND users.approval = 1
+                 LIMIT 1`
+            )
+            .bind(email)
+            .first<{
+                id: string;
+                email: string;
+                approval: number;
+                role: RoleName;
+            }>();
     }
 
     async findUserByResetTokenHash(tokenHash: string) {
@@ -182,6 +210,42 @@ export class AuthRepository {
                     'UPDATE users SET password = ?, version = version + 1 WHERE id = ?'
                 )
                 .bind(passwordHash, userId),
+            this.db
+                .prepare('DELETE FROM password_resets WHERE user_id = ?')
+                .bind(userId),
+        ]);
+    }
+
+    async createBetterAuthPasswordResetVerification(
+        token: string,
+        userId: string,
+        expiresAt: number
+    ) {
+        const now = Date.now();
+        await this.db
+            .prepare(
+                `INSERT INTO verification
+                    (id, identifier, value, expires_at, created_at, updated_at)
+                 VALUES (?, ?, ?, ?, ?, ?)`
+            )
+            .bind(
+                crypto.randomUUID(),
+                `reset-password:${token}`,
+                userId,
+                expiresAt,
+                now,
+                now
+            )
+            .run();
+    }
+
+    async markPasswordAsBetterAuthManaged(userId: string) {
+        await this.db.batch([
+            this.db
+                .prepare(
+                    'UPDATE users SET password = ?, version = version + 1 WHERE id = ?'
+                )
+                .bind(betterAuthManagedPasswordMarker, userId),
             this.db
                 .prepare('DELETE FROM password_resets WHERE user_id = ?')
                 .bind(userId),

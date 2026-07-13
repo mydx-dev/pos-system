@@ -15,6 +15,7 @@ import type {
     CreateRegisterTerminalResponse,
     LoginRegisterTerminalRequest,
     LoginRegisterTerminalResponse,
+    LogoutRegisterTerminalResponse,
     RefreshRegisterTerminalTokenRequest,
     RefreshRegisterTerminalTokenResponse,
 } from './registerTerminal';
@@ -135,6 +136,7 @@ export type API = {
     loginRegisterTerminal: (
         input: LoginRegisterTerminalRequest
     ) => AppsScriptServerResponse<LoginRegisterTerminalResponse>;
+    logoutRegisterTerminal: () => AppsScriptServerResponse<LogoutRegisterTerminalResponse>;
     pullDatabaseRegisterTerminal: (
         input: PullDatabaseRegisterTerminalInput
     ) => AppsScriptServerResponse<PullDatabaseRegisterTerminalOutput>;

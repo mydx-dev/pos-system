@@ -3,7 +3,10 @@
     "private": true,
     "type": "module",
     "dependencies": {
-        "@mydx-pos/shared": "workspace:*"
+        "@better-auth/drizzle-adapter": "^1.6.23",
+        "@mydx-pos/shared": "workspace:*",
+        "better-auth": "^1.6.23",
+        "drizzle-orm": "^0.45.2"
     },
     "devDependencies": {
         "typescript": "^6.0.3",
@@ -17,6 +20,7 @@
         "check": "pnpm typecheck && pnpm build",
         "db:migrations:list": "wrangler d1 migrations list mydx-pos-local",
         "db:migrations:apply:local": "wrangler d1 migrations apply mydx-pos-local --local",
+        "db:migrations:apply:remote": "wrangler d1 migrations apply mydx-pos-local --remote",
         "types": "wrangler types"
     }
 }

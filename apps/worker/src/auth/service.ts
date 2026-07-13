@@ -4,8 +4,12 @@ import type {
     LoginUserInput,
     ResetPasswordInput,
 } from '@mydx-pos/shared/api/user';
-import { AuthRepository } from '../db/authRepository';
-import { hashPassword, hashToken, randomId, randomToken } from './crypto';
+import { createAuth } from './createAuth';
+import {
+    AuthRepository,
+    betterAuthManagedPasswordMarker,
+} from '../db/authRepository';
+import { hashPassword, hashToken, randomToken } from './crypto';
 import { validatePassword } from './password';
 
 const SESSION_TTL_MS = 20 * 60 * 1000;
@@ -36,6 +40,14 @@ const requirePasswordPepper = (env: Env) => {
     return pepper;
 };
 
+const internalAuthBaseURL = (env: Env) =>
+    env.BETTER_AUTH_URL || 'http://localhost:8787';
+
+const internalAuthHeaders = (env: Env) =>
+    new Headers({
+        origin: internalAuthBaseURL(env),
+    });
+
 export class AuthService {
     private readonly repository: AuthRepository;
 
@@ -62,7 +74,6 @@ export class AuthService {
             throw new AuthApiError('validation_error', passwordError);
         }
 
-        const userId = randomId();
         const adminCount = await this.repository.countSystemAdmins();
         const isFirstSetupRequest = adminCount === 0;
         const hasSetupLock = isFirstSetupRequest
@@ -74,22 +85,45 @@ export class AuthService {
         }
 
         const isFirstAdmin = hasSetupLock;
-        const passwordHash = await hashPassword(
-            input.password,
-            userId,
-            requirePasswordPepper(this.env)
-        );
+        let signedUp: Awaited<
+            ReturnType<ReturnType<typeof createAuth>['api']['signUpEmail']>
+        >;
+
+        try {
+            const auth = createAuth(this.env, internalAuthBaseURL(this.env), {
+                disableSignUp: false,
+            });
+            signedUp = await auth.api.signUpEmail({
+                body: {
+                    name: input.name,
+                    email: input.email,
+                    password: input.password,
+                },
+                headers: internalAuthHeaders(this.env),
+            });
+        } catch (caught) {
+            if (hasSetupLock) {
+                await this.repository.releaseSetupLock();
+            }
+            if (caught instanceof Error && caught.message.includes('exists')) {
+                throw new AuthApiError('conflict', 'User already exists.');
+            }
+            throw caught;
+        }
+
+        const userId = signedUp.user.id;
 
         try {
             await this.repository.createUser({
                 id: userId,
                 name: input.name,
                 email: input.email,
-                passwordHash,
+                passwordHash: betterAuthManagedPasswordMarker,
                 approval: isFirstAdmin,
                 role: isFirstAdmin ? 'システム管理者' : 'ユーザー',
             });
         } catch (caught) {
+            await this.repository.deleteBetterAuthUser(userId);
             if (caught instanceof Error && caught.message.includes('UNIQUE')) {
                 if (hasSetupLock) {
                     await this.repository.releaseSetupLock();
@@ -117,6 +151,39 @@ export class AuthService {
         const user = await this.repository.findApprovedUserByEmail(input.email);
         if (!user) {
             throw new AuthApiError('unauthorized', 'Invalid email or password.');
+        }
+
+        if (user.password === betterAuthManagedPasswordMarker) {
+            const auth = createAuth(this.env, internalAuthBaseURL(this.env));
+            const signedIn = await auth.api
+                .signInEmail({
+                    body: {
+                        email: input.email,
+                        password: input.password,
+                        rememberMe: false,
+                    },
+                    headers: internalAuthHeaders(this.env),
+                })
+                .catch(() => null);
+
+            if (!signedIn) {
+                throw new AuthApiError(
+                    'unauthorized',
+                    'Invalid email or password.'
+                );
+            }
+
+            const profile = await this.repository.findApprovedUserProfileByEmail(
+                signedIn.user.email
+            );
+            if (!profile || profile.id !== signedIn.user.id) {
+                throw new AuthApiError('forbidden', 'Approved user is required.');
+            }
+
+            return {
+                sessionToken: signedIn.token,
+                userId: signedIn.user.id,
+            };
         }
 
         const passwordHash = await hashPassword(
@@ -180,14 +247,22 @@ export class AuthService {
             throw new AuthApiError('forbidden', 'Invalid or expired token.');
         }
 
-        await this.repository.updatePassword(
+        await this.repository.createBetterAuthPasswordResetVerification(
+            input.token,
             reset.id,
-            await hashPassword(
-                input.newPassword,
-                reset.id,
-                requirePasswordPepper(this.env)
-            )
+            reset.expires_at
         );
+
+        const auth = createAuth(this.env, internalAuthBaseURL(this.env));
+        await auth.api.resetPassword({
+            body: {
+                token: input.token,
+                newPassword: input.newPassword,
+            },
+            headers: internalAuthHeaders(this.env),
+        });
+
+        await this.repository.markPasswordAsBetterAuthManaged(reset.id);
 
         return { ok: true };
     }

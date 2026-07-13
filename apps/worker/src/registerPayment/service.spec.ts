@@ -163,6 +163,10 @@ const createStore = async (
         findCustomerById: async (id) => (id === customerId ? customer : null),
         findUserById: async (id) => (id === staffId ? staff : null),
         listPaymentRecordsByTreatmentId: async () => [],
+        createRegisterTerminalSession: async () => {},
+        findActiveRegisterTerminalBySession: async () => null,
+        touchRegisterTerminalSession: async () => {},
+        deleteRegisterTerminalSession: async () => {},
         createPaymentRecord: async (
             paymentRecord: PaymentRecordInputRow,
             shouldMarkTreatmentPaid: boolean
@@ -214,16 +218,22 @@ describe('RegisterPaymentService', () => {
     it('logs in an enabled register terminal and returns last used time', async () => {
         const service = await createService();
 
-        await expect(
-            service.loginRegisterTerminal({ token: ' rgt-abcd-1234-efgh ' })
-        ).resolves.toEqual({
+        const response = await service.loginRegisterTerminal({
+            token: ' rgt-abcd-1234-efgh ',
+        });
+
+        expect(response).toEqual({
             registerTerminal: {
                 ID: terminalId,
                 端末名: 'Main register',
                 有効: true,
                 最終利用日時: usedAt,
             },
+            sessionToken: expect.any(String),
+            sessionExpiresAt: expect.any(Number),
         });
+        expect(response.sessionToken.length).toBeGreaterThan(20);
+        expect(response.sessionExpiresAt).toBeGreaterThan(Date.now());
     });
 
     it('pulls register terminal data without exposing user password hashes', async () => {

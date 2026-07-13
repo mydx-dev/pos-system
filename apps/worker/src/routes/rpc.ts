@@ -1,10 +1,6 @@
 import type { API } from '@mydx-pos/shared/api';
 import { createPaymentRecordRequest } from '@mydx-pos/shared/api/paymentRecord';
-import {
-    getRegisterTreatmentDetailRequest,
-    listRegisterMenusRequest,
-    listRegisterTreatmentsRequest,
-} from '@mydx-pos/shared/api/register';
+import { z } from 'zod';
 import { loginRegisterTerminalRequest } from '@mydx-pos/shared/api/registerTerminal';
 import { pullDatabaseRegisterTerminalInput } from '@mydx-pos/shared/api/system';
 import {
@@ -14,6 +10,7 @@ import {
     logoutUserInputSchema,
     resetPasswordInputSchema,
 } from '@mydx-pos/shared/api/user';
+import { requireManagementSession } from '../auth/managementSession';
 import { AuthApiError, AuthService } from '../auth/service';
 import {
     badRequest,
@@ -44,6 +41,75 @@ type RpcRoute = {
     methods: HttpMethod[];
     handler: RpcHandler;
 };
+
+const registerSessionCookieName = 'register_session';
+const registerSessionMaxAge = 30 * 24 * 60 * 60;
+
+const registerTerminalTokenRequest = z.object({
+    registerTerminalToken: z.string().optional(),
+});
+
+const listRegisterTreatmentsRequest = registerTerminalTokenRequest;
+
+const getRegisterTreatmentDetailRequest = registerTerminalTokenRequest.extend({
+    treatmentId: z.string().uuidv4(),
+});
+
+const listRegisterMenusRequest = registerTerminalTokenRequest;
+
+const createPaymentRecordCookieRequest = z.object({
+    registerTerminalToken: z.string().optional(),
+    paymentRecord: createPaymentRecordRequest.shape.paymentRecord,
+});
+
+const parseCookies = (header: string | null) => {
+    const cookies = new Map<string, string>();
+    if (!header) {
+        return cookies;
+    }
+
+    for (const part of header.split(';')) {
+        const [rawName, ...rawValue] = part.trim().split('=');
+        if (!rawName || rawValue.length === 0) {
+            continue;
+        }
+        cookies.set(rawName, decodeURIComponent(rawValue.join('=')));
+    }
+
+    return cookies;
+};
+
+const registerSessionToken = (context: HttpContext) =>
+    parseCookies(context.request.headers.get('cookie')).get(
+        registerSessionCookieName
+    ) ?? null;
+
+const isLocalEnvironment = (env: Env) =>
+    ['local', 'dev', 'development', 'test'].includes(env.ENVIRONMENT ?? '');
+
+const registerSessionCookie = (
+    env: Env,
+    value: string,
+    maxAge = registerSessionMaxAge
+) =>
+    [
+        `${registerSessionCookieName}=${encodeURIComponent(value)}`,
+        'HttpOnly',
+        isLocalEnvironment(env) ? null : 'Secure',
+        'SameSite=Strict',
+        'Path=/',
+        `Max-Age=${maxAge}`,
+    ]
+        .filter(Boolean)
+        .join('; ');
+
+const withRegisterSession = <T extends object>(
+    input: T,
+    context: HttpContext
+) => ({
+    ...input,
+    registerTerminalSessionToken: registerSessionToken(context),
+});
 
 const toErrorResponse = (caught: unknown, context: HttpContext) => {
     if (!(caught instanceof AuthApiError)) {
@@ -111,6 +177,19 @@ const rpcRoutes: Partial<Record<RpcName, RpcRoute>> = {
     createUser: {
         methods: ['POST'],
         handler: authRoute(async (service, context) => {
+            if (await service.isSetupCompleted()) {
+                const session = await requireManagementSession(context);
+                if (!session.ok) {
+                    return session.response;
+                }
+                if (session.user.role !== 'システム管理者') {
+                    return forbidden(
+                        'System administrator role is required.',
+                        context
+                    );
+                }
+            }
+
             const body = await parseJsonBody(context, createUserInputSchema);
             if (!body.ok) {
                 return body.response;
@@ -174,7 +253,37 @@ const rpcRoutes: Partial<Record<RpcName, RpcRoute>> = {
                 return body.response;
             }
 
-            return ok(await service.loginRegisterTerminal(body.data), context);
+            const { sessionToken, registerTerminal } =
+                await service.loginRegisterTerminal(body.data);
+
+            return ok(
+                { registerTerminal },
+                context,
+                {
+                    headers: {
+                        'set-cookie': registerSessionCookie(
+                            context.env,
+                            sessionToken
+                        ),
+                    },
+                }
+            );
+        }),
+    },
+    logoutRegisterTerminal: {
+        methods: ['POST'],
+        handler: registerPaymentRoute(async (service, context) => {
+            return ok(
+                await service.logoutRegisterTerminal(
+                    registerSessionToken(context)
+                ),
+                context,
+                {
+                    headers: {
+                        'set-cookie': registerSessionCookie(context.env, '', 0),
+                    },
+                }
+            );
         }),
     },
     pullDatabaseRegisterTerminal: {
@@ -207,7 +316,12 @@ const rpcRoutes: Partial<Record<RpcName, RpcRoute>> = {
                 return body.response;
             }
 
-            return ok(await service.listRegisterTreatments(body.data), context);
+            return ok(
+                await service.listRegisterTreatments(
+                    withRegisterSession(body.data, context)
+                ),
+                context
+            );
         }),
     },
     getRegisterTreatmentDetail: {
@@ -222,7 +336,9 @@ const rpcRoutes: Partial<Record<RpcName, RpcRoute>> = {
             }
 
             return ok(
-                await service.getRegisterTreatmentDetail(body.data),
+                await service.getRegisterTreatmentDetail(
+                    withRegisterSession(body.data, context)
+                ),
                 context
             );
         }),
@@ -235,18 +351,31 @@ const rpcRoutes: Partial<Record<RpcName, RpcRoute>> = {
                 return body.response;
             }
 
-            return ok(await service.listRegisterMenus(body.data), context);
+            return ok(
+                await service.listRegisterMenus(
+                    withRegisterSession(body.data, context)
+                ),
+                context
+            );
         }),
     },
     createPaymentRecord: {
         methods: ['POST'],
         handler: registerPaymentRoute(async (service, context) => {
-            const body = await parseJsonBody(context, createPaymentRecordRequest);
+            const body = await parseJsonBody(
+                context,
+                createPaymentRecordCookieRequest
+            );
             if (!body.ok) {
                 return body.response;
             }
 
-            return ok(await service.createPaymentRecord(body.data), context);
+            return ok(
+                await service.createPaymentRecord(
+                    withRegisterSession(body.data, context)
+                ),
+                context
+            );
         }),
     },
 };

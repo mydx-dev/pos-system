@@ -22,11 +22,7 @@ type UserResponse = {
 
 export type ManagementStore = Pick<
     ManagementRepository,
-    | 'countApprovedSystemAdmins'
-    | 'deleteUser'
-    | 'findUserWithRoleById'
-    | 'updateApproval'
-    | 'updateUser'
+    'deleteUser' | 'findUserWithRoleById' | 'updateApproval' | 'updateUser'
 >;
 
 const serializeUser = (user: ManagementUserRecord): UserResponse => ({
@@ -70,21 +66,31 @@ export class ManagementService {
 
         const target = await this.requireTarget(input.user.ID);
 
-        if (
-            target.id === executor.posUserId &&
-            target.role === 'システム管理者'
-        ) {
-            const adminCount =
-                await this.repository.countApprovedSystemAdmins();
-            if (adminCount <= 1) {
+        const updated = await this.repository.updateApproval(
+            target.id,
+            input.user.バージョン,
+            false
+        );
+
+        if (!updated) {
+            const current = await this.requireTarget(target.id);
+            if (
+                current.version === input.user.バージョン &&
+                current.id === executor.posUserId &&
+                current.role === 'システム管理者' &&
+                current.approval === 1
+            ) {
                 throw new AuthApiError(
                     'forbidden',
                     'The last approved system administrator cannot be unapproved.'
                 );
             }
-        }
 
-        await this.updateApprovalOrThrow(target, input.user.バージョン, false);
+            throw new AuthApiError(
+                'conflict',
+                'User has been modified by another request.'
+            );
+        }
 
         return {
             user: serializeUser(await this.requireTarget(input.user.ID)),
@@ -136,23 +142,27 @@ export class ManagementService {
 
         const target = await this.requireTarget(input.id);
 
-        if (
-            target.id === executor.posUserId &&
-            target.role === 'システム管理者'
-        ) {
-            const adminCount =
-                await this.repository.countApprovedSystemAdmins();
-            if (adminCount <= 1) {
+        const deleted = await this.repository.deleteUser(target.id);
+        if (!deleted) {
+            const current = await this.repository.findUserWithRoleById(
+                target.id
+            );
+            if (
+                current &&
+                current.id === executor.posUserId &&
+                current.role === 'システム管理者' &&
+                current.approval === 1
+            ) {
                 throw new AuthApiError(
                     'forbidden',
                     'The last approved system administrator cannot be deleted.'
                 );
             }
-        }
 
-        const deleted = await this.repository.deleteUser(target.id);
-        if (!deleted) {
-            throw new AuthApiError('not_found', 'Target user not found.');
+            throw new AuthApiError(
+                'conflict',
+                'User has been modified by another request.'
+            );
         }
 
         return { ok: true };

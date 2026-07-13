@@ -38,27 +38,32 @@ export class ManagementRepository {
             .first<ManagementUserRecord>();
     }
 
-    async countApprovedSystemAdmins() {
-        const result = await this.db
-            .prepare(
-                `SELECT COUNT(*) AS count
-                 FROM users
-                 INNER JOIN roles ON roles.user_id = users.id
-                 WHERE users.approval = 1 AND roles.name = 'システム管理者'`
-            )
-            .first<{ count: number }>();
-
-        return result?.count ?? 0;
-    }
-
     async updateApproval(id: string, version: number, approval: boolean) {
         const result = await this.db
             .prepare(
                 `UPDATE users
                  SET approval = ?, version = version + 1
-                 WHERE id = ? AND version = ?`
+                 WHERE id = ? AND version = ?
+                   AND (
+                     ? = 1
+                     OR approval = 0
+                     OR NOT EXISTS (
+                       SELECT 1
+                       FROM roles
+                       WHERE roles.user_id = users.id
+                         AND roles.name = 'システム管理者'
+                     )
+                     OR (
+                       SELECT COUNT(*)
+                       FROM users AS approved_admins
+                       INNER JOIN roles AS admin_roles
+                         ON admin_roles.user_id = approved_admins.id
+                       WHERE approved_admins.approval = 1
+                         AND admin_roles.name = 'システム管理者'
+                     ) > 1
+                   )`
             )
-            .bind(approval ? 1 : 0, id, version)
+            .bind(approval ? 1 : 0, id, version, approval ? 1 : 0)
             .run();
 
         return changedRows(result) === 1;
@@ -94,8 +99,36 @@ export class ManagementRepository {
 
     async deleteUser(id: string) {
         const results = await this.db.batch<D1Result[]>([
-            this.db.prepare('DELETE FROM users WHERE id = ?').bind(id),
-            this.db.prepare('DELETE FROM user WHERE id = ?').bind(id),
+            this.db
+                .prepare(
+                    `DELETE FROM users
+                     WHERE id = ?
+                       AND (
+                         approval = 0
+                         OR NOT EXISTS (
+                           SELECT 1
+                           FROM roles
+                           WHERE roles.user_id = users.id
+                             AND roles.name = 'システム管理者'
+                         )
+                         OR (
+                           SELECT COUNT(*)
+                           FROM users AS approved_admins
+                           INNER JOIN roles AS admin_roles
+                             ON admin_roles.user_id = approved_admins.id
+                           WHERE approved_admins.approval = 1
+                             AND admin_roles.name = 'システム管理者'
+                         ) > 1
+                       )`
+                )
+                .bind(id),
+            this.db
+                .prepare(
+                    `DELETE FROM user
+                     WHERE id = ?
+                       AND NOT EXISTS (SELECT 1 FROM users WHERE id = ?)`
+                )
+                .bind(id, id),
         ]);
 
         return changedRows(results[0]) === 1;

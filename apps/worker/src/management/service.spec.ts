@@ -53,15 +53,22 @@ const createStore = (
     ]);
 
     return {
-        countApprovedSystemAdmins: async () =>
-            [...records.values()].filter(
-                (record) =>
-                    record.approval === 1 && record.role === 'システム管理者'
-            ).length,
         findUserWithRoleById: async (id) => records.get(id) ?? null,
         updateApproval: async (id, version, approval) => {
             const record = records.get(id);
             if (!record || record.version !== version) {
+                return false;
+            }
+            if (
+                !approval &&
+                record.approval === 1 &&
+                record.role === 'システム管理者' &&
+                [...records.values()].filter(
+                    (current) =>
+                        current.approval === 1 &&
+                        current.role === 'システム管理者'
+                ).length <= 1
+            ) {
                 return false;
             }
 
@@ -86,7 +93,25 @@ const createStore = (
             });
             return true;
         },
-        deleteUser: async (id) => records.delete(id),
+        deleteUser: async (id) => {
+            const record = records.get(id);
+            if (!record) {
+                return false;
+            }
+            if (
+                record.approval === 1 &&
+                record.role === 'システム管理者' &&
+                [...records.values()].filter(
+                    (current) =>
+                        current.approval === 1 &&
+                        current.role === 'システム管理者'
+                ).length <= 1
+            ) {
+                return false;
+            }
+
+            return records.delete(id);
+        },
         ...overrides,
     };
 };
@@ -182,6 +207,22 @@ describe('ManagementService', () => {
             service.deleteUser(adminSession, {
                 sessionToken: 'legacy-session-token',
                 id: adminId,
+            })
+        ).rejects.toMatchObject({
+            code: 'forbidden',
+        });
+    });
+
+    it('protects the last approved system administrator from unapproval', async () => {
+        const service = createService();
+
+        await expect(
+            service.unapproveUser(adminSession, {
+                sessionToken: 'legacy-session-token',
+                user: {
+                    ID: adminId,
+                    バージョン: 1,
+                },
             })
         ).rejects.toMatchObject({
             code: 'forbidden',

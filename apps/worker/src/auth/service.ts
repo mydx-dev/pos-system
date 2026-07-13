@@ -21,6 +21,7 @@ export class AuthApiError extends Error {
             | 'bad_request'
             | 'conflict'
             | 'forbidden'
+            | 'not_found'
             | 'unauthorized'
             | 'validation_error',
         message: string
@@ -81,7 +82,10 @@ export class AuthService {
             : false;
 
         if (isFirstSetupRequest && !hasSetupLock) {
-            throw new AuthApiError('conflict', 'Initial setup is already running.');
+            throw new AuthApiError(
+                'conflict',
+                'Initial setup is already running.'
+            );
         }
 
         const isFirstAdmin = hasSetupLock;
@@ -150,7 +154,10 @@ export class AuthService {
     async loginUser(input: LoginUserInput) {
         const user = await this.repository.findApprovedUserByEmail(input.email);
         if (!user) {
-            throw new AuthApiError('unauthorized', 'Invalid email or password.');
+            throw new AuthApiError(
+                'unauthorized',
+                'Invalid email or password.'
+            );
         }
 
         if (user.password === betterAuthManagedPasswordMarker) {
@@ -173,11 +180,15 @@ export class AuthService {
                 );
             }
 
-            const profile = await this.repository.findApprovedUserProfileByEmail(
-                signedIn.user.email
-            );
+            const profile =
+                await this.repository.findApprovedUserProfileByEmail(
+                    signedIn.user.email
+                );
             if (!profile || profile.id !== signedIn.user.id) {
-                throw new AuthApiError('forbidden', 'Approved user is required.');
+                throw new AuthApiError(
+                    'forbidden',
+                    'Approved user is required.'
+                );
             }
 
             return {
@@ -192,7 +203,10 @@ export class AuthService {
             requirePasswordPepper(this.env)
         );
         if (passwordHash !== user.password) {
-            throw new AuthApiError('unauthorized', 'Invalid email or password.');
+            throw new AuthApiError(
+                'unauthorized',
+                'Invalid email or password.'
+            );
         }
 
         const sessionToken = randomToken();

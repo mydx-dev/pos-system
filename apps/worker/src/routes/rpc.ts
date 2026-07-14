@@ -5,16 +5,21 @@ import { loginRegisterTerminalRequest } from '@mydx-pos/shared/api/registerTermi
 import { pullDatabaseRegisterTerminalInput } from '@mydx-pos/shared/api/system';
 import {
     createUserInputSchema,
+    approveUserInputSchema,
+    deleteUserInputSchema,
     forgotPasswordInputSchema,
     loginUserInputSchema,
     logoutUserInputSchema,
     resetPasswordInputSchema,
+    unapproveUserInputSchema,
+    updateUserInputSchema,
 } from '@mydx-pos/shared/api/user';
 import { requireManagementSession } from '../auth/managementSession';
 import { AuthApiError, AuthService } from '../auth/service';
 import {
     badRequest,
     conflict,
+    error,
     forbidden,
     methodNotAllowed,
     ok,
@@ -25,6 +30,7 @@ import {
     validationError,
 } from '../http';
 import { RegisterPaymentService } from '../registerPayment/service';
+import { ManagementService } from '../management/service';
 
 type RpcName = keyof API;
 type RpcHandler = (context: HttpContext) => Promise<Response> | Response;
@@ -34,6 +40,10 @@ type AuthRpcHandler = (
 ) => Promise<Response> | Response;
 type RegisterPaymentRpcHandler = (
     service: RegisterPaymentService,
+    context: HttpContext
+) => Promise<Response> | Response;
+type ManagementRpcHandler = (
+    service: ManagementService,
     context: HttpContext
 ) => Promise<Response> | Response;
 
@@ -128,6 +138,10 @@ const toErrorResponse = (caught: unknown, context: HttpContext) => {
         return forbidden(caught.message, context);
     }
 
+    if (caught.code === 'not_found') {
+        return error('not_found', caught.message, context, { status: 404 });
+    }
+
     if (caught.code === 'unauthorized') {
         return unauthorized(caught.message, context);
     }
@@ -149,7 +163,20 @@ const registerPaymentRoute =
     (handler: RegisterPaymentRpcHandler): RpcHandler =>
     async (context) => {
         try {
-            return await handler(new RegisterPaymentService(context.env), context);
+            return await handler(
+                new RegisterPaymentService(context.env),
+                context
+            );
+        } catch (caught) {
+            return toErrorResponse(caught, context);
+        }
+    };
+
+const managementRoute =
+    (handler: ManagementRpcHandler): RpcHandler =>
+    async (context) => {
+        try {
+            return await handler(new ManagementService(context.env), context);
         } catch (caught) {
             return toErrorResponse(caught, context);
         }
@@ -220,10 +247,89 @@ const rpcRoutes: Partial<Record<RpcName, RpcRoute>> = {
             return ok(await service.logoutUser(body.data), context);
         }),
     },
+    approveUser: {
+        methods: ['POST'],
+        handler: managementRoute(async (service, context) => {
+            const session = await requireManagementSession(context);
+            if (!session.ok) {
+                return session.response;
+            }
+
+            const body = await parseJsonBody(context, approveUserInputSchema);
+            if (!body.ok) {
+                return body.response;
+            }
+
+            return ok(
+                await service.approveUser(session.user, body.data),
+                context
+            );
+        }),
+    },
+    unapproveUser: {
+        methods: ['POST'],
+        handler: managementRoute(async (service, context) => {
+            const session = await requireManagementSession(context);
+            if (!session.ok) {
+                return session.response;
+            }
+
+            const body = await parseJsonBody(context, unapproveUserInputSchema);
+            if (!body.ok) {
+                return body.response;
+            }
+
+            return ok(
+                await service.unapproveUser(session.user, body.data),
+                context
+            );
+        }),
+    },
+    updateUser: {
+        methods: ['POST'],
+        handler: managementRoute(async (service, context) => {
+            const session = await requireManagementSession(context);
+            if (!session.ok) {
+                return session.response;
+            }
+
+            const body = await parseJsonBody(context, updateUserInputSchema);
+            if (!body.ok) {
+                return body.response;
+            }
+
+            return ok(
+                await service.updateUser(session.user, body.data),
+                context
+            );
+        }),
+    },
+    deleteUser: {
+        methods: ['POST'],
+        handler: managementRoute(async (service, context) => {
+            const session = await requireManagementSession(context);
+            if (!session.ok) {
+                return session.response;
+            }
+
+            const body = await parseJsonBody(context, deleteUserInputSchema);
+            if (!body.ok) {
+                return body.response;
+            }
+
+            return ok(
+                await service.deleteUser(session.user, body.data),
+                context
+            );
+        }),
+    },
     forgotPassword: {
         methods: ['POST'],
         handler: authRoute(async (service, context) => {
-            const body = await parseJsonBody(context, forgotPasswordInputSchema);
+            const body = await parseJsonBody(
+                context,
+                forgotPasswordInputSchema
+            );
             if (!body.ok) {
                 return body.response;
             }
@@ -256,18 +362,14 @@ const rpcRoutes: Partial<Record<RpcName, RpcRoute>> = {
             const { sessionToken, registerTerminal } =
                 await service.loginRegisterTerminal(body.data);
 
-            return ok(
-                { registerTerminal },
-                context,
-                {
-                    headers: {
-                        'set-cookie': registerSessionCookie(
-                            context.env,
-                            sessionToken
-                        ),
-                    },
-                }
-            );
+            return ok({ registerTerminal }, context, {
+                headers: {
+                    'set-cookie': registerSessionCookie(
+                        context.env,
+                        sessionToken
+                    ),
+                },
+            });
         }),
     },
     logoutRegisterTerminal: {
